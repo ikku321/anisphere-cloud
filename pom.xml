@@ -17,6 +17,7 @@
     <packaging>pom</packaging>
 
     <modules>
+		<module>ani-video</module>
         <module>user-service</module>
         <module>common</module>
     </modules>
