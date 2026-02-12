@@ -1,0 +1,50 @@
+
+
+###
+# curl https://api.deepseek.com/chat/completions
+#  -H "Content-Type: application/json"
+#  -H "Authorization: Bearer ${DEEPSEEK_API_KEY}"
+#  -d '{
+#        "model": "deepseek-chat",
+#        "messages": [
+#          {"role": "system", "content": "You are a helpful assistant."},
+#          {"role": "user", "content": "Hello!"}
+#        ],
+#        "stream": false
+#      }'
+
+POST https://api.deepseek.com/chat/completions
+Authorization: Bearer sk-340ec3a56b85481c8d19e867e3de9912
+Content-Type: application/json
+
+{
+  "model": "deepseek-chat",
+  "messages": [
+    {
+      "role": "user",
+      "content": "介绍下你是什么模型？!"
+    }
+  ],
+  "stream": false
+}
+
+###
+
+###
+
+POST https://api.deepseek.com/chat/completions
+Authorization: Bearer sk-340ec3a56b85481c8d19e867e3de9912
+Content-Type: application/json
+
+{
+  "model": "deepseek-chat",
+  "messages": [
+    {
+      "role": "user",
+      "content": "介绍下你是什么模型？!"
+    }
+  ],
+  "stream": false
+}
+
+###

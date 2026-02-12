@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iikun.userservice.mapper.UserMapper">
+
+    <!--查询用户基本数据-->
+    <select id="foundUserInfo" parameterType="string"
+            resultType="com.iikun.userservice.domain.dto.UserInfoDTO">
+        SELECT user_id         AS userId,
+               username,
+               nickname,
+               avatar_url      AS avatarUrl,
+               phone,
+               email,
+               exp,
+               level,
+               status,
+               role,
+               followers_count AS followersCount,
+               following_count AS followingCount,
+               birthday,
+               bio,
+               gender
+        FROM user
+        WHERE user_id = #{userid}
+    </select>
+
+
+    <!--根据uid查询用户基本数据-->
+    <select id="findUserByUidInfo" parameterType="string" resultType="com.iikun.userservice.domain.dto.UserInfoDTO">
+        select user.user_id,
+               user.username,
+               user.nickname,
+               user.avatar_url,
+               user.phone,
+               user.email,
+               user.exp,
+               user.level,
+               user.status,
+               user.role,
+               user.followers_count,
+               user.following_count,
+               user.birthday,
+               user.bio,
+               user.gender
+        from user
+        where user_id = #{uid};
+    </select>
+
+</mapper>

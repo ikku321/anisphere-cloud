@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iikun.userservice.mapper.UserBlacklistMapper">
+    <select id="findUserBlackListAll" resultType="com.iikun.userservice.domain.request.BlackListRequestModel">
+        SELECT ub.id,
+               ub.user_id,
+               u.user_id     as uid,
+               u.nickname,
+               u.avatar_url,
+               ub.blocked_user_id,
+               u2.user_id    as blocked_user_uid,
+               u2.nickname   as blocked_user_nickname,
+               u2.avatar_url as blocked_user_avatar_url,
+               ub.create_time
+        FROM user_blacklist as ub
+                 LEFT JOIN ani_sphere.user u
+                           ON ub.user_id = u.id
+                 LEFT JOIN ani_sphere.user u2
+                           ON ub.blocked_user_id = u2.id;
+    </select>
+
+    <select id="findUserBlackList" resultType="com.iikun.userservice.domain.request.UserBlackListModel">
+        select ub.user_id as uid,
+               ub.blocked_user_id as BlackUid,
+               u.nickname as NickName,
+               u.email as Email
+        from user_blacklist as ub
+                 join ani_sphere.user u on u.id = ub.blocked_user_id
+        where ub.user_id = '30';
+    </select>
+</mapper>

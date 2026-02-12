@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iikun.userservice.mapper.UserFollowMapper">
+
+    <select id="selectAttentionList" resultType="com.iikun.userservice.domain.model.AttentionListModel">
+        SELECT uf.id           as attentionId,
+               uf.follower_id as followerId, -- 被关注者ID
+               u.id            as userId,    -- 被关注者的用户ID
+               u.user_id       as userUid,   -- 被关注者的UID
+               u.nickname,
+               u.avatar_url    as avatarUrl,
+               uf.create_time  as createTime
+        FROM user_follow uf
+                 RIGHT JOIN user u ON uf.following_id = u.user_id -- 关联被关注者的信息
+        WHERE uf.follower_id = #{follower} -- 关注者ID = 当前用户
+        ORDER BY uf.create_time DESC;
+    </select>
+
+</mapper>
