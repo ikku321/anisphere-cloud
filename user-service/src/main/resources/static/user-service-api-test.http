@@ -1,0 +1,251 @@
+### AniSphere user-service API 测试脚本（IntelliJ HTTP Client）
+### 说明：
+### 1) 先启动 user-service（默认端口 9090）
+### 2) 执行【登录】请求后，会自动把 token 写入全局变量 {{token}}，后续接口自动携带 Authorization
+### 3) 管理员接口 /admin/* 需要登录账号 role=0
+
+@host = http://localhost:9090
+@token = {{token}}
+
+
+### ----------------------------------------
+### 1. 注册（可选）
+### ----------------------------------------
+POST {{host}}/user/register
+Content-Type: application/json
+
+{
+  "username": "test_user_01",
+  "password": "123456",
+  "phone": "18800000001",
+  "email": "test_user_01@example.com"
+}
+
+> {%
+  // 注册接口成功时通常也会返回 token（若你的实现返回 data.token）
+  if (response.body && response.body.data && response.body.data.token) {
+    client.global.set("token", response.body.data.token);
+  }
+%}
+
+
+### ----------------------------------------
+### 2. 登录（必选，后续接口都依赖 token）
+### ----------------------------------------
+POST {{host}}/user/login?username=test_user_01&password=123456
+
+> {%
+  // Result.data.token
+  client.global.set("token", response.body.data.token);
+%}
+
+
+### ----------------------------------------
+### 3. 获取我的用户信息（依赖 token）
+### ----------------------------------------
+GET {{host}}/user/info
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 4. 修改邮箱（依赖 token）
+### ----------------------------------------
+POST {{host}}/user/update-email?email=new_email_01@example.com
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 5. 修改手机号（依赖 token）
+### ----------------------------------------
+POST {{host}}/user/update-phone?newPhone=18800000002
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 6. 修改昵称（依赖 token）
+### ----------------------------------------
+POST {{host}}/user/update-nickname?newNickname=TestNick01
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 7. 修改密码（依赖 token）
+### ----------------------------------------
+POST {{host}}/user/update-pwd?oldPwd=123456&newPwd=123456
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 8. 根据 uid 查询用户信息（公开接口）
+### ----------------------------------------
+GET {{host}}/user/find?uid=REPLACE_WITH_USER_UID
+
+
+### ----------------------------------------
+### 9. 登录日志（分页）
+### ----------------------------------------
+GET {{host}}/user-login-log/page?page=1&size=10
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 10. 收藏：新增
+### ----------------------------------------
+POST {{host}}/user-collection/add?targetType=0&targetId=10001
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 11. 收藏：是否已收藏
+### ----------------------------------------
+GET {{host}}/user-collection/is-collected?targetType=0&targetId=10001
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 12. 收藏：分页
+### ----------------------------------------
+GET {{host}}/user-collection/page?page=1&size=10
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 13. 收藏：取消
+### ----------------------------------------
+POST {{host}}/user-collection/cancel?targetType=0&targetId=10001
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 14. 浏览记录：新增
+### ----------------------------------------
+POST {{host}}/user-browsing-history/record?targetType=0&targetId=10001
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 15. 浏览记录：分页
+### ----------------------------------------
+GET {{host}}/user-browsing-history/page?page=1&size=10
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 16. 浏览记录：删除（recordId 需要替换为真实值）
+### ----------------------------------------
+DELETE {{host}}/user-browsing-history/delete?recordId=REPLACE_WITH_RECORD_ID
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 17. 关注：关注用户（followId 需要替换为真实用户 uid）
+### ----------------------------------------
+POST {{host}}/user-follow/attention?followId=REPLACE_WITH_FOLLOW_UID
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 18. 关注：取消关注
+### ----------------------------------------
+POST {{host}}/user-follow/cancel-attention?followId=REPLACE_WITH_FOLLOW_UID
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 19. 关注：关注列表
+### ----------------------------------------
+GET {{host}}/user-follow/follow-list
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 20. 收货地址：新增
+### ----------------------------------------
+POST {{host}}/user-address/add
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "receiverName": "张三",
+  "receiverPhone": "18800000003",
+  "province": "广东省",
+  "city": "深圳市",
+  "district": "南山区",
+  "detailAddress": "科技园 1 号",
+  "isDefault": "0"
+}
+
+
+### ----------------------------------------
+### 21. 收货地址：查询
+### ----------------------------------------
+GET {{host}}/user-address/find-address
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 22. 收货地址：删除（addressId 需要替换为真实值）
+### ----------------------------------------
+DELETE {{host}}/user-address/delete-address?addressId=REPLACE_WITH_ADDRESS_ID
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 23. 收货地址：修改（addressId 需要替换为真实值）
+### ----------------------------------------
+POST {{host}}/user-address/update-address
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "addressId": 1,
+  "receiverName": "李四",
+  "receiverPhone": "18800000004",
+  "province": "广东省",
+  "city": "深圳市",
+  "district": "南山区",
+  "detailAddress": "科技园 2 号",
+  "isDefault": "0"
+}
+
+
+### ----------------------------------------
+### 24. 黑名单：加入
+### ----------------------------------------
+POST {{host}}/user-blacklist/join-black?blacklistId=REPLACE_WITH_BLOCK_UID
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 25. 黑名单：查询当前账号黑名单
+### ----------------------------------------
+GET {{host}}/user-blacklist/find-blacklist
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 26. 黑名单：是否拉黑
+### ----------------------------------------
+GET {{host}}/user-blacklist/find-isBlackList?blacklistId=REPLACE_WITH_BLOCK_UID
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 27. 黑名单：取消拉黑
+### ----------------------------------------
+POST {{host}}/user-blacklist/cancel-blacklist?blacklistId=REPLACE_WITH_BLOCK_UID
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 28. 黑名单：查询所有黑名单（管理员）
+### ----------------------------------------
+GET {{host}}/user-blacklist/all
+Authorization: Bearer {{token}}
+
+
+### ----------------------------------------
+### 29. 管理员：分页查询用户列表（管理员）
+### ----------------------------------------
+GET {{host}}/admin/user-all?page=1&size=10
+Authorization: Bearer {{token}}

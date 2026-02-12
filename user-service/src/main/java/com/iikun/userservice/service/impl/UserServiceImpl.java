@@ -9,6 +9,7 @@ import com.iikun.userservice.domain.dto.RegisterDTO;
 import com.iikun.userservice.domain.dto.UserInfoDTO;
 import com.iikun.userservice.entity.User;
 import com.iikun.userservice.mapper.UserMapper;
+import com.iikun.userservice.service.UserLoginLogService;
 import com.iikun.userservice.service.UserService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private JwtUtil jwtUtil;
+
+    @Resource
+    private UserLoginLogService userLoginLogService;
 
     /**
      * 新用户注册
@@ -105,38 +109,62 @@ public class UserServiceImpl implements UserService {
      *
      * @param username 用户名称/手机号码
      * @param password 密码
+     * @param ip       登录IP
+     * @param device   设备信息
      * @return 1
      */
     @Override
-    public Result login(String username, String password) {
-        // 根据用户名或手机号查用户
-        User user = userMapper.findByUsername(username);
-        log.info("登录查询的用户信息: {}", user);
-        if (user == null) {
-            throw new ServiceException("用户不存在");
+    public Result login(String username, String password, String ip, String device) {
+        // 登录日志：0失败 1成功（无论成功/失败，都尽量写一条日志，便于审计与排查）
+        try {
+            // 根据用户名或手机号查用户
+            User user = userMapper.findByUsername(username);
+            log.info("登录查询的用户信息: {}", user);
+            if (user == null) {
+                throw new ServiceException("用户不存在");
+            }
+
+            // 校验密码
+            if (!PasswordUtil.matches(password, user.getPassword())) {
+                throw new ServiceException("密码不正确");
+            }
+
+            // 生成 token
+            // 常用的信息
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("userId", String.valueOf(user.getUserId()));
+            claims.put("username", String.valueOf(user.getUsername()));
+            claims.put("role", String.valueOf(user.getRole()));
+            log.info("login-> calims存值: userId = {}", user.getUserId());
+            log.info("login-> calims存值: username = {}", user.getUsername());
+            log.info("login-> calims存值: role = {}", user.getRole());
+
+            String token = jwtUtil.generateToken(user.getUserId(), claims);
+            log.info("登录生成的token: ${}", token);
+            HashMap<String, Object> loginToken = new HashMap<>();
+            loginToken.put("token", token);
+
+            // 写入登录成功日志（uid 使用 user.user_id 业务ID）
+            try {
+                userLoginLogService.record(user.getUserId(), ip, device, 1);
+            } catch (Exception e) {
+                // 登录成功本身不应因为日志失败而失败，这里仅记录日志
+                log.warn("写入登录成功日志失败: {}", e.getMessage());
+            }
+
+            return Result.success(loginToken, "登录成功");
+        } catch (ServiceException e) {
+            // 写入登录失败日志：如果能根据 username 查到 uid 则记录，否则忽略
+            try {
+                User user = userMapper.findByUsername(username);
+                if (user != null && user.getUserId() != null) {
+                    userLoginLogService.record(user.getUserId(), ip, device, 0);
+                }
+            } catch (Exception ex) {
+                log.warn("写入登录失败日志失败: {}", ex.getMessage());
+            }
+            throw e;
         }
-
-        // 校验密码
-        if (!PasswordUtil.matches(password, user.getPassword())) {
-            throw new ServiceException("密码不正确");
-        }
-
-        // 生成 token
-        // 常用的信息
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", String.valueOf(user.getUserId()));
-        claims.put("username", String.valueOf(user.getUsername()));
-        claims.put("role", String.valueOf(user.getRole()));
-        log.info("login-> calims存值: userId = {}", user.getUserId());
-        log.info("login-> calims存值: username = {}", user.getUsername());
-        log.info("login-> calims存值: role = {}", user.getRole());
-
-        String token = jwtUtil.generateToken(user.getUserId(), claims);
-        log.info("登录生成的token: ${}", token);
-        HashMap<String, Object> loginToken = new HashMap<>();
-        loginToken.put("token", token);
-
-        return Result.success(loginToken, "登录成功");
     }
 
 

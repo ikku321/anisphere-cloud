@@ -84,6 +84,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String username = allClaims.get("username", String.class);
             String role = allClaims.get("role", String.class);
 
+            // 兼容旧代码：将 uid 写入 request attribute，Controller 可通过 request.getAttribute("uid") 获取。
+            // 注意：这里的 uid 为业务用户ID（user.user_id），不是 user.id 自增主键。
+            request.setAttribute("uid", uid);
+
             // 存入UserContext
             LoginUser loginUser = new LoginUser();
             loginUser.setUid(uid);
@@ -92,8 +96,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // 将LoginUser存入ContextUser
             UserContext.setUser(loginUser);
 
-            // 继续执行请求
-            filterChain.doFilter(request, response);
+            try {
+                // 继续执行请求
+                filterChain.doFilter(request, response);
+            } finally {
+                // 请求结束清理线程变量，避免线程复用时用户串号
+                UserContext.clear();
+            }
         } catch (Exception e) {
             log.error("JWT 解析异常: {}", e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

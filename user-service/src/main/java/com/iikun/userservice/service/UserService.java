@@ -24,9 +24,11 @@ public interface UserService {
      * 登录
      * @param username 用户名称/手机号码
      * @param password 密码
+     * @param ip 登录IP（可为空）
+     * @param device 登录设备信息（可为空）
      * @return 1
      */
-    Result login(String username, String password);
+    Result login(String username, String password, String ip, String device);
 
     /**
      * 查询用户基本信息

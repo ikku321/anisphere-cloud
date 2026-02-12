@@ -3,4 +3,28 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.iikun.userservice.mapper.UserLoginLogMapper">
 
+    <insert id="insert">
+        INSERT INTO user_login_log (user_id, login_ip, device, status)
+        VALUES (#{userId}, #{loginIp}, #{device}, #{status})
+    </insert>
+
+    <select id="countByUserId" resultType="long">
+        SELECT COUNT(1)
+        FROM user_login_log
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectPageByUserId" resultType="com.iikun.userservice.entity.UserLoginLog">
+        SELECT id,
+               user_id    AS userId,
+               login_time AS loginTime,
+               login_ip   AS loginIp,
+               device,
+               status
+        FROM user_login_log
+        WHERE user_id = #{userId}
+        ORDER BY login_time DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
 </mapper>

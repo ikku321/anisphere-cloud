@@ -59,11 +59,16 @@ public class UserController {
      */
     @PostMapping("/login")
     @Operation(summary = "登录", description = "可以使用账号名称登录也可以使用手机号登录")
-    public Result login(@RequestParam String username, @RequestParam String password) {
+    public Result login(HttpServletRequest request, @RequestParam String username, @RequestParam String password) {
         if (username.isEmpty() || password.isEmpty()) {
             return Result.failed("账号或密码不能为空?");
         }
-        return userService.login(username, password);
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null || ip.isEmpty()) {
+            ip = request.getRemoteAddr();
+        }
+        String device = request.getHeader("User-Agent");
+        return userService.login(username, password, ip, device);
     }
 
 

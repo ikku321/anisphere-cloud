@@ -2,6 +2,7 @@ package com.iikun.common.handler;
 
 import com.iikun.common.base.Result;
 import com.iikun.common.common.ServiceException;
+import com.iikun.common.exception.NoAdminPermissionException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -24,6 +25,17 @@ public class GlobalExceptionHandler {
     public Result<?> handleServiceException(ServiceException e) {
         // 返回统一格式的错误信息
         return Result.failed(e.getMessage());
+    }
+
+    /**
+     * 处理无管理员权限异常。
+     *
+     * @param e NoAdminPermissionException
+     * @return 统一响应（403）
+     */
+    @ExceptionHandler(NoAdminPermissionException.class)
+    public Result<?> handleNoAdminPermissionException(NoAdminPermissionException e) {
+        return Result.forbidden(e.getMessage());
     }
 
     // 处理通用异常
