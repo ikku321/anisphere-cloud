@@ -1,5 +1,8 @@
 package com.iikun.anivideo.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.iikun.anivideo.entity.VideoEntity;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -10,5 +13,14 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface VideoMapper {
+
+    /**
+     * 添加视频信息
+     *
+     * @param videoEntity 视频信息实体
+     * @return 返回添加状态是否成功
+     */
+    Integer insert(VideoEntity videoEntity);
+
 
 }

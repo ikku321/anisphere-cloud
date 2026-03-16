@@ -2,6 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.iikun.anivideo.mapper.VideoMapper">
-
-
+    <insert id="insert">
+        INSERT INTO ani_sphere.video(video_id, user_id, title, description, cover_url, video_url, duration, status,
+                                     visible, price, audit_status)
+            VALUE (#{videoId}, #{userId}, #{title}, #{description}, #{coverUrl},
+            #{videoUrl}, #{duration}, #{status}, #{visible}, #{price}, #{auditStatus});
+    </insert>
 </mapper>

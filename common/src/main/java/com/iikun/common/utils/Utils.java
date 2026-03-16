@@ -21,6 +21,17 @@ public class Utils{
                 .substring(0, 22);
     }
 
-
+    /**
+     * 生成视频唯一ID（22位）
+     */
+    public static String videoId() {
+        UUID uuid = UUID.randomUUID();
+        ByteBuffer buffer = ByteBuffer.allocate(16);
+        buffer.putLong(uuid.getMostSignificantBits());
+        buffer.putLong(uuid.getLeastSignificantBits());
+        return Base64.getUrlEncoder()
+                .withoutPadding()
+                .encodeToString(buffer.array());
+    }
 }
 

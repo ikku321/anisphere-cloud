@@ -6,6 +6,10 @@ spring:
     username: root
     password: ik101145
     driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
 
 server:
   port: 9091
@@ -14,3 +18,7 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
+
+## 配置视频封面上传地址
+file:
+  upload-dir: D:/anivideo/uploads/

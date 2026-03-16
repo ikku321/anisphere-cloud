@@ -1,6 +1,6 @@
 package com.iikun.anivideo.service;
 
-import org.springframework.stereotype.Service;
+import com.iikun.anivideo.entity.VideoEntity;
 
 /**
  * author iikun
@@ -9,5 +9,10 @@ import org.springframework.stereotype.Service;
  * msg:
  */
 public interface VideoService {
-
+    /**
+     * 上传视频信息， 保存视频内容信息
+     *
+     * @param videoEntity 视频数据实体类
+     */
+    void save(VideoEntity videoEntity);
 }
