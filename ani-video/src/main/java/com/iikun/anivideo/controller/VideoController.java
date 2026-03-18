@@ -4,6 +4,7 @@ import com.iikun.anivideo.entity.VideoEntity;
 import com.iikun.anivideo.service.VideoService;
 import com.iikun.common.annotation.Admin;
 import com.iikun.common.base.Result;
+import com.iikun.common.common.ServiceException;
 import com.iikun.common.utils.DateTimeUtil;
 import com.iikun.common.utils.Utils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +33,47 @@ public class VideoController {
     public Result<?> uploading(@RequestBody VideoEntity videoEntity, @RequestParam String uid) {
         // 执行将数据存储到sql表中
         videoService.save(getVideoEntity(videoEntity, uid));
+        return Result.success();
+    }
+
+    @Operation(summary = "修改视频可见状态")
+    @PostMapping("/modifi-visible")
+    public Result<?> modifiVisible(@RequestParam Integer visible, @RequestParam String videoId) {
+        if (visible == null) {
+            return Result.failed("数值不能为空?");
+        }
+        if (visible != 1 && visible != 0) {
+            return Result.failed("数值只能选择0和1?");
+        }
+        if (videoId == null) {
+            return Result.failed("视频id不能为空?");
+        }
+        videoService.modifiVideoVisible(visible, videoId);
+        return Result.success();
+    }
+
+
+    @Operation(summary = "修改视频简介")
+    @PostMapping("/update-description")
+    public Result<?> updateDescription(@RequestParam String description, @RequestParam String videoId) {
+        if (description == null) {
+            throw new ServiceException("简介不能为空!");
+        }
+        if (description.length() > 300) {
+            throw new ServiceException("简介字数不能大于300字");
+        }
+        // 执行修改
+        videoService.updateVideoDescription(description, videoId);
+        return Result.success();
+    }
+
+    @Operation(summary = "修改视频标题")
+    @PostMapping("/update-title")
+    public Result<?> uploadVideo(@RequestParam String videoTitle, @RequestParam String videoId) {
+        if (videoTitle == null) throw new ServiceException("视频标题不能为空");
+        if (videoId == null) throw new ServiceException("视频id不能为空");
+        if (videoTitle.length() > 30) throw new ServiceException("视频标题字数不能大于30位");
+        videoService.modifiVideoVideoTitle(videoTitle, videoId);
         return Result.success();
     }
 

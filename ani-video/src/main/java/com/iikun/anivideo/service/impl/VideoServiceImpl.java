@@ -3,12 +3,15 @@ package com.iikun.anivideo.service.impl;
 import com.iikun.anivideo.entity.VideoEntity;
 import com.iikun.anivideo.mapper.VideoMapper;
 import com.iikun.anivideo.service.VideoService;
+import com.iikun.common.base.Result;
 import com.iikun.common.common.ServiceException;
 import com.iikun.common.utils.DateTimeUtil;
 import com.iikun.common.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -30,11 +33,73 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     public void save(VideoEntity videoEntity) {
-        // log.info(videoEntity.toString());
-        int insert = videoMapper.insert(videoEntity);
-        if (insert <= 0) {
-            throw new ServiceException("添加失败!");
+        try {
+            // log.info(videoEntity.toString());
+            int insert = videoMapper.insert(videoEntity);
+            if (insert <= 0) {
+                throw new ServiceException("添加失败!");
+            }
+        } catch (DataAccessException e) {
+            throw new ServiceException("数据库异常");
+        }
+    }
+
+    @Override
+    public void modifiVideoVisible(Integer visible, String videoId) {
+        try {
+            val integer = videoMapper.updateVideoVisible(visible, videoId);
+            if (integer <= 0) {
+                throw new ServiceException("修改失败!");
+            }
+        } catch (DataAccessException e) {
+            throw new ServiceException("数据库异常");
+        }
+    }
+
+    @Override
+    public void updateVideoDescription(String description, String videoId) {
+        try {
+            // 验证视频id是否存在
+            val integer = videoMapper.foundByVideoId(videoId);
+            if (integer <= 0) {
+                throw new ServiceException("视频id不存在？");
+            }
+
+            // 执行修改
+            val updateByVideoDescription = videoMapper.updateByVideoDescription(description, videoId);
+            if (updateByVideoDescription <= 0) {
+                throw new ServiceException("修改失败!");
+            }
+        } catch (DataAccessException e) {
+            throw new ServiceException("数据库异常");
+        }
+    }
+
+    @Override
+    public void modifiVideoVideoTitle(String videoTitle, String videoId) {
+        try {
+            if (videoMapper.foundByVideoId(videoId) <= 0) {
+                throw new ServiceException("视频id不存在");
+            }
+            int updated = videoMapper.updateVideoTitle(videoTitle, videoId);
+            if (updated <= 0) {
+                throw new ServiceException("修改失败");
+            }
+        } catch (DataAccessException e) {
+            throw new ServiceException("数据库异常");
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
