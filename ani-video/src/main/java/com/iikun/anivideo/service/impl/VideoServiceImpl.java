@@ -14,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * author iikun
@@ -40,6 +38,7 @@ public class VideoServiceImpl implements VideoService {
                 throw new ServiceException("添加失败!");
             }
         } catch (DataAccessException e) {
+            log.debug(e.getMessage());
             throw new ServiceException("数据库异常");
         }
     }
@@ -52,6 +51,7 @@ public class VideoServiceImpl implements VideoService {
                 throw new ServiceException("修改失败!");
             }
         } catch (DataAccessException e) {
+            log.debug(e.getMessage());
             throw new ServiceException("数据库异常");
         }
     }
@@ -71,6 +71,7 @@ public class VideoServiceImpl implements VideoService {
                 throw new ServiceException("修改失败!");
             }
         } catch (DataAccessException e) {
+            log.debug(e.getMessage());
             throw new ServiceException("数据库异常");
         }
     }
@@ -86,7 +87,55 @@ public class VideoServiceImpl implements VideoService {
                 throw new ServiceException("修改失败");
             }
         } catch (DataAccessException e) {
+            log.debug(e.getMessage());
             throw new ServiceException("数据库异常");
+        }
+    }
+
+    @Override
+    public void deleteVideo(String videoId) {
+        try {
+            if (videoMapper.foundByVideoId(videoId) <= 0) {
+                throw new ServiceException("视频id不存在");
+            }
+            // 执行删除视频操作
+            val deleted = videoMapper.delete(videoId);
+            if (deleted <= 0) {
+                throw new ServiceException("删除视频失败");
+            }
+        } catch (DataAccessException e) {
+            log.debug(e.getMessage());
+            throw new ServiceException("数据库异常");
+        }
+    }
+
+
+    @Override
+    public List<VideoEntity> getVideoAll() {
+        try {
+            val videoEntities = videoMapper.selectByVideoAll();
+            if (videoEntities == null || videoEntities.isEmpty()) {
+                throw new ServiceException("查询所有视频数据为空?");
+            }
+            return videoEntities;
+        } catch (DataAccessException e) {
+            log.debug(e.getMessage());
+            throw new ServiceException("数据库异常?");
+        }
+    }
+
+
+    @Override
+    public List<VideoEntity> foundVideoInfo(String videoTitle) {
+        try {
+            val videoEntity = videoMapper.selectByVideoTitle(videoTitle);
+            if (videoEntity == null) {
+                throw new ServiceException("未查询到该视频信息?");
+            }
+            return videoEntity;
+        } catch (DataAccessException e) {
+            log.debug(e.getMessage());
+            throw new ServiceException("数据库异常?");
         }
     }
 }

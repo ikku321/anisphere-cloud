@@ -5,6 +5,8 @@ import com.iikun.anivideo.entity.VideoEntity;
 import org.apache.ibatis.annotations.*;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 /**
  * author iikun
  * time 2026/2/13 0:36
@@ -62,6 +64,32 @@ public interface VideoMapper {
      */
     @Update("update ani_sphere.video set title = #{videoTitle} where video_id = #{videoId}")
     Integer updateVideoTitle(@Param("videoTitle") String videoTitle, @Param("videoId") String videoId);
+
+    /**
+     * <p>删除视频</p>
+     *
+     * @param videoId 删除视频目标id
+     * @return 返回删除成功状态
+     */
+    @Delete("delete from ani_sphere.video where video_id = #{videoId}")
+    Integer delete(@Param("videoId") String videoId);
+
+    /**
+     * 查询所有视频信息
+     *
+     * @return 返回所有视频列表
+     */
+    @Select("select * from ani_sphere.video")
+    List<VideoEntity> selectByVideoAll();
+
+    /**
+     * 根据标题查询视频信息
+     *
+     * @param title 视频标题
+     * @return 返回视频信息
+     */
+    @Select("select * from ani_sphere.video where title like concat('%', #{title}, '%')")
+    List<VideoEntity> selectByVideoTitle(@Param("title") String title);
 }
 
 

@@ -10,9 +10,13 @@ import com.iikun.common.utils.Utils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * author iikun
@@ -75,6 +79,29 @@ public class VideoController {
         if (videoTitle.length() > 30) throw new ServiceException("视频标题字数不能大于30位");
         videoService.modifiVideoVideoTitle(videoTitle, videoId);
         return Result.success();
+    }
+
+
+    @Operation(summary = "删除视频")
+    @DeleteMapping("/delete")
+    public Result<?> deleteVideo(@RequestParam String videoId) {
+        videoService.deleteVideo(videoId);
+        return Result.success();
+    }
+
+    @Operation(summary = "查询所有视频信息")
+    @GetMapping("/all")
+    public Result<List<VideoEntity>> getVideoList() {
+        return Result.success(videoService.getVideoAll());
+    }
+
+    @Operation(summary = "根据标题查询视频信息")
+    @GetMapping("/found-title")
+    public Result<List<VideoEntity>> getFoundVideoInfo(@RequestParam String videoTitle) {
+        if (videoTitle == null) {
+            throw new ServiceException("视频标题不能为空?");
+        }
+        return Result.success(videoService.foundVideoInfo(videoTitle));
     }
 
     /**

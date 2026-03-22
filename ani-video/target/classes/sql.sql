@@ -11,3 +11,9 @@ select count(1) from ani_sphere.video where video_id = 'test01';
 
 -- 修改视频简介
 update ani_sphere.video set description = '测试修改内容' where video_id = 'test01';
+
+-- 删除视频
+delete from ani_sphere.video where video_id = '';
+
+-- 根据视频标题查询视频信息
+select * from ani_sphere.video where title like concat('%', '试修', '%');
