@@ -54,6 +54,7 @@ public class GlobalExceptionHandler {
         return Result.failed("服务器内部错误: " + e.getMessage());
     }
 
+
     @ExceptionHandler(DataAccessException.class)
     public Result<?> handleDatabaseException(DataAccessException e) {
         log.error("数据库异常", e);
