@@ -4,27 +4,14 @@ import com.iikun.anivideo.entity.VideoIncomeEntity;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
- * author iikun
- * time 2026/2/13 0:35
- * version 1.0.0
- * msg:
+ * 视频收益服务接口
+ * <p>
+ * 处理UP主相关的收益流水相关业务逻辑
+ * </p>
  */
 public interface VideoIncomeService {
 
-    /**
-     * 新增收益记录
-     */
-    boolean addIncome(VideoIncomeEntity income);
-
-    /**
-     * 查询UP主收益列表
-     */
-    List<VideoIncomeEntity> getUserIncome(String userId);
-
-    /**
-     * 统计UP主总收益
-     */
-    BigDecimal getUserTotalIncome(String userId);
 }

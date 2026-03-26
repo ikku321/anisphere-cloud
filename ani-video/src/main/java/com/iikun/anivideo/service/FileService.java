@@ -16,4 +16,9 @@ public interface FileService {
      */
     String uploadFile(MultipartFile file);
 
+    /**
+     * 上传视频文件
+     * @param file 视频文件
+     */
+    String uploadVideoFile(MultipartFile file);
 }

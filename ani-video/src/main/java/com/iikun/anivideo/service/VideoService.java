@@ -2,7 +2,9 @@ package com.iikun.anivideo.service;
 
 import com.iikun.anivideo.entity.VideoEntity;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * author iikun
@@ -63,4 +65,85 @@ public interface VideoService {
      */
     List<VideoEntity> foundVideoInfo(String videoTitle);
 
+    /**
+     * 根据视频ID查询视频详情
+     *
+     * @param videoId 视频ID
+     * @return 视频详情
+     */
+    VideoEntity getVideoById(String videoId);
+
+    /**
+     * 根据用户ID查询视频列表
+     *
+     * @param userId 用户ID
+     * @return 视频列表
+     */
+    List<VideoEntity> getVideosByUserId(String userId);
+
+    /**
+     * 分页查询视频列表
+     *
+     * @param pageNum  页码
+     * @param pageSize 每页大小
+     * @param keyword  关键词（可选）
+     * @return 分页结果
+     */
+    Map<String, Object> getVideoPage(Integer pageNum, Integer pageSize, String keyword);
+
+    /**
+     * 修改视频状态
+     *
+     * @param status  状态
+     * @param videoId 视频ID
+     */
+    void updateVideoStatus(Integer status, String videoId);
+
+    /**
+     * 修改视频审核状态
+     *
+     * @param auditStatus 审核状态
+     * @param videoId     视频ID
+     */
+    void updateAuditStatus(Integer auditStatus, String videoId);
+
+    /**
+     * 修改视频价格
+     *
+     * @param price   价格
+     * @param videoId 视频ID
+     */
+    void updateVideoPrice(BigDecimal price, String videoId);
+
+    /**
+     * 批量删除视频
+     *
+     * @param videoIds 视频ID列表
+     */
+    void batchDeleteVideos(List<String> videoIds);
+
+    /**
+     * 获取热门视频列表
+     *
+     * @param limit 限制数量
+     * @return 热门视频列表
+     */
+    List<VideoEntity> getHotVideos(Integer limit);
+
+    /**
+     * 获取推荐视频列表
+     *
+     * @param userId 用户ID
+     * @param limit  限制数量
+     * @return 推荐视频列表
+     */
+    List<VideoEntity> getRecommendVideos(String userId, Integer limit);
+
+    /**
+     * 根据视频id获取视频详情
+     *
+     * @param videoId 视频id
+     * @return 返回视频详情
+     */
+    VideoEntity getVideoInfo(String videoId);
 }

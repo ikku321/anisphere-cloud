@@ -35,6 +35,18 @@ public class FileUploadController {
         return Result.success(url);
     }
 
+
+    @Operation(summary = "上传视频文件")
+    @PostMapping(
+            value = "/upload/video-file",
+            consumes = "multipart/form-data"
+    )
+    public Result<String> uploadVideoFile(@RequestParam("file") MultipartFile file) {
+        return Result.success(fileService.uploadVideoFile(file));
+    }
+
+
+
     @GetMapping("/test")
     public String Test() {
         return "Hello World";

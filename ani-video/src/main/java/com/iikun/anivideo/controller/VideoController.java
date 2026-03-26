@@ -1,5 +1,6 @@
 package com.iikun.anivideo.controller;
 
+import com.iikun.anivideo.entity.TagEntity;
 import com.iikun.anivideo.entity.VideoEntity;
 import com.iikun.anivideo.service.VideoService;
 import com.iikun.common.annotation.Admin;
@@ -16,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * author iikun
@@ -102,6 +105,107 @@ public class VideoController {
             throw new ServiceException("视频标题不能为空?");
         }
         return Result.success(videoService.foundVideoInfo(videoTitle));
+    }
+
+    @Operation(summary = "根据视频ID查询视频详情")
+    @GetMapping("/detail")
+    public Result<VideoEntity> getVideoDetail(@RequestParam String videoId) {
+        if (videoId == null) {
+            throw new ServiceException("视频ID不能为空");
+        }
+        return Result.success(videoService.getVideoById(videoId));
+    }
+
+    @Operation(summary = "根据用户ID查询视频列表")
+    @GetMapping("/user-videos")
+    public Result<List<VideoEntity>> getUserVideos(@RequestParam String userId) {
+        if (userId == null) {
+            throw new ServiceException("用户ID不能为空");
+        }
+        return Result.success(videoService.getVideosByUserId(userId));
+    }
+
+    @Operation(summary = "分页查询视频列表")
+    @GetMapping("/page")
+    public Result<Map<String, Object>> getVideoPage(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(required = false) String keyword) {
+        return Result.success(videoService.getVideoPage(pageNum, pageSize, keyword));
+    }
+
+    @Operation(summary = "修改视频状态")
+    @PostMapping("/update-status")
+    public Result<?> updateVideoStatus(@RequestParam Integer status, @RequestParam String videoId) {
+        if (status == null || videoId == null) {
+            throw new ServiceException("参数不能为空");
+        }
+        if (status < 0 || status > 4) {
+            throw new ServiceException("状态值不合法");
+        }
+        videoService.updateVideoStatus(status, videoId);
+        return Result.success();
+    }
+
+    @Operation(summary = "修改视频审核状态")
+    @PostMapping("/update-audit-status")
+    public Result<?> updateAuditStatus(@RequestParam Integer auditStatus, @RequestParam String videoId) {
+        if (auditStatus == null || videoId == null) {
+            throw new ServiceException("参数不能为空");
+        }
+        if (auditStatus < 0 || auditStatus > 2) {
+            throw new ServiceException("审核状态值不合法");
+        }
+        videoService.updateAuditStatus(auditStatus, videoId);
+        return Result.success();
+    }
+
+    @Operation(summary = "修改视频价格")
+    @PostMapping("/update-price")
+    public Result<?> updateVideoPrice(@RequestParam BigDecimal price, @RequestParam String videoId) {
+        if (price == null || videoId == null) {
+            throw new ServiceException("参数不能为空");
+        }
+        if (price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new ServiceException("价格不能为负数");
+        }
+        videoService.updateVideoPrice(price, videoId);
+        return Result.success();
+    }
+
+    @Operation(summary = "批量删除视频")
+    @DeleteMapping("/batch-delete")
+    public Result<?> batchDeleteVideos(@RequestBody List<String> videoIds) {
+        if (videoIds == null || videoIds.isEmpty()) {
+            throw new ServiceException("视频ID列表不能为空");
+        }
+        videoService.batchDeleteVideos(videoIds);
+        return Result.success();
+    }
+
+    @Operation(summary = "获取热门视频列表")
+    @GetMapping("/hot-videos")
+    public Result<List<VideoEntity>> getHotVideos(@RequestParam(defaultValue = "10") Integer limit) {
+        return Result.success(videoService.getHotVideos(limit));
+    }
+
+    @Operation(summary = "获取推荐视频列表")
+    @GetMapping("/recommend-videos")
+    public Result<List<VideoEntity>> getRecommendVideos(@RequestParam String userId, 
+                                                       @RequestParam(defaultValue = "10") Integer limit) {
+        if (userId == null) {
+            throw new ServiceException("用户ID不能为空");
+        }
+        return Result.success(videoService.getRecommendVideos(userId, limit));
+    }
+
+    @Operation(summary = "根据id获取视频详情")
+    @GetMapping("/found-videoinfo")
+    public Result<VideoEntity> getVideoInfo(@RequestParam String videoId) {
+        if (videoId == null) {
+            throw new ServiceException("视频id不能为空!");
+        }
+        return Result.success(videoService.getVideoInfo(videoId));
     }
 
     /**
