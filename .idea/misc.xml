@@ -9,6 +9,7 @@
         <option value="$PROJECT_DIR$/common/pom.xml" />
         <option value="$PROJECT_DIR$/video-service/pom.xml" />
         <option value="$PROJECT_DIR$/ani-video/pom.xml" />
+        <option value="$PROJECT_DIR$/ani-comment/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
