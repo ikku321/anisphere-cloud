@@ -1,0 +1,21 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iikun.anivideo.mapper.DanmakuMapper">
+    <insert id="insert">
+        INSERT INTO danmaku(video_id, user_id, content, color, position, type, font_size)
+        VALUES (#{videoId}, #{userId}, #{content}, #{color}, #{position}, #{type}, #{fontSize})
+    </insert>
+
+    <select id="selectByVideoId" resultType="com.iikun.anivideo.entity.Danmaku">
+        SELECT * FROM danmaku
+        WHERE video_id = #{videoId}
+        AND status = 1
+        ORDER BY position ASC
+    </select>
+
+    <update id="likeDanmaku">
+        UPDATE danmaku
+        SET likes = likes + 1
+        WHERE id = #{id}
+    </update>
+</mapper>

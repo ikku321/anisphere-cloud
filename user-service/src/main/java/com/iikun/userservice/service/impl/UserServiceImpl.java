@@ -14,6 +14,7 @@ import com.iikun.userservice.service.UserService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -270,6 +271,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 根据uid查询用户信息
+     *
      * @param uid 用户uid
      * @return 返回用户信息
      */
@@ -280,6 +282,26 @@ public class UserServiceImpl implements UserService {
         }
         // 查询
         return userMapper.findUserByUidInfo(uid);
+    }
+
+    /**
+     * 根据用户uid获取用户信息
+     *
+     * @param uid 用户uid
+     * @return 返回用户信息
+     */
+    @Override
+    public UserInfoDTO foundByTokenUserInfo(String uid) {
+        try {
+            UserInfoDTO userInfoDTO = userMapper.foundUserInfo(uid);
+            if (userInfoDTO == null) {
+                throw new ServiceException("查询数据为空");
+            }
+            return userInfoDTO;
+        } catch (DataAccessException e) {
+            log.info("数据库异常: {}", e.getMessage());
+            throw new ServiceException("数据库异常: " + e.getMessage());
+        }
     }
 }
 

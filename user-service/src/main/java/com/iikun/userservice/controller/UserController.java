@@ -4,6 +4,7 @@ import com.iikun.common.base.Result;
 import com.iikun.common.utils.JwtUtil;
 import com.iikun.common.utils.UserContext;
 import com.iikun.userservice.domain.dto.RegisterDTO;
+import com.iikun.userservice.domain.dto.UserInfoDTO;
 import com.iikun.userservice.mapper.UserMapper;
 import com.iikun.userservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -195,6 +196,12 @@ public class UserController {
     }
 
 
+    @Operation(summary = "根据token获取用户信息")
+    @GetMapping("/found-token")
+    public Result<UserInfoDTO> getTokenByUserInfo(HttpServletRequest request) {
+        String uid = (String) request.getAttribute("uid").toString();
+        return Result.success(userService.foundByTokenUserInfo(uid));
+    }
 }
 
 

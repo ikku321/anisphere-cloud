@@ -1,10 +1,13 @@
-// UserDTOO.java
+package com.iikun.anivideo.entity.DTO;
 
-package com.iikun.anicomment.entity.DTO;
 import lombok.Data;
 
-import java.util.List;
-
+/**
+ * author iikun
+ * time 2026/2/13 0:35
+ * version 1.0.0
+ * msg:
+ */
 @Data
 public class UserDTO {
     private String role;

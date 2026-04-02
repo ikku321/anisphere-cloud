@@ -16,22 +16,25 @@ public interface UserService {
 
     /**
      * 新用户注册
+     *
      * @param registerDTO 注册信息实体
      */
     Result register(@Valid RegisterDTO registerDTO);
 
     /**
      * 登录
+     *
      * @param username 用户名称/手机号码
      * @param password 密码
-     * @param ip 登录IP（可为空）
-     * @param device 登录设备信息（可为空）
+     * @param ip       登录IP（可为空）
+     * @param device   登录设备信息（可为空）
      * @return 1
      */
     Result login(String username, String password, String ip, String device);
 
     /**
      * 查询用户基本信息
+     *
      * @param userid 用户id
      * @return 用户基本信息
      */
@@ -39,6 +42,7 @@ public interface UserService {
 
     /**
      * 修改当前用户邮箱
+     *
      * @param email 邮箱
      * @return 返回状态
      */
@@ -46,6 +50,7 @@ public interface UserService {
 
     /**
      * 修改当前用户的手机号
+     *
      * @param newPhone 新手机号
      * @return 1
      */
@@ -53,6 +58,7 @@ public interface UserService {
 
     /**
      * 修改当前用户昵称
+     *
      * @param newNickname 新昵称
      * @return 返回结果状态
      */
@@ -60,6 +66,7 @@ public interface UserService {
 
     /**
      * 修改当前用户的密码
+     *
      * @param oldPwd 旧密码
      * @param newPwd 新密码
      * @param userId 用户id
@@ -69,8 +76,17 @@ public interface UserService {
 
     /**
      * 根据uid查询用户信息
+     *
      * @param uid 用户uid
      * @return 返回用户信息
      */
     UserInfoDTO findUidInfo(String uid);
+
+    /**
+     * 根据用户uid获取用户信息
+     *
+     * @param uid 用户uid
+     * @return 返回信息
+     */
+    UserInfoDTO foundByTokenUserInfo(String uid);
 }
