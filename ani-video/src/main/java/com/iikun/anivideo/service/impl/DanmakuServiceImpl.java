@@ -11,9 +11,11 @@ import com.iikun.common.common.ServiceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 弹幕业务核心实现类
@@ -58,31 +60,36 @@ public class DanmakuServiceImpl implements DanmakuService {
      */
     @Override
     public void sendDanmaku(DanmakuDTO dto) {
-        // 参数校验
-        if (dto == null || dto.getContent() == null || dto.getContent().isEmpty()) {
-            throw new ServiceException("弹幕内容不能为空");
-        }
-        if (dto.getContent().length() > 100) {
-            throw new ServiceException("弹幕过长");
-        }
-        // 获取用户uid
-        Result<UserDTO> byTokenUserInfo = userService.getByTokenUserInfo();
-        if (byTokenUserInfo.getCode() != 200) {
-            log.info("获取用户信息失败：{}", byTokenUserInfo.getMessage());
-            throw new ServiceException("获取用户信息失败!");
-        }
+        try {
+            // 参数校验
+            if (dto == null || dto.getContent() == null || dto.getContent().isEmpty()) {
+                throw new ServiceException("弹幕内容不能为空");
+            }
+            if (dto.getContent().length() > 100) {
+                throw new ServiceException("弹幕过长");
+            }
+            // 获取用户uid
+            Result<UserDTO> byTokenUserInfo = userService.getByTokenUserInfo();
+            if (byTokenUserInfo.getCode() != 200) {
+                log.info("获取用户信息失败：{}", byTokenUserInfo.getMessage());
+                throw new ServiceException("获取用户信息失败!");
+            }
 
-        // DTO → Entity
-        Danmaku danmaku = new Danmaku();
-        BeanUtils.copyProperties(dto, danmaku);
-        // 设置系统字段
-        danmaku.setUserId(byTokenUserInfo.getData().getUserId());
-        danmaku.setStatus(1);   // 默认正常
-        danmaku.setLikes(0);    // 默认0点赞
-        // 入库
-        int result = danmakuMapper.insert(danmaku);
-        if (result <= 0) {
-            throw new ServiceException("发送弹幕失败");
+            // DTO → Entity
+            Danmaku danmaku = new Danmaku();
+            BeanUtils.copyProperties(dto, danmaku);
+            // 设置系统字段
+            danmaku.setUserId(byTokenUserInfo.getData().getUserId());
+            danmaku.setStatus(1);   // 默认正常
+            danmaku.setLikes(0);    // 默认0点赞
+            // 入库
+            int result = danmakuMapper.insert(danmaku);
+            if (result <= 0) {
+                throw new ServiceException("发送弹幕失败");
+            }
+        } catch (DataAccessException e) {
+            log.info("数据库异常: {}", e.getMessage());
+            throw new ServiceException("数据库异常: {}" + e.getMessage());
         }
     }
 
@@ -97,10 +104,15 @@ public class DanmakuServiceImpl implements DanmakuService {
      */
     @Override
     public List<Danmaku> getDanmakuList(String videoId) {
-        if (videoId == null || videoId.isEmpty()) {
-            throw new ServiceException("视频ID不能为空");
+        try {
+            if (videoId == null || videoId.isEmpty()) {
+                throw new ServiceException("视频ID不能为空");
+            }
+            return danmakuMapper.selectByVideoId(videoId);
+        } catch (DataAccessException e) {
+            log.info("数据库异常: {}", e.getMessage());
+            throw new ServiceException("数据库异常: {}" + e.getMessage());
         }
-        return danmakuMapper.selectByVideoId(videoId);
     }
 
     /**
@@ -116,12 +128,50 @@ public class DanmakuServiceImpl implements DanmakuService {
      */
     @Override
     public void like(Long id) {
-        if (id == null) {
-            throw new ServiceException("弹幕ID不能为空");
+        try {
+            if (id == null) {
+                throw new ServiceException("弹幕ID不能为空");
+            }
+            int result = danmakuMapper.likeDanmaku(id);
+            if (result <= 0) {
+                throw new ServiceException("点赞失败");
+            }
+        } catch (DataAccessException e) {
+            log.info("数据库异常: {}", e.getMessage());
+            throw new ServiceException("数据库异常: {}" + e.getMessage());
         }
-        int result = danmakuMapper.likeDanmaku(id);
-        if (result <= 0) {
-            throw new ServiceException("点赞失败");
+    }
+
+
+    /**
+     * 删除当前用户所发布的弹幕
+     * 注: 只能删除用户已经发布的弹幕且必须是当前用户自己的弹幕
+     *
+     * @param id 弹幕id
+     */
+    @Override
+    public void deleteByDanmaku(Long id) {
+        try {
+            // 验证弹幕是否属于当前用户所发送的弹幕
+            // 获取用户信息
+            Result<UserDTO> userDTOResult = userService.getByTokenUserInfo();
+            // 查询弹幕
+            Danmaku danmaku = danmakuMapper.selectById(id);
+            if (danmaku == null) {
+                throw new ServiceException("查询该弹幕id为空");
+            }
+            // 比较
+            if (!Objects.equals(danmaku.getUserId(), userDTOResult.getData().getUserId())) {
+                throw new ServiceException("删除失败! 弹幕不属于当前用户所发布的弹幕");
+            }
+
+            int updateStatus = danmakuMapper.updateStatus(id, 0);
+            if (updateStatus <= 0) {
+                throw new ServiceException("删除弹幕失败");
+            }
+        } catch (DataAccessException e) {
+            log.info("数据库异常: {}", e.getMessage());
+            throw new ServiceException("数据库异常: {}" + e.getMessage());
         }
     }
 }

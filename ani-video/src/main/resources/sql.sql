@@ -76,6 +76,9 @@ select * from ani_sphere.video_tag where id = 3;
 -- 根据标签id查询所有视频标签关联列表
 select * from ani_sphere.video_tag where tag_id = 2;
 
+-- 根据id查询弹幕
+select * from ani_sphere.danmaku where id = 1;
+
 
 
 

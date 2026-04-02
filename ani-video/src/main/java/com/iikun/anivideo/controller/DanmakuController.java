@@ -6,6 +6,7 @@ import com.iikun.common.base.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -40,7 +41,7 @@ public class DanmakuController {
      * 请求头：
      * - userId：当前登录用户ID（建议后续改为JWT解析）
      *
-     * @param dto    弹幕数据（内容、时间轴、颜色等）
+     * @param dto 弹幕数据（内容、时间轴、颜色等）
      * @return 成功响应
      */
     @Operation(summary = "发送弹幕")
@@ -79,5 +80,34 @@ public class DanmakuController {
         return Result.success();
     }
 
-    
+    /**
+     * 删除指定的弹幕
+     * 只能删除当前用户所发送的弹幕
+     *
+     * @param id 弹幕id
+     * @return 1
+     */
+    @Operation(summary = "删除弹幕")
+    @DeleteMapping("/delete")
+    public Result<?> delete(@RequestParam("id") Long id) {
+        danmakuService.deleteByDanmaku(id);
+        return Result.success("删除成功");
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

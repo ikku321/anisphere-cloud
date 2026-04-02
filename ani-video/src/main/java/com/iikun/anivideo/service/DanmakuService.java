@@ -7,15 +7,15 @@ import java.util.List;
 
 /**
  * 弹幕业务核心接口
- *
+ * <p>
  * 功能说明：
  * 定义弹幕系统的核心业务能力，包括弹幕发送、查询、点赞等操作。
- *
+ * <p>
  * 设计原则：
  * - 面向接口编程（便于扩展与解耦）
  * - 业务逻辑与数据访问分离（Service vs Mapper）
  * - 所有方法应具备基础校验与异常控制（由实现类完成）
- *
+ * <p>
  * author iikun
  * time 2026/2/13 0:35
  * version 1.0.0
@@ -69,4 +69,12 @@ public interface DanmakuService {
      * @param id 弹幕ID
      */
     void like(Long id);
+
+    /**
+     * 删除当前用户所发布的弹幕
+     * 注: 只能删除用户已经发布的弹幕且必须是当前用户自己的弹幕
+     *
+     * @param id 弹幕id
+     */
+    void deleteByDanmaku(Long id);
 }
