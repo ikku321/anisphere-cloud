@@ -15,7 +15,7 @@ public class UserServiceApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(UserServiceApplication.class, args);
-        System.out.println("用户服务模块已启动...");
+        System.out.println("-----9090----> 用户服务模块已启动...");
     }
 
 }

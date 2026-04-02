@@ -16,6 +16,7 @@
     <packaging>pom</packaging>
 
     <modules>
+		<module>ani-audit</module>
 		<module>ani-comment</module>
 		<module>ani-video</module>
         <module>user-service</module>

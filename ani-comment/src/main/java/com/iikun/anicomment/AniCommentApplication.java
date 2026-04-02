@@ -23,7 +23,7 @@ public class AniCommentApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(AniCommentApplication.class, args);
-        System.out.println("评论服务模块已启动...");
+        System.out.println("-----9092----> 评论服务模块已启动...");
     }
 
 }
