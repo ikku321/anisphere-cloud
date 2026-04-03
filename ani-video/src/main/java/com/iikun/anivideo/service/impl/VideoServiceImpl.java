@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.iikun.anivideo.entity.VideoEntity;
 import com.iikun.anivideo.mapper.VideoMapper;
+import com.iikun.anivideo.service.AuditTaskService;
 import com.iikun.anivideo.service.VideoService;
 import com.iikun.common.base.Result;
 import com.iikun.common.common.ServiceException;
@@ -16,6 +17,7 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -33,16 +35,21 @@ public class VideoServiceImpl implements VideoService {
 
     private final VideoMapper videoMapper;
 
+    private final AuditTaskService auditTaskService;
+
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void save(VideoEntity videoEntity) {
         try {
-            // log.info(videoEntity.toString());
             int insert = videoMapper.insert(videoEntity);
             if (insert <= 0) {
                 throw new ServiceException("添加失败!");
             }
+
+            // 如果失败 → 抛异常 → 整体回滚
+            auditTaskService.newAuditTask(videoEntity.getVideoId());
         } catch (DataAccessException e) {
-            log.debug(e.getMessage());
+            log.error("数据库异常", e);
             throw new ServiceException("数据库异常");
         }
     }

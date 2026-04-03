@@ -1,10 +1,14 @@
 package com.iikun.aniaudit.controller;
 
+import com.iikun.aniaudit.entity.AuditTask;
+import com.iikun.aniaudit.service.AuditTaskService;
+import com.iikun.common.base.Result;
+import com.iikun.common.common.ServiceException;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * author iikun
@@ -18,6 +22,40 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuditTaskController {
 
+    private final AuditTaskService auditTaskService;
 
+    @Operation(summary = "新增审核任务")
+    @PostMapping("/new")
+    public Result<?> newAuditTask(@RequestParam String videoId) {
+        if (videoId == null) throw new ServiceException("视频id不存在!");
+        auditTaskService.newAuditTask(videoId);
+        return Result.success();
+    }
+
+    @Operation(summary = "获取待审核列表")
+    @GetMapping("/list")
+    public Result<?> auditList() {
+        return Result.success(auditTaskService.getAuditList());
+    }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

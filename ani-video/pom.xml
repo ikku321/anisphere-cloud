@@ -59,7 +59,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- 导入SpringBoot集成Open API 3.0（Swagger3.0）的坐标 -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>

@@ -15,7 +15,6 @@
 
     <properties>
         <java.version>17</java.version>
-        <spring-cloud.version>2025.1.1</spring-cloud.version>
         <vaadin.version>25.1.0</vaadin.version>
     </properties>
 
@@ -59,7 +58,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- 导入SpringBoot集成Open API 3.0（Swagger3.0）的坐标 -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
@@ -89,6 +87,7 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
+        <!-- common -->
         <dependency>
             <groupId>com.iikun</groupId>
             <artifactId>common</artifactId>
