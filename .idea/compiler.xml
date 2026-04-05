@@ -15,8 +15,18 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.44/lombok-1.18.44.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.44/lombok-1.18.44.jar" />
         </processorPath>
         <module name="ani-comment" />
+      </profile>
+      <profile name="Annotation profile for ani-message" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
+        </processorPath>
+        <module name="ani-message" />
       </profile>
       <profile name="Annotation profile for anisphere-cloud" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -24,10 +34,11 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
         </processorPath>
         <module name="ani-video" />
-        <module name="ani-audit" />
         <module name="user-service" />
+        <module name="ani-audit" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -38,6 +49,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ani-audit" options="-parameters" />
       <module name="ani-comment" options="-parameters" />
+      <module name="ani-message" options="-parameters" />
       <module name="ani-video" options="-parameters" />
       <module name="anisphere-cloud" options="" />
       <module name="common" options="-parameters" />
