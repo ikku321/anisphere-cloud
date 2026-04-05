@@ -277,11 +277,20 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserInfoDTO findUidInfo(String uid) {
-        if (userMapper.selectByUserId(uid) <= 0) {
-            throw new ServiceException("查询失败! 该用户不存在?");
+        try {
+            if (userMapper.selectByUserId(uid) <= 0) {
+                throw new ServiceException("查询失败! 该用户不存在?");
+            }
+            // 查询
+            UserInfoDTO userByUidInfo = userMapper.findUserByUidInfo(uid);
+            if (userByUidInfo == null) {
+                throw new ServiceException("查询用户数据失败!");
+            }
+            return userByUidInfo;
+        } catch (DataAccessException e) {
+            log.debug("数据库异常: " + e.getMessage());
+            throw new ServiceException("数据库异常: " + e.getMessage());
         }
-        // 查询
-        return userMapper.findUserByUidInfo(uid);
     }
 
     /**
