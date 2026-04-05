@@ -1,14 +1,13 @@
 package com.iikun.animessage.modules.announcement.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.iikun.animessage.modules.announcement.entity.Announcement;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * author iikun
- * time 2026/2/13 0:35
- * version 1.0.0
- * msg:
+ * 公告 Mapper 接口
  */
 @Mapper
-public interface AnnouncementMapper {
+public interface AnnouncementMapper extends BaseMapper<Announcement> {
 
 }

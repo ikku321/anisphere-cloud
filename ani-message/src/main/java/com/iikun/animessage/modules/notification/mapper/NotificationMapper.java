@@ -1,14 +1,13 @@
 package com.iikun.animessage.modules.notification.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.iikun.animessage.modules.notification.entity.Notification;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * author iikun
- * time 2026/2/13 0:35
- * version 1.0.0
- * msg: 通知表 Mapper
+ * 通知表 Mapper 接口
  */
 @Mapper
-public interface NotificationMapper {
+public interface NotificationMapper extends BaseMapper<Notification> {
 
 }

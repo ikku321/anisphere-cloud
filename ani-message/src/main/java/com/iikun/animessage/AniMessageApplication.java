@@ -2,6 +2,7 @@ package com.iikun.animessage;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * author iikun
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * module 通知 + 公告模块（Notification / Announcement / Admin）模块
  */
 @SpringBootApplication
+@EnableFeignClients(basePackages = "com.iikun.animessage.feign.client")
 public class AniMessageApplication {
 
     public static void main(String[] args) {
