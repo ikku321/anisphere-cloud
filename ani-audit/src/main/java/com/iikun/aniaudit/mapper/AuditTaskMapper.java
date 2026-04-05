@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public interface AuditTaskMapper {
      *
      * @return 待审核视频列表数据
      */
-    @Select("select * from ani_sphere.audit_task")
+    @Select("select * from ani_sphere.audit_task where status = 0")
     List<AuditTask> all();
 
     /**
@@ -46,4 +47,10 @@ public interface AuditTaskMapper {
      */
     @Select("select count(1) from audit_task where video_id = #{videoId}")
     int selectByVideoId(@Param("videoId") String videoId);
+
+    @Update("update ani_sphere.audit_task set status = 1, auditor_id = #{auditorId} where video_id = #{videoId} and status = 0")
+    int claim(@Param("videoId") String videoId, @Param("auditorId") String auditorId);
+
+    @Update("update ani_sphere.audit_task set status = 2 where video_id = #{videoId} and status = 1 and auditor_id = #{auditorId}")
+    int complete(@Param("videoId") String videoId, @Param("auditorId") String auditorId);
 }

@@ -25,4 +25,8 @@ public interface AuditTaskService {
      * @param videoId 待审核视频id
      */
     void newAuditTask(String videoId);
+
+    void claimTask(String videoId);
+
+    void completeTask(String videoId);
 }

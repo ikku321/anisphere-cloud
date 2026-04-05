@@ -10,7 +10,6 @@ import com.iikun.common.base.Result;
 import com.iikun.common.common.ServiceException;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -80,6 +79,44 @@ public class AuditTaskServiceImpl implements AuditTaskService {
             }
         } catch (DataAccessException e) {
             e.printStackTrace();
+            throw new ServiceException("数据库异常: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void claimTask(String videoId) {
+        if (videoId == null) throw new ServiceException("视频id不存在!");
+        try {
+            Result<UserDTO> userInfo = userService.getByTokenUserInfo();
+            if (userInfo.getData() == null || userInfo.getData().getUserId() == null) {
+                throw new ServiceException("获取用户信息失败!");
+            }
+            String auditorId = userInfo.getData().getUserId();
+
+            int updated = auditTaskMapper.claim(videoId, auditorId);
+            if (updated <= 0) {
+                throw new ServiceException("领取审核任务失败(任务可能不存在或已被领取)");
+            }
+        } catch (DataAccessException e) {
+            throw new ServiceException("数据库异常: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void completeTask(String videoId) {
+        if (videoId == null) throw new ServiceException("视频id不存在!");
+        try {
+            Result<UserDTO> userInfo = userService.getByTokenUserInfo();
+            if (userInfo.getData() == null || userInfo.getData().getUserId() == null) {
+                throw new ServiceException("获取用户信息失败!");
+            }
+            String auditorId = userInfo.getData().getUserId();
+
+            int updated = auditTaskMapper.complete(videoId, auditorId);
+            if (updated <= 0) {
+                throw new ServiceException("完成审核任务失败(请先领取任务)");
+            }
+        } catch (DataAccessException e) {
             throw new ServiceException("数据库异常: " + e.getMessage());
         }
     }

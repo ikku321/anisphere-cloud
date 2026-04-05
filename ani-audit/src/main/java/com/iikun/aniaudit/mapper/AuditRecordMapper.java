@@ -1,6 +1,12 @@
 package com.iikun.aniaudit.mapper;
 
+import com.iikun.aniaudit.entity.AuditRecordEntity;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * author iikun
@@ -11,4 +17,12 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface AuditRecordMapper {
 
+    @Insert("insert into ani_sphere.audit_record(video_id, auditor_id, result, comment) values(#{videoId}, #{auditorId}, #{result}, #{comment})")
+    int add(@Param("videoId") String videoId,
+            @Param("auditorId") String auditorId,
+            @Param("result") Integer result,
+            @Param("comment") String comment);
+
+    @Select("select * from ani_sphere.audit_record where video_id = #{videoId} order by create_time desc")
+    List<AuditRecordEntity> listByVideoId(@Param("videoId") String videoId);
 }

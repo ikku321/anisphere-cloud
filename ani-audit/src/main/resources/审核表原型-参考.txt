@@ -1,0 +1,54 @@
+-- ---------------------------------------------------------------------------------------------------------------------
+-- TODO 审核模块表设计
+-- ---------------------------------------------------------------------------------------------------------------------
+-- ---------------------------------------------------------------------------------------------------------------------
+-- 审核任务表：记录每个视频的审核任务分配情况
+-- 用于调度审核流程，分发给审核员（可配合任务池/调度中心）
+-- ---------------------------------------------------------------------------------------------------------------------
+CREATE TABLE `audit_task`
+(
+    `id`          BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '自增主键（内部用）',
+    `video_id`    VARCHAR(64) NOT NULL COMMENT '待审核的视频ID（业务ID/雪花ID），指向 video.video_id',
+    `assign_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '任务分配时间（派发到审核队列的时间）',
+    `status`      TINYINT   DEFAULT 0 COMMENT '任务状态：0待审 1进行中 2完成（完成后可查对应的 audit_record）',
+    INDEX idx_video (`video_id`) COMMENT '加速按视频ID查询任务'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+    COMMENT ='审核任务表（记录视频审核流程中的任务状态）';
+
+alter table audit_task
+    add column `auditor_id` VARCHAR(64) DEFAULT NULL COMMENT '审核员ID（谁在审核）';
+
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- 审核记录表：记录审核员对视频的具体审核结果
+-- 一条记录代表一次审核操作，可存在多条（多轮/多审）
+-- ---------------------------------------------------------------------------------------------------------------------
+CREATE TABLE `audit_record`
+(
+    `id`          BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '自增主键（内部用）',
+    `video_id`    VARCHAR(64) NOT NULL COMMENT '被审核的视频ID，指向 video.video_id',
+    `auditor_id`  VARCHAR(64) NOT NULL COMMENT '审核人用户ID（业务ID/雪花ID），指向用户表',
+    `result`      TINYINT     NOT NULL COMMENT '审核结果：1通过 2拒绝（可扩展更多状态，如3=待人工复审）',
+    `comment`     VARCHAR(255) DEFAULT NULL COMMENT '审核意见或备注，存储原因/说明',
+    `create_time` TIMESTAMP    DEFAULT CURRENT_TIMESTAMP COMMENT '审核时间（操作提交时间）',
+    INDEX idx_video (`video_id`) COMMENT '加速按视频ID查询审核记录'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+    COMMENT ='审核记录表（记录审核员对视频的处理结果）';
+
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- 审核组申请表：记录普通用户申请加入审核组的请求
+-- 用于构建社区共治/志愿审核员体系
+-- ---------------------------------------------------------------------------------------------------------------------
+CREATE TABLE `audit_group_apply`
+(
+    `id`          BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '自增主键（内部用）',
+    `user_id`     VARCHAR(64) NOT NULL COMMENT '申请人用户ID（业务ID/雪花ID），指向用户表',
+    `reason`      VARCHAR(255) DEFAULT NULL COMMENT '申请理由/自荐说明',
+    `status`      TINYINT      DEFAULT 0 COMMENT '审核状态：0待审核 1通过 2拒绝',
+    `create_time` TIMESTAMP    DEFAULT CURRENT_TIMESTAMP COMMENT '申请提交时间'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+    COMMENT ='审核组申请表（用户申请成为审核员的记录）';

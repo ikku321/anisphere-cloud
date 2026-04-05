@@ -38,6 +38,22 @@ public class AuditTaskController {
         return Result.success(auditTaskService.getAuditList());
     }
 
+    @Operation(summary = "领取审核任务")
+    @PostMapping("/claim")
+    public Result<?> claim(@RequestParam String videoId) {
+        if (videoId == null) throw new ServiceException("视频id不存在!");
+        auditTaskService.claimTask(videoId);
+        return Result.success();
+    }
+
+    @Operation(summary = "完成审核任务（已领取后标记完成）")
+    @PostMapping("/complete")
+    public Result<?> complete(@RequestParam String videoId) {
+        if (videoId == null) throw new ServiceException("视频id不存在!");
+        auditTaskService.completeTask(videoId);
+        return Result.success();
+    }
+
 }
 
 
