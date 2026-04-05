@@ -14,6 +14,7 @@
         <option value="$PROJECT_DIR$/ani-audit/pom.xml" />
         <option value="$PROJECT_DIR$/ani-message/pom.xml" />
         <option value="$PROJECT_DIR$/ani-social/pom.xml" />
+        <option value="$PROJECT_DIR$/ani-chat/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
