@@ -1,0 +1,3524 @@
+{
+  "info": {
+    "_postman_id": "07def075-0989-4946-bef8-38508a6be846",
+    "name": "动漫视频社交系统API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "29850379"
+  },
+  "item": [
+    {
+      "name": "用户管理",
+      "item": [
+        {
+          "name": "关注-粉丝关系表",
+          "item": [
+            {
+              "name": "关注其他用户",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJZbUl6TW1NeE1HWXRNalUyT0MwME9EIiwiaWF0IjoxNzYwNzY0ODEwLCJleHAiOjE3NjEzNjk2MTB9.HFLA4NJMkapx6GRiTiAtRVd_6EKs1QHYbw-aAzfqepA",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/user-follow/attention?followId=467bd41e-f175-466c-8eb8-791857353011",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "user-follow",
+                    "attention"
+                  ],
+                  "query": [
+                    {
+                      "key": "followId",
+                      "value": "467bd41e-f175-466c-8eb8-791857353011"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "取消关注",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJNak0zTXpOaU1UVXROREppWWkwME1tIiwiaWF0IjoxNzYwNjk0MTc4LCJleHAiOjE3NjEyOTg5Nzh9.s-DB057JHQwkkbYumC40lhyZ7xL_-2g8mypdwp5bLOk",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/user-follow/cancel-attention?followId=NmQxYTMxNzctNzA5MC00MD",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "user-follow",
+                    "cancel-attention"
+                  ],
+                  "query": [
+                    {
+                      "key": "followId",
+                      "value": "NmQxYTMxNzctNzA5MC00MD",
+                      "description": "取消关注者id"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "获取关注列表",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJZbUl6TW1NeE1HWXRNalUyT0MwME9EIiwiaWF0IjoxNzYxMTQ3MjQzLCJleHAiOjE3NjE3NTIwNDN9.f2mjDkAvUPILWR0Vsb5nFA4q0_1cRulDRLokDdJaLlk",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/user-follow/follow-list",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "user-follow",
+                    "follow-list"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "收货地址管理",
+          "item": [
+            {
+              "name": "新增收货地址",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJZbUl6TW1NeE1HWXRNalUyT0MwME9EIiwiaWF0IjoxNzY3NDUzNzM0LCJleHAiOjE3NjgwNTg1MzR9.x8ECK5pAbrL7QtBO3v0K2hfDszhKsS59VTRls6DWGFo",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"receiverName\":\"张三\",\r\n    \"receiverPhone\":\"13000000000\",\r\n    \"province\":\"贵州省\",\r\n    \"city\":\"安顺市\",\r\n    \"district\":\"紫云苗族布依族自治县火花镇达帮乡纳磨村\",\r\n    \"detailAddress\":\"铜仁学院-西门1号\",\r\n    \"isDefault\":\"0\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:9090/user-address/add",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "user-address",
+                    "add"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "查询当前用户所有收货地址",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJZbUl6TW1NeE1HWXRNalUyT0MwME9EIiwiaWF0IjoxNzY3NDUzNzM0LCJleHAiOjE3NjgwNTg1MzR9.x8ECK5pAbrL7QtBO3v0K2hfDszhKsS59VTRls6DWGFo",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/user-address/find-address",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "user-address",
+                    "find-address"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "删除指定的收货地址",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJZbUl6TW1NeE1HWXRNalUyT0MwME9EIiwiaWF0IjoxNzY3NTg3NzE3LCJleHAiOjE3NjgxOTI1MTd9.1-IRR55IrDr8LBGPnvTU-95DtVDXoqJ8CocUfiPnR6c",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/user-address/delete-address?addressId=2",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "user-address",
+                    "delete-address"
+                  ],
+                  "query": [
+                    {
+                      "key": "addressId",
+                      "value": "2"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "修改指定的收货地址",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJZbUl6TW1NeE1HWXRNalUyT0MwME9EIiwiaWF0IjoxNzY3NjIyMDc0LCJleHAiOjE3NjgyMjY4NzR9.1H-yGkDo-_2WOqfKI_vJmtbYKl4RC6_md0qOQYAnbKs",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"addressId\": 4,\r\n    \"receiverName\": \"李四\",\r\n    \"receiverPhone\": \"13000000000\",\r\n    \"province\": \"贵州省\",\r\n    \"city\": \"安顺市\",\r\n    \"district\": \"紫云苗族布依族自治县火花镇达帮乡纳磨村\",\r\n    \"detailAddress\": \"铜仁学院-西门3号\",\r\n    \"isDefault\": \"0\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:9090/user-address/update-address",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "user-address",
+                    "update-address"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "用户黑名单管理",
+          "item": [
+            {
+              "name": "加入黑名单",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMSIsInVzZXJJZCI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJ1c2VybmFtZSI6InRlc3QxMiIsInN1YiI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJpYXQiOjE3NzAzODk3NDIsImV4cCI6MTc3MDk5NDU0Mn0.JjcMuH48OseP_W3ME_VUtPbFZUInOgNO9tjMnVEo6fc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/user-blacklist/join-black?blacklistId=YThkNDdmZDYtNmZjNi00ND",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "user-blacklist",
+                    "join-black"
+                  ],
+                  "query": [
+                    {
+                      "key": "blacklistId",
+                      "value": "YThkNDdmZDYtNmZjNi00ND"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "移除黑名单",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJZbUl6TW1NeE1HWXRNalUyT0MwME9EIiwiaWF0IjoxNzcwMjA2Mzc2LCJleHAiOjE3NzA4MTExNzZ9.xlDOdXSC3H7fjtxnwMNDHtUh7FM-8K2Tr_i2UxbP8W0",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/user-blacklist/cancel-blacklist?blacklistId=MjM3MzNiMTUtNDJiYi00Mm",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "user-blacklist",
+                    "cancel-blacklist"
+                  ],
+                  "query": [
+                    {
+                      "key": "blacklistId",
+                      "value": "MjM3MzNiMTUtNDJiYi00Mm"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "查询所有黑名单列表（Admin）",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJ1c2VybmFtZSI6InRlc3QxMiIsInN1YiI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJpYXQiOjE3NzA1MjU5MjksImV4cCI6MTc3MTEzMDcyOX0.DjrjdZvg0N37N0iW7-q20YeVR4cc6N40Fg03KLbuP_k",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/user-blacklist/all",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "user-blacklist",
+                    "all"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "查询当前账号的黑名单列表",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJ1c2VybmFtZSI6InRlc3QxMiIsInN1YiI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJpYXQiOjE3NzA1MjU5MjksImV4cCI6MTc3MTEzMDcyOX0.DjrjdZvg0N37N0iW7-q20YeVR4cc6N40Fg03KLbuP_k",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/user-blacklist/find-blacklist",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "user-blacklist",
+                    "find-blacklist"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "查询指定用户是否被拉黑",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJ1c2VybmFtZSI6InRlc3QxMiIsInN1YiI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJpYXQiOjE3NzA1MjU5MjksImV4cCI6MTc3MTEzMDcyOX0.DjrjdZvg0N37N0iW7-q20YeVR4cc6N40Fg03KLbuP_k",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/user-blacklist/find-isBlackList?blacklistId=23",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "user-blacklist",
+                    "find-isBlackList"
+                  ],
+                  "query": [
+                    {
+                      "key": "blacklistId",
+                      "value": "23"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "登录日志",
+          "item": [
+            {
+              "name": "登录日志",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJ1c2VybmFtZSI6InRlc3QxMiIsInN1YiI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJpYXQiOjE3NzA5MDg5MTQsImV4cCI6MTc3MTUxMzcxNH0._7vtFCYy8ywp4_ysv1nJ5lpkZHvT-x8RT2GLBmx8Xdc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/user-login-log/page?page=1&size=10",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "user-login-log",
+                    "page"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "size",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "用户收藏管理",
+          "item": [
+            {
+              "name": "新增收藏",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJ1c2VybmFtZSI6InRlc3QxMiIsInN1YiI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJpYXQiOjE3NzA5MDg5MTQsImV4cCI6MTc3MTUxMzcxNH0._7vtFCYy8ywp4_ysv1nJ5lpkZHvT-x8RT2GLBmx8Xdc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/user-collection/add?targetType=0&targetId=10001",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "user-collection",
+                    "add"
+                  ],
+                  "query": [
+                    {
+                      "key": "targetType",
+                      "value": "0",
+                      "description": "收藏类型（0-动漫，1-视频，2-漫画）"
+                    },
+                    {
+                      "key": "targetId",
+                      "value": "10001",
+                      "description": "收藏id"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "是否已收藏",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJ1c2VybmFtZSI6InRlc3QxMiIsInN1YiI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJpYXQiOjE3NzA5MDg5MTQsImV4cCI6MTc3MTUxMzcxNH0._7vtFCYy8ywp4_ysv1nJ5lpkZHvT-x8RT2GLBmx8Xdc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/user-collection/is-collected?targetType=0&targetId=10001",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "user-collection",
+                    "is-collected"
+                  ],
+                  "query": [
+                    {
+                      "key": "targetType",
+                      "value": "0",
+                      "description": "收藏类型"
+                    },
+                    {
+                      "key": "targetId",
+                      "value": "10001",
+                      "description": "收藏id"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "分页查询收藏",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJ1c2VybmFtZSI6InRlc3QxMiIsInN1YiI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJpYXQiOjE3NzA5MDg5MTQsImV4cCI6MTc3MTUxMzcxNH0._7vtFCYy8ywp4_ysv1nJ5lpkZHvT-x8RT2GLBmx8Xdc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/user-collection/page?page=1&size=10",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "user-collection",
+                    "page"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "size",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "取消收藏",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJ1c2VybmFtZSI6InRlc3QxMiIsInN1YiI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJpYXQiOjE3NzA5MDg5MTQsImV4cCI6MTc3MTUxMzcxNH0._7vtFCYy8ywp4_ysv1nJ5lpkZHvT-x8RT2GLBmx8Xdc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/user-collection/cancel?targetType=0&targetId=10001",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "user-collection",
+                    "cancel"
+                  ],
+                  "query": [
+                    {
+                      "key": "targetType",
+                      "value": "0"
+                    },
+                    {
+                      "key": "targetId",
+                      "value": "10001"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "浏览记录管理",
+          "item": [
+            {
+              "name": "新增",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJ1c2VybmFtZSI6InRlc3QxMiIsInN1YiI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJpYXQiOjE3NzA5MDg5MTQsImV4cCI6MTc3MTUxMzcxNH0._7vtFCYy8ywp4_ysv1nJ5lpkZHvT-x8RT2GLBmx8Xdc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/user-browsing-history/record?targetType=0&targetId=10001",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "user-browsing-history",
+                    "record"
+                  ],
+                  "query": [
+                    {
+                      "key": "targetType",
+                      "value": "0",
+                      "description": "浏览类型id"
+                    },
+                    {
+                      "key": "targetId",
+                      "value": "10001",
+                      "description": "浏览目标id"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "分页查询浏览记录",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJ1c2VybmFtZSI6InRlc3QxMiIsInN1YiI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJpYXQiOjE3NzA5MDg5MTQsImV4cCI6MTc3MTUxMzcxNH0._7vtFCYy8ywp4_ysv1nJ5lpkZHvT-x8RT2GLBmx8Xdc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/user-browsing-history/page?page=1&size=10",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "user-browsing-history",
+                    "page"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "size",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "删除浏览记录",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJ1c2VybmFtZSI6InRlc3QxMiIsInN1YiI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJpYXQiOjE3NzA5MDg5MTQsImV4cCI6MTc3MTUxMzcxNH0._7vtFCYy8ywp4_ysv1nJ5lpkZHvT-x8RT2GLBmx8Xdc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/user-browsing-history/delete?recordId=1",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "user-browsing-history",
+                    "delete"
+                  ],
+                  "query": [
+                    {
+                      "key": "recordId",
+                      "value": "1",
+                      "description": "浏览记录id"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "注册账号",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\":\"test12\", // 账号\r\n    \"phone\":\"13056847512\", // 联系电话\r\n    \"password\":\"test12\", // 密码\r\n    \"email\":\"4568524712@qq.com\" // 邮箱\r\n} ",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:9090/user/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "user",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "登录账号",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9090/user/login?username=test10&password=test10",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "user",
+                "login"
+              ],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "test10"
+                },
+                {
+                  "key": "password",
+                  "value": "test10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "用户基本信息",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJZVGhrTkRkbVpEWXRObVpqTmkwME5EIiwiaWF0IjoxNzU4MzA1NTIyLCJleHAiOjE3NTg5MTAzMjJ9.L_UAVXEDH4zaWdcxgk_J5hMpC541XRFo7_Wy5hPBl8I",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9090/user/info",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "user",
+                "info"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "更改邮箱",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJZVGhrTkRkbVpEWXRObVpqTmkwME5EIiwiaWF0IjoxNzU4MzA2MDg5LCJleHAiOjE3NTg5MTA4ODl9.FMD_BTwc7IiZYEi6SLrEdIs_f49UrGEJaDonWDCV2-Y",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9090/user/update-email?email=222222222@qq.com",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "user",
+                "update-email"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "222222222@qq.com"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "修改手机号",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJZVGhrTkRkbVpEWXRObVpqTmkwME5EIiwiaWF0IjoxNzU4MzA2MDg5LCJleHAiOjE3NTg5MTA4ODl9.FMD_BTwc7IiZYEi6SLrEdIs_f49UrGEJaDonWDCV2-Y",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9090/user/update-phone?newPhone=16666666666",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "user",
+                "update-phone"
+              ],
+              "query": [
+                {
+                  "key": "newPhone",
+                  "value": "16666666666"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "修改昵称",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJZVGhrTkRkbVpEWXRObVpqTmkwME5EIiwiaWF0IjoxNzU4MzA2MDg5LCJleHAiOjE3NTg5MTA4ODl9.FMD_BTwc7IiZYEi6SLrEdIs_f49UrGEJaDonWDCV2-Y",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9090/user/update-nickname?newNickname=123",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "user",
+                "update-nickname"
+              ],
+              "query": [
+                {
+                  "key": "newNickname",
+                  "value": "123"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "修改密码",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJOVE15Tm1FMU9UQXRZak01TnkwME1UIiwiaWF0IjoxNzU4MzgyMDE0LCJleHAiOjE3NTg5ODY4MTR9.TK-4XMr-qATz87svYJOz_yyeNsRdVCL63uttNTfwU90",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9090/user/update-pwd?oldPwd=test08&newPwd=321",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "user",
+                "update-pwd"
+              ],
+              "query": [
+                {
+                  "key": "oldPwd",
+                  "value": "test08"
+                },
+                {
+                  "key": "newPwd",
+                  "value": "321"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "根据uid查询用户",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJ1c2VybmFtZSI6InRlc3QxMiIsInN1YiI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJpYXQiOjE3NzQ5MzI1ODQsImV4cCI6MTc3NTUzNzM4NH0.2SezWASq38w1zNJjy2wQhdjro1HHvDH52JCMOGMYbUs",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9090/user/find?uid=NmQxYTMxNzctNzA5MC00MD",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "user",
+                "find"
+              ],
+              "query": [
+                {
+                  "key": "uid",
+                  "value": "NmQxYTMxNzctNzA5MC00MD"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "获取个人信息",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJ1c2VybmFtZSI6InRlc3QxMiIsInN1YiI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJpYXQiOjE3NzUxMzUxMTIsImV4cCI6MTc3NTczOTkxMn0.G2huTGGWIFB3GDVRyoLrFL7qx_bscFP4osRgUtOSmDY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9090/user/found-token",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "user",
+                "found-token"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "视频管理",
+      "item": [
+        {
+          "name": "视频服务",
+          "item": [
+            {
+              "name": "标签管理",
+              "item": [
+                {
+                  "name": "视频标签管理",
+                  "item": [
+                    {
+                      "name": "为视频添加标签",
+                      "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                          "raw": "http://localhost:9091/video/tag/video-tag?videoId=mH9rEqzERw-1z6l2OXQczA&tagId=3",
+                          "protocol": "http",
+                          "host": [
+                            "localhost"
+                          ],
+                          "port": "9091",
+                          "path": [
+                            "video",
+                            "tag",
+                            "video-tag"
+                          ],
+                          "query": [
+                            {
+                              "key": "videoId",
+                              "value": "mH9rEqzERw-1z6l2OXQczA"
+                            },
+                            {
+                              "key": "tagId",
+                              "value": "3"
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
+                },
+                {
+                  "name": "新增标签",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "url": {
+                      "raw": "http://localhost:9091/video/tag/add-tag?tag=搞笑",
+                      "protocol": "http",
+                      "host": [
+                        "localhost"
+                      ],
+                      "port": "9091",
+                      "path": [
+                        "video",
+                        "tag",
+                        "add-tag"
+                      ],
+                      "query": [
+                        {
+                          "key": "tag",
+                          "value": "搞笑"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "删除标签",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "http://localhost:9091/video/tag/delete?tagId=9",
+                      "protocol": "http",
+                      "host": [
+                        "localhost"
+                      ],
+                      "port": "9091",
+                      "path": [
+                        "video",
+                        "tag",
+                        "delete"
+                      ],
+                      "query": [
+                        {
+                          "key": "tagId",
+                          "value": "9",
+                          "type": "text"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "查询所有视频标签",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "http://localhost:9091/video/tag/all",
+                      "protocol": "http",
+                      "host": [
+                        "localhost"
+                      ],
+                      "port": "9091",
+                      "path": [
+                        "video",
+                        "tag",
+                        "all"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "模糊查询标签内容",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "http://localhost:9091/video/tag/found-name?name=搞",
+                      "protocol": "http",
+                      "host": [
+                        "localhost"
+                      ],
+                      "port": "9091",
+                      "path": [
+                        "video",
+                        "tag",
+                        "found-name"
+                      ],
+                      "query": [
+                        {
+                          "key": "name",
+                          "value": "搞"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "根据标签id查询",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "http://localhost:9091/video/tag/foudn-id?tagId=1",
+                      "protocol": "http",
+                      "host": [
+                        "localhost"
+                      ],
+                      "port": "9091",
+                      "path": [
+                        "video",
+                        "tag",
+                        "foudn-id"
+                      ],
+                      "query": [
+                        {
+                          "key": "tagId",
+                          "value": "1",
+                          "type": "text"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "视频播放历史",
+              "item": []
+            },
+            {
+              "name": "上传视频封面",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "uuid": "44577a30-87ba-4e23-abbd-ea541662e0bd",
+                      "src": "/D:/iikun/Camera Roll/20230608/aaa3.jpg"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "http://localhost:9091/video/video-file/upload/video-img",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9091",
+                  "path": [
+                    "video",
+                    "video-file",
+                    "upload",
+                    "video-img"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "TestApi",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9091/video/video-file/test",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9091",
+                  "path": [
+                    "video",
+                    "video-file",
+                    "test"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "上传视频信息",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJ1c2VybmFtZSI6InRlc3QxMiIsInN1YiI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJpYXQiOjE3NzM1ODU1NDUsImV4cCI6MTc3NDE5MDM0NX0.OHuCcAmGC_Q354Py-MWK5Aq5RZ-ulJayHuH7OQ5IC_8",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"title\": \"Test03\", // 视频标题\r\n    \"description\": \"Test03\", // 视频简介\r\n    \"coverUrl\": \"http://localhost:9001/Test111111\", // 封面图片地址\r\n    \"videoUrl\": \"http://localhost:9001\", // 视频文件地址\r\n    \"duration\": \"8850\", // 视频时长（秒）\r\n    \"visible\": \"1\", // 是否公开（1： 公开， 2: 隐藏）\r\n    \"price\": \"0\" // 视频价格\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:9091/video/video-list?uid=test01",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9091",
+                  "path": [
+                    "video",
+                    "video-list"
+                  ],
+                  "query": [
+                    {
+                      "key": "uid",
+                      "value": "test01"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "修改视频可见状态",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9091/video/modifi-visible?visible=1&videoId=mH9rEqzERw-1z6l2OXQczA",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9091",
+                  "path": [
+                    "video",
+                    "modifi-visible"
+                  ],
+                  "query": [
+                    {
+                      "key": "visible",
+                      "value": "1"
+                    },
+                    {
+                      "key": "videoId",
+                      "value": "mH9rEqzERw-1z6l2OXQczA"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "修改视频简介",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9091/video/update-description?description=postman修改视频简介&videoId=test011",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9091",
+                  "path": [
+                    "video",
+                    "update-description"
+                  ],
+                  "query": [
+                    {
+                      "key": "description",
+                      "value": "postman修改视频简介"
+                    },
+                    {
+                      "key": "videoId",
+                      "value": "test011"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "修改视频标题",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9091/video/update-title?videoTitle=测试修改视频标题&videoId=mH9rEqzERw-1z6l2OXQczA",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9091",
+                  "path": [
+                    "video",
+                    "update-title"
+                  ],
+                  "query": [
+                    {
+                      "key": "videoTitle",
+                      "value": "测试修改视频标题"
+                    },
+                    {
+                      "key": "videoId",
+                      "value": "mH9rEqzERw-1z6l2OXQczA"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "删除视频",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9091/video/delete?videoId=test01",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9091",
+                  "path": [
+                    "video",
+                    "delete"
+                  ],
+                  "query": [
+                    {
+                      "key": "videoId",
+                      "value": "test01",
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "获取所有视频列表",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9091/video/all",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9091",
+                  "path": [
+                    "video",
+                    "all"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "查询所有视频信息",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9091/video/found-title?videoTitle=测",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9091",
+                  "path": [
+                    "video",
+                    "found-title"
+                  ],
+                  "query": [
+                    {
+                      "key": "videoTitle",
+                      "value": "测"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "根据id获取视频详情",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9091/video/found-videoinfo?videoId=tqheBj_nQuaP4pmPvQvcEQ",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9091",
+                  "path": [
+                    "video",
+                    "found-videoinfo"
+                  ],
+                  "query": [
+                    {
+                      "key": "videoId",
+                      "value": "tqheBj_nQuaP4pmPvQvcEQ"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "上传视频文件",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "uuid": "223e9cf8-76f3-4234-bcfb-9765754cc665",
+                      "src": "/D:/code/Videos/Videos/aaa.mp4"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "http://localhost:9091/video/video-file/upload/video-file",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9091",
+                  "path": [
+                    "video",
+                    "video-file",
+                    "upload",
+                    "video-file"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "弹幕管理",
+          "item": [
+            {
+              "name": "发送弹幕",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJ1c2VybmFtZSI6InRlc3QxMiIsInN1YiI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJpYXQiOjE3NzUxMzk0NjEsImV4cCI6MTc3NTc0NDI2MX0.m60ZH7yZpb6vyCXvtUTuG1r3o8jj7TNNf1mf4MHq0qc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"videoId\": \"tqheBj_nQuaP4pmPvQvcEQ\", // 视频ID（必填）\r\n    \"content\": \"测试发布弹幕123456\", // 弹幕内容（必填，建议长度 <= 100）\r\n    \"position\": \"5000\", // 弹幕出现时间（毫秒 ms）\r\n    \"color\": \"#FF0000\", // 弹幕颜色（HEX格式）\r\n    \"type\": \"1\", //      * 弹幕类型 0：滚动弹幕（默认） 1：顶部固定 2：底部固定\r\n    \"fontSize\": \"16\" // 字体大小（单位：px）\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:9091/danmaku/send",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9091",
+                  "path": [
+                    "danmaku",
+                    "send"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "获取视频弹幕列表",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9091/danmaku/list?videoId=tqheBj_nQuaP4pmPvQvcEQ",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9091",
+                  "path": [
+                    "danmaku",
+                    "list"
+                  ],
+                  "query": [
+                    {
+                      "key": "videoId",
+                      "value": "tqheBj_nQuaP4pmPvQvcEQ"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "弹幕点赞",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9091/danmaku/like?id=1",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9091",
+                  "path": [
+                    "danmaku",
+                    "like"
+                  ],
+                  "query": [
+                    {
+                      "key": "id",
+                      "value": "1"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "删除弹幕",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMSIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzUxNDEyNzcsImV4cCI6MTc3NTc0NjA3N30.3PbB-WTNwHKpfkD2EBHh4Fd8MQqLpPLpEAAmUuEKwZY",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9091/danmaku/delete?id=2",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9091",
+                  "path": [
+                    "danmaku",
+                    "delete"
+                  ],
+                  "query": [
+                    {
+                      "key": "id",
+                      "value": "2"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "审核管理",
+      "item": [
+        {
+          "name": "审核记录管理",
+          "item": [
+            {
+              "name": "提交审核结果",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMSIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzUyMjY4MzYsImV4cCI6MTc3NTgzMTYzNn0.GsUZQJfozLLAVChMHjXzh_jjhYNZz2qrv1g1gOyO32M",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9093/audit-record/submit?videoId=mH9rEqzERw-1z6l2OXQczA&result=1&comment=没有",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9093",
+                  "path": [
+                    "audit-record",
+                    "submit"
+                  ],
+                  "query": [
+                    {
+                      "key": "videoId",
+                      "value": "mH9rEqzERw-1z6l2OXQczA",
+                      "description": "被审核的视频ID，指向 video.video_id"
+                    },
+                    {
+                      "key": "result",
+                      "value": "1",
+                      "description": "审核结果：1通过 2拒绝（可扩展更多状态，如3=待人工复审）"
+                    },
+                    {
+                      "key": "comment",
+                      "value": "没有",
+                      "description": "审核意见或备注，存储原因/说明"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "根据视频ID查询审核记录",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMSIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzUyMjY4MzYsImV4cCI6MTc3NTgzMTYzNn0.GsUZQJfozLLAVChMHjXzh_jjhYNZz2qrv1g1gOyO32M",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9093/audit-record/list?videoId=mH9rEqzERw-1z6l2OXQczA",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9093",
+                  "path": [
+                    "audit-record",
+                    "list"
+                  ],
+                  "query": [
+                    {
+                      "key": "videoId",
+                      "value": "mH9rEqzERw-1z6l2OXQczA"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "审核组申请管理",
+          "item": [
+            {
+              "name": "提交加入审核组申请",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMSIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzUyMjY4MzYsImV4cCI6MTc3NTgzMTYzNn0.GsUZQJfozLLAVChMHjXzh_jjhYNZz2qrv1g1gOyO32M",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9093/audit-group/apply/submit?reason=我想加入!",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9093",
+                  "path": [
+                    "audit-group",
+                    "apply",
+                    "submit"
+                  ],
+                  "query": [
+                    {
+                      "key": "reason",
+                      "value": "我想加入!",
+                      "description": "申请理由",
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "查看本人申请记录",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMSIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzUyMjY4MzYsImV4cCI6MTc3NTgzMTYzNn0.GsUZQJfozLLAVChMHjXzh_jjhYNZz2qrv1g1gOyO32M",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9093/audit-group/apply/mine",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9093",
+                  "path": [
+                    "audit-group",
+                    "apply",
+                    "mine"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "管理员：待审核申请列表",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMSIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzUyMjY4MzYsImV4cCI6MTc3NTgzMTYzNn0.GsUZQJfozLLAVChMHjXzh_jjhYNZz2qrv1g1gOyO32M",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9093/audit-group/apply/pending",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9093",
+                  "path": [
+                    "audit-group",
+                    "apply",
+                    "pending"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "管理员：审批申请（1通过 2拒绝）",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMSIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzUyMjY4MzYsImV4cCI6MTc3NTgzMTYzNn0.GsUZQJfozLLAVChMHjXzh_jjhYNZz2qrv1g1gOyO32M",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9093/audit-group/apply/review?id=1&status=1",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9093",
+                  "path": [
+                    "audit-group",
+                    "apply",
+                    "review"
+                  ],
+                  "query": [
+                    {
+                      "key": "id",
+                      "value": "1",
+                      "description": "申请ID"
+                    },
+                    {
+                      "key": "status",
+                      "value": "1",
+                      "description": "审核状态：0待审核 1通过 2拒绝"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "获取审核列表",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMSIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzUyMjY4MzYsImV4cCI6MTc3NTgzMTYzNn0.GsUZQJfozLLAVChMHjXzh_jjhYNZz2qrv1g1gOyO32M",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9093/audit-task/list",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9093",
+              "path": [
+                "audit-task",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "新增审核任务",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9093/audit-task/new?videoId=mH9rEqzERw-1z6l2OXQczA",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9093",
+              "path": [
+                "audit-task",
+                "new"
+              ],
+              "query": [
+                {
+                  "key": "videoId",
+                  "value": "mH9rEqzERw-1z6l2OXQczA"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "领取审核任务",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMSIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzUyMjY4MzYsImV4cCI6MTc3NTgzMTYzNn0.GsUZQJfozLLAVChMHjXzh_jjhYNZz2qrv1g1gOyO32M",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9093/audit-task/claim?videoId=mH9rEqzERw-1z6l2OXQczA",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9093",
+              "path": [
+                "audit-task",
+                "claim"
+              ],
+              "query": [
+                {
+                  "key": "videoId",
+                  "value": "mH9rEqzERw-1z6l2OXQczA"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "完成审核任务",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMSIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzUyMjY4MzYsImV4cCI6MTc3NTgzMTYzNn0.GsUZQJfozLLAVChMHjXzh_jjhYNZz2qrv1g1gOyO32M",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9093/audit-task/complete?videoId=mH9rEqzERw-1z6l2OXQczA",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9093",
+              "path": [
+                "audit-task",
+                "complete"
+              ],
+              "query": [
+                {
+                  "key": "videoId",
+                  "value": "mH9rEqzERw-1z6l2OXQczA",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "评论管理",
+      "item": [
+        {
+          "name": "发表评论",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJ1c2VybmFtZSI6InRlc3QxMiIsInN1YiI6IlpqQXpOV1l5TWpVdFl6TmlOQzAwT1QiLCJpYXQiOjE3NzQ5MzI1ODQsImV4cCI6MTc3NTUzNzM4NH0.2SezWASq38w1zNJjy2wQhdjro1HHvDH52JCMOGMYbUs",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"videoId\":\"1\", // 被评论的视频 ID。\r\n    \"content\":\"可以的\", // 评论内容。\r\n    \"parentId\":\"\", // 父评论 ID（为空表示一级评论）。\r\n    \"replyTo\":\"1\" // 回复目标用户 ID（可选）。\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:9092/comment/publish",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9092",
+              "path": [
+                "comment",
+                "publish"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "获取某视频下的评论",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9092/comment/list/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9092",
+              "path": [
+                "comment",
+                "list",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "分页获取某根评论下的全部回复",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9092/comment/replies/e1d490c9-2713-479d-b1f1-a3cd7686093e",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9092",
+              "path": [
+                "comment",
+                "replies",
+                "e1d490c9-2713-479d-b1f1-a3cd7686093e"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "删除评论（软删除）",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9092/comment/1884f42d-2693-4f27-b308-14612f4c9c52",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9092",
+              "path": [
+                "comment",
+                "1884f42d-2693-4f27-b308-14612f4c9c52"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "点赞（幂等）",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9092/comment/5cee9466-bc75-47ed-8763-780b21345b10/like",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9092",
+              "path": [
+                "comment",
+                "5cee9466-bc75-47ed-8763-780b21345b10",
+                "like"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "取消点赞（幂等）",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9092/comment/5cee9466-bc75-47ed-8763-780b21345b10/unlike",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9092",
+              "path": [
+                "comment",
+                "5cee9466-bc75-47ed-8763-780b21345b10",
+                "unlike"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "公告通知管理",
+      "item": [
+        {
+          "name": "通知",
+          "item": [
+            {
+              "name": "分页查询我的通知",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MDUzMjQsImV4cCI6MTc3NjAxMDEyNH0._Ewc29Vjl6WZCUnHvdbCdIt6iK_RyU9-Q-X7VO4Ngtc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9094/notification/page",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9094",
+                  "path": [
+                    "notification",
+                    "page"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "发送通知 (系统内部/管理员调用)",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MDUzMjQsImV4cCI6MTc3NjAxMDEyNH0._Ewc29Vjl6WZCUnHvdbCdIt6iK_RyU9-Q-X7VO4Ngtc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"targetUser\":\"MjM3MzNiMTUtNDJiYi00Mm\", // 接收者用户ID\r\n    \"category\":\"system\", // 通知分类 (system/notice/message/activity)\r\n    \"title\":\"通知标题测试1\", // 通知标题\r\n    \"content\":\"通知内容测试1\" // 通知内容\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:9094/notification/send",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9094",
+                  "path": [
+                    "notification",
+                    "send"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "标记通知为已读",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MDUzMjQsImV4cCI6MTc3NjAxMDEyNH0._Ewc29Vjl6WZCUnHvdbCdIt6iK_RyU9-Q-X7VO4Ngtc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9094/notification/d7d727dd6f56433ca0480231edae405b/read",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9094",
+                  "path": [
+                    "notification",
+                    "d7d727dd6f56433ca0480231edae405b",
+                    "read"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "全部标记为已读",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MDUzMjQsImV4cCI6MTc3NjAxMDEyNH0._Ewc29Vjl6WZCUnHvdbCdIt6iK_RyU9-Q-X7VO4Ngtc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9094/notification/read-all",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9094",
+                  "path": [
+                    "notification",
+                    "read-all"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "获取未读通知数量",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MDUzMjQsImV4cCI6MTc3NjAxMDEyNH0._Ewc29Vjl6WZCUnHvdbCdIt6iK_RyU9-Q-X7VO4Ngtc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9094/notification/unread-count",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9094",
+                  "path": [
+                    "notification",
+                    "unread-count"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "删除通知",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MDUzMjQsImV4cCI6MTc3NjAxMDEyNH0._Ewc29Vjl6WZCUnHvdbCdIt6iK_RyU9-Q-X7VO4Ngtc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9094/notification/07fa5b7f21674384a9934db48ac84c62",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9094",
+                  "path": [
+                    "notification",
+                    "07fa5b7f21674384a9934db48ac84c62"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "公告",
+          "item": [
+            {
+              "name": "分页查询公告",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"pageNum\":\"1\", // 页码\r\n    \"pageSize\":\"10\", // 每页数量\r\n    \"keyword\":\"测试\", // 关键词（标题/内容）\r\n    \"isPublished\":\"1\" // 发布状态（0-草稿，1-发布）\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:9094/announcement/page",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9094",
+                  "path": [
+                    "announcement",
+                    "page"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "获取公告详情",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9094/announcement/8bff5f89b17e47e78d15e0f6f824910a",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9094",
+                  "path": [
+                    "announcement",
+                    "8bff5f89b17e47e78d15e0f6f824910a"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "创建公告",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MDUzMjQsImV4cCI6MTc3NjAxMDEyNH0._Ewc29Vjl6WZCUnHvdbCdIt6iK_RyU9-Q-X7VO4Ngtc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"title\": \"测试发布公告123\", // 公告标题\r\n    \"content\": \"公告内容测试\", // 公告内容\r\n    \"isPublished\": \"0\", // 是否发布（0-草稿，1-发布）\r\n    \"publishTime\": \"2026-04-06T21:30:00\" // 发布时间\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:9094/announcement",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9094",
+                  "path": [
+                    "announcement"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "更新公告",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"title\": \"更新后的测试发布公告\", // 公告标题\r\n    \"content\": \"更新后的公告内容测试\", // 公告内容\r\n    \"isPublished\": \"1\", // 是否发布（0-草稿，1-发布）\r\n    \"publishTime\": \"2027-04-06T21:30:00\" // 发布时间\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:9094/announcement/8bff5f89b17e47e78d15e0f6f824910a",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9094",
+                  "path": [
+                    "announcement",
+                    "8bff5f89b17e47e78d15e0f6f824910a"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "删除公告",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9094/announcement/6d293751314549a3a7e11acbe0e7ff05",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9094",
+                  "path": [
+                    "announcement",
+                    "6d293751314549a3a7e11acbe0e7ff05"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "发布公告",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MDUzMjQsImV4cCI6MTc3NjAxMDEyNH0._Ewc29Vjl6WZCUnHvdbCdIt6iK_RyU9-Q-X7VO4Ngtc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9094/announcement/8fffc15c119d44898dae8f8c95aacad2/publish",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9094",
+                  "path": [
+                    "announcement",
+                    "8fffc15c119d44898dae8f8c95aacad2",
+                    "publish"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "撤回公告",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MDUzMjQsImV4cCI6MTc3NjAxMDEyNH0._Ewc29Vjl6WZCUnHvdbCdIt6iK_RyU9-Q-X7VO4Ngtc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9094/announcement/8fffc15c119d44898dae8f8c95aacad2/revoke",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9094",
+                  "path": [
+                    "announcement",
+                    "8fffc15c119d44898dae8f8c95aacad2",
+                    "revoke"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "社交模块",
+      "item": [
+        {
+          "name": "动态管理",
+          "item": [
+            {
+              "name": "发布动态",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MDUzMjQsImV4cCI6MTc3NjAxMDEyNH0._Ewc29Vjl6WZCUnHvdbCdIt6iK_RyU9-Q-X7VO4Ngtc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"content\": \"今天心情不错，发个动态~\",\r\n    \"media\": [\r\n        {\r\n            \"type\": \"image\",\r\n            \"url\": \"https://example.com/1.jpg\"\r\n        },\r\n        {\r\n            \"type\": \"video\",\r\n            \"url\": \"https://example.com/2.mp4\",\r\n            \"cover\": \"https://example.com/cover.jpg\"\r\n        }\r\n    ]\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:9095/social/post/create",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "post",
+                    "create"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "删除动态",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MDUzMjQsImV4cCI6MTc3NjAxMDEyNH0._Ewc29Vjl6WZCUnHvdbCdIt6iK_RyU9-Q-X7VO4Ngtc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/post/delete?postId=0e8868a42add43e2a5034ee6a1b6f94a",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "post",
+                    "delete"
+                  ],
+                  "query": [
+                    {
+                      "key": "postId",
+                      "value": "0e8868a42add43e2a5034ee6a1b6f94a",
+                      "description": "动态id"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "获取指定用户的动态列表",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MDUzMjQsImV4cCI6MTc3NjAxMDEyNH0._Ewc29Vjl6WZCUnHvdbCdIt6iK_RyU9-Q-X7VO4Ngtc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/post/user-list?userId=MjM3MzNiMTUtNDJiYi00Mm",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "post",
+                    "user-list"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "MjM3MzNiMTUtNDJiYi00Mm"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "获取全站动态列表",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MDUzMjQsImV4cCI6MTc3NjAxMDEyNH0._Ewc29Vjl6WZCUnHvdbCdIt6iK_RyU9-Q-X7VO4Ngtc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/post/global-list",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "post",
+                    "global-list"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "手动更新点赞数",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MDUzMjQsImV4cCI6MTc3NjAxMDEyNH0._Ewc29Vjl6WZCUnHvdbCdIt6iK_RyU9-Q-X7VO4Ngtc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/post/update-like?postId=ec5557075b774ee086732a9401765f19&delta=11000",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "post",
+                    "update-like"
+                  ],
+                  "query": [
+                    {
+                      "key": "postId",
+                      "value": "ec5557075b774ee086732a9401765f19",
+                      "description": "动态id"
+                    },
+                    {
+                      "key": "delta",
+                      "value": "11000",
+                      "description": "目标数"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "手动更新评论数",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MDUzMjQsImV4cCI6MTc3NjAxMDEyNH0._Ewc29Vjl6WZCUnHvdbCdIt6iK_RyU9-Q-X7VO4Ngtc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/post/update-comment?postId=ec5557075b774ee086732a9401765f19&delta=1000",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "post",
+                    "update-comment"
+                  ],
+                  "query": [
+                    {
+                      "key": "postId",
+                      "value": "ec5557075b774ee086732a9401765f19",
+                      "description": "动态id"
+                    },
+                    {
+                      "key": "delta",
+                      "value": "1000",
+                      "description": "目标数"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "社交行为管理",
+          "item": [
+            {
+              "name": "举报用户",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MDUzMjQsImV4cCI6MTc3NjAxMDEyNH0._Ewc29Vjl6WZCUnHvdbCdIt6iK_RyU9-Q-X7VO4Ngtc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/action/report?targetUser=YmIzMmMxMGYtMjU2OC00OD&reason=没有",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "action",
+                    "report"
+                  ],
+                  "query": [
+                    {
+                      "key": "targetUser",
+                      "value": "YmIzMmMxMGYtMjU2OC00OD",
+                      "description": "目标用户id"
+                    },
+                    {
+                      "key": "reason",
+                      "value": "没有",
+                      "description": "理由"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "清除聊天记录请求记录",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MDUzMjQsImV4cCI6MTc3NjAxMDEyNH0._Ewc29Vjl6WZCUnHvdbCdIt6iK_RyU9-Q-X7VO4Ngtc",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/action/chat/clear?conversationId&scope",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "action",
+                    "chat",
+                    "clear"
+                  ],
+                  "query": [
+                    {
+                      "key": "conversationId",
+                      "value": null,
+                      "description": "会话 ID"
+                    },
+                    {
+                      "key": "scope",
+                      "value": null,
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "好友管理",
+          "item": [
+            {
+              "name": "发送好友申请",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MTUzNzMsImV4cCI6MTc3NjAyMDE3M30.C5ToA-r63Bi2CRqlsqyazRrUKj7Al_xL-rU___9eWO4",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/friend/request?friendId=76a40859-4b73-4533-ae2f-2fbda80a1b87",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "friend",
+                    "request"
+                  ],
+                  "query": [
+                    {
+                      "key": "friendId",
+                      "value": "76a40859-4b73-4533-ae2f-2fbda80a1b87",
+                      "description": "目标好友 ID"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "处理好友申请",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MTUzNzMsImV4cCI6MTc3NjAyMDE3M30.C5ToA-r63Bi2CRqlsqyazRrUKj7Al_xL-rU___9eWO4",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/friend/process?friendId=76a40859-4b73-4533-ae2f-2fbda80a1b87&status=1",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "friend",
+                    "process"
+                  ],
+                  "query": [
+                    {
+                      "key": "friendId",
+                      "value": "76a40859-4b73-4533-ae2f-2fbda80a1b87",
+                      "description": "申请人 ID"
+                    },
+                    {
+                      "key": "status",
+                      "value": "1",
+                      "description": "状态：1=接受，2=拒绝/拉黑"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "获取好友列表",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MTUzNzMsImV4cCI6MTc3NjAyMDE3M30.C5ToA-r63Bi2CRqlsqyazRrUKj7Al_xL-rU___9eWO4",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/friend/list",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "friend",
+                    "list"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "修改好友备注",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MTUzNzMsImV4cCI6MTc3NjAyMDE3M30.C5ToA-r63Bi2CRqlsqyazRrUKj7Al_xL-rU___9eWO4",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/friend/remark?friendId=ZjAzNWYyMjUtYzNiNC00OT&remark=新的好友备注名称",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "friend",
+                    "remark"
+                  ],
+                  "query": [
+                    {
+                      "key": "friendId",
+                      "value": "ZjAzNWYyMjUtYzNiNC00OT",
+                      "description": "好友 ID"
+                    },
+                    {
+                      "key": "remark",
+                      "value": "新的好友备注名称",
+                      "description": "新的备注名"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "删除好友",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MTUzNzMsImV4cCI6MTc3NjAyMDE3M30.C5ToA-r63Bi2CRqlsqyazRrUKj7Al_xL-rU___9eWO4",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/friend/delete?friendId=ZjAzNWYyMjUtYzNiNC00OT",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "friend",
+                    "delete"
+                  ],
+                  "query": [
+                    {
+                      "key": "friendId",
+                      "value": "ZjAzNWYyMjUtYzNiNC00OT",
+                      "description": "好友 ID"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "创建好友分组",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MTUzNzMsImV4cCI6MTc3NjAyMDE3M30.C5ToA-r63Bi2CRqlsqyazRrUKj7Al_xL-rU___9eWO4",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/friend/group/create?groupName=测试分组",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "friend",
+                    "group",
+                    "create"
+                  ],
+                  "query": [
+                    {
+                      "key": "groupName",
+                      "value": "测试分组",
+                      "description": "分组名称",
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "删除好友分组",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MTUzNzMsImV4cCI6MTc3NjAyMDE3M30.C5ToA-r63Bi2CRqlsqyazRrUKj7Al_xL-rU___9eWO4",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/friend/group/delete?groupId=1",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "friend",
+                    "group",
+                    "delete"
+                  ],
+                  "query": [
+                    {
+                      "key": "groupId",
+                      "value": "1",
+                      "description": "分组 ID"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "获取用户所有分组",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MTUzNzMsImV4cCI6MTc3NjAyMDE3M30.C5ToA-r63Bi2CRqlsqyazRrUKj7Al_xL-rU___9eWO4",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/friend/group/list",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "friend",
+                    "group",
+                    "list"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "将好友添加到分组",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MTUzNzMsImV4cCI6MTc3NjAyMDE3M30.C5ToA-r63Bi2CRqlsqyazRrUKj7Al_xL-rU___9eWO4",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/friend/group/add-friend?groupId=2&friendId=76a40859-4b73-4533-ae2f-2fbda80a1b87",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "friend",
+                    "group",
+                    "add-friend"
+                  ],
+                  "query": [
+                    {
+                      "key": "groupId",
+                      "value": "2",
+                      "description": "分组 ID"
+                    },
+                    {
+                      "key": "friendId",
+                      "value": "76a40859-4b73-4533-ae2f-2fbda80a1b87",
+                      "description": "好友 ID"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "从分组移除好友",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MTUzNzMsImV4cCI6MTc3NjAyMDE3M30.C5ToA-r63Bi2CRqlsqyazRrUKj7Al_xL-rU___9eWO4",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/friend/group/remove-friend?groupId=2&friendId=76a40859-4b73-4533-ae2f-2fbda80a1b87",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "friend",
+                    "group",
+                    "remove-friend"
+                  ],
+                  "query": [
+                    {
+                      "key": "groupId",
+                      "value": "2",
+                      "description": "分组 ID"
+                    },
+                    {
+                      "key": "friendId",
+                      "value": "76a40859-4b73-4533-ae2f-2fbda80a1b87",
+                      "description": "好友 ID"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "关注管理",
+          "item": [
+            {
+              "name": "关注用户",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MTUzNzMsImV4cCI6MTc3NjAyMDE3M30.C5ToA-r63Bi2CRqlsqyazRrUKj7Al_xL-rU___9eWO4",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/follow/add?targetUser=ZjAzNWYyMjUtYzNiNC00OT",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "follow",
+                    "add"
+                  ],
+                  "query": [
+                    {
+                      "key": "targetUser",
+                      "value": "ZjAzNWYyMjUtYzNiNC00OT",
+                      "description": "被关注的目标用户 ID"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "取消关注",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MTUzNzMsImV4cCI6MTc3NjAyMDE3M30.C5ToA-r63Bi2CRqlsqyazRrUKj7Al_xL-rU___9eWO4",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/follow/remove?targetUser=ZjAzNWYyMjUtYzNiNC00OT",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "follow",
+                    "remove"
+                  ],
+                  "query": [
+                    {
+                      "key": "targetUser",
+                      "value": "ZjAzNWYyMjUtYzNiNC00OT",
+                      "description": "被取消关注的目标用户 ID"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "获取当前用户的关注列表",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MTUzNzMsImV4cCI6MTc3NjAyMDE3M30.C5ToA-r63Bi2CRqlsqyazRrUKj7Al_xL-rU___9eWO4",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/follow/following",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "follow",
+                    "following"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "获取当前用户的粉丝列表",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiMCIsInVzZXJJZCI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJ1c2VybmFtZSI6InRlc3QxMCIsInN1YiI6Ik1qTTNNek5pTVRVdE5ESmlZaTAwTW0iLCJpYXQiOjE3NzU0MTUzNzMsImV4cCI6MTc3NjAyMDE3M30.C5ToA-r63Bi2CRqlsqyazRrUKj7Al_xL-rU___9eWO4",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9095/social/follow/followers",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9095",
+                  "path": [
+                    "social",
+                    "follow",
+                    "followers"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+### 消息模块 (ani-chat) API 测试
+
+@baseUrl = http://localhost:9096
+@token = your_auth_token_here
+
+### 1. 会话管理 (Conversation)
+
+#### 1.1 获取当前用户的会话列表
+GET {{baseUrl}}/conversation/list
+Authorization: Bearer {{token}}
+
+---
+
+#### 1.2 创建或进入私聊会话
+# targetUserId: 对方用户的 ID
+POST {{baseUrl}}/conversation/private?targetUserId=467bd41e-f175-466c-8eb8-791857353011
+Authorization: Bearer {{token}}
+
+---
+
+#### 1.3 创建群聊会话
+# title: 群名称
+# Body: 成员 ID 列表
+POST {{baseUrl}}/conversation/group?title=动漫爱好者群
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+[
+  "467bd41e-f175-466c-8eb8-791857353011",
+  "MjM3MzNiMTUtNDJiYi00Mm"
+]
+
+---
+
+### 2. 消息管理 (Message)
+
+#### 2.1 发送消息
+POST {{baseUrl}}/message/send
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "conversationId": "your_conversation_id_here",
+  "type": "text",
+  "content": "你好，这是测试消息！",
+  "attachment": null
+}
+
+---
+
+#### 2.2 获取会话历史消息
+# conversationId: 会话 ID
+# lastMessageId: 可选，最后一条消息 ID (分页)
+# pageSize: 可选，默认 20
+GET {{baseUrl}}/message/history?conversationId=your_conversation_id_here&pageSize=10
+Authorization: Bearer {{token}}
+
+---
+
+#### 2.3 撤回消息
+# messageId: 消息 ID
+POST {{baseUrl}}/message/recall/your_message_id_here
+Authorization: Bearer {{token}}
+
+---
+
+#### 2.4 标记单条消息为已读
+# messageId: 消息 ID
+POST {{baseUrl}}/message/read/your_message_id_here
+Authorization: Bearer {{token}}
+
+---
+
+#### 2.5 标记整个会话为已读
+# conversationId: 会话 ID
+POST {{baseUrl}}/message/read/conversation/your_conversation_id_here
+Authorization: Bearer {{token}}
+
+---
+
+#### 2.6 举报消息
+# messageId: 消息 ID
+# reason: 举报原因
+POST {{baseUrl}}/message/report/your_message_id_here?reason=违规内容
+Authorization: Bearer {{token}}
