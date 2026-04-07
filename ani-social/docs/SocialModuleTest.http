@@ -1,0 +1,145 @@
+### 社交模块接口测试脚本
+
+@baseUrl = http://localhost:9095
+@token = {{login.response.body.data.token}}
+
+# ======================================================
+# 1. 好友管理 (/social/friend)
+# ======================================================
+
+### 1.1 发送好友申请
+POST {{baseUrl}}/social/friend/request
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+friendId=123456
+
+
+### 1.2 处理好友申请
+POST {{baseUrl}}/social/friend/process
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+friendId=123456&status=1
+
+
+### 1.3 获取好友列表
+GET {{baseUrl}}/social/friend/list
+Authorization: Bearer {{token}}
+
+
+### 1.4 修改好友备注
+POST {{baseUrl}}/social/friend/remark
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+friendId=123456&remark=我的好兄弟
+
+
+### 1.5 删除好友
+DELETE {{baseUrl}}/social/friend/delete
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+friendId=123456
+
+
+### 1.6 创建好友分组
+POST {{baseUrl}}/social/friend/group/create
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+groupName=家人
+
+
+### 1.7 获取所有好友分组
+GET {{baseUrl}}/social/friend/group/list
+Authorization: Bearer {{token}}
+
+
+### 1.8 将好友添加到分组
+POST {{baseUrl}}/social/friend/group/add-friend
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+groupId=1&friendId=123456
+
+
+# ======================================================
+# 2. 关注管理 (/social/follow)
+# ======================================================
+
+### 2.1 关注用户
+POST {{baseUrl}}/social/follow/add
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+targetUser=789012
+
+
+### 2.2 取消关注
+DELETE {{baseUrl}}/social/follow/remove
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+targetUser=789012
+
+
+### 2.3 获取关注列表
+GET {{baseUrl}}/social/follow/following
+Authorization: Bearer {{token}}
+
+
+### 2.4 获取粉丝列表
+GET {{baseUrl}}/social/follow/followers
+Authorization: Bearer {{token}}
+
+
+# ======================================================
+# 3. 动态管理 (/social/post)
+# ======================================================
+
+### 3.1 发布动态
+POST {{baseUrl}}/social/post/create
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "content": "今天心情不错！",
+  "media": [
+    {
+      "type": "image",
+      "url": "http://anisphere.com/media/post1.jpg"
+    }
+  ]
+}
+
+
+### 3.2 分页获取全站公开动态
+GET {{baseUrl}}/social/post/global-list?page=1&size=10
+Authorization: Bearer {{token}}
+
+
+### 3.3 获取指定用户动态
+GET {{baseUrl}}/social/post/user-list?userId=123456&page=1&size=5
+Authorization: Bearer {{token}}
+
+
+# ======================================================
+# 4. 社交行为 (/social/action)
+# ======================================================
+
+### 4.1 举报用户
+POST {{baseUrl}}/social/action/report
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+targetUser=123456&reason=发布广告
+
+
+### 4.2 记录清除聊天记录请求
+POST {{baseUrl}}/social/action/chat/clear
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+conversationId=conv_789&scope=self
