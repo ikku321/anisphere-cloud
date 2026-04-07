@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class AniMessageGlobalExceptionHandler {
 
     /**
      * 处理 JSR-303 参数校验异常

@@ -1,4 +1,4 @@
-package com.iikun.anivideo.config;
+package com.iikun.userservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
