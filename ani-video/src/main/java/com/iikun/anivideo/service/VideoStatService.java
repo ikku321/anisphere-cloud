@@ -2,7 +2,6 @@ package com.iikun.anivideo.service;
 
 import com.iikun.anivideo.entity.VideoStatEntity;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,4 +12,15 @@ import java.util.Map;
  */
 public interface VideoStatService {
 
+    VideoStatEntity getOrInit(String videoId);
+
+    void incrPlay(String videoId, Long delta);
+
+    void incrLike(String videoId, Long delta);
+
+    void incrShare(String videoId, Long delta);
+
+    void incrComment(String videoId, Long delta);
+
+    Map<String, Object> topPlay(Integer limit);
 }

@@ -6,10 +6,13 @@ import com.iikun.common.base.Result;
 import com.iikun.common.common.ServiceException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,4 +29,38 @@ public class VideoStatController {
 
     private final VideoStatService videoStatService;
 
+    @Operation(summary = "管理端：获取视频统计信息", description = "若统计记录不存在则初始化为 0")
+    @GetMapping("/admin/detail")
+    public Result<VideoStatEntity> detail(@RequestParam String videoId) {
+        return Result.success(videoStatService.getOrInit(videoId));
+    }
+
+    @Operation(summary = "管理端：增量更新统计", description = "delta 可正可负（不建议传过大）")
+    @PutMapping("/admin/incr")
+    public Result<?> incr(@RequestBody @Valid StatIncrRequest request) {
+        switch (request.getType()) {
+            case "play" -> videoStatService.incrPlay(request.getVideoId(), request.getDelta());
+            case "like" -> videoStatService.incrLike(request.getVideoId(), request.getDelta());
+            case "share" -> videoStatService.incrShare(request.getVideoId(), request.getDelta());
+            case "comment" -> videoStatService.incrComment(request.getVideoId(), request.getDelta());
+            default -> throw new ServiceException("type不合法");
+        }
+        return Result.success();
+    }
+
+    @Operation(summary = "管理端：播放量排行榜", description = "按 playCount 倒序")
+    @GetMapping("/admin/top-play")
+    public Result<Map<String, Object>> topPlay(@RequestParam(defaultValue = "10") Integer limit) {
+        return Result.success(videoStatService.topPlay(limit));
+    }
+
+    @Data
+    public static class StatIncrRequest {
+        @NotBlank
+        private String videoId;
+        @NotBlank
+        private String type;
+        @NotNull
+        private Long delta;
+    }
 }

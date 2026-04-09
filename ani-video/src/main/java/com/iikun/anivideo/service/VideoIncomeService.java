@@ -1,9 +1,6 @@
 package com.iikun.anivideo.service;
 
-import com.iikun.anivideo.entity.VideoIncomeEntity;
-
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,4 +11,9 @@ import java.util.Map;
  */
 public interface VideoIncomeService {
 
+    void addIncome(String videoId, String userId, Integer incomeType, BigDecimal amount);
+
+    Map<String, Object> page(Integer pageNum, Integer pageSize, String videoId, String userId, Integer incomeType);
+
+    BigDecimal sumAmount(String videoId, String userId, Integer incomeType);
 }

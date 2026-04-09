@@ -91,6 +91,14 @@ public interface VideoService {
      */
     Map<String, Object> getVideoPage(Integer pageNum, Integer pageSize, String keyword);
 
+    Map<String, Object> adminGetVideoPage(Integer pageNum,
+                                          Integer pageSize,
+                                          String keyword,
+                                          String userId,
+                                          Integer status,
+                                          Integer visible,
+                                          Integer auditStatus);
+
     /**
      * 修改视频状态
      *

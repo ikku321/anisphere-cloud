@@ -134,6 +134,20 @@ public class VideoController {
         return Result.success(videoService.getVideoPage(pageNum, pageSize, keyword));
     }
 
+    @Operation(summary = "管理端：分页查询视频列表", description = "管理端分页查询（可筛选 userId/status/visible/auditStatus，支持关键字匹配 videoId/title/description）")
+    @GetMapping("/admin/page")
+    public Result<Map<String, Object>> adminVideoPage(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String userId,
+            @RequestParam(required = false) Integer status,
+            @RequestParam(required = false) Integer visible,
+            @RequestParam(required = false) Integer auditStatus
+    ) {
+        return Result.success(videoService.adminGetVideoPage(pageNum, pageSize, keyword, userId, status, visible, auditStatus));
+    }
+
     @Operation(summary = "修改视频状态")
     @PostMapping("/update-status")
     public Result<?> updateVideoStatus(@RequestParam Integer status, @RequestParam String videoId) {
@@ -191,8 +205,8 @@ public class VideoController {
 
     @Operation(summary = "获取推荐视频列表")
     @GetMapping("/recommend-videos")
-    public Result<List<VideoEntity>> getRecommendVideos(@RequestParam String userId, 
-                                                       @RequestParam(defaultValue = "10") Integer limit) {
+    public Result<List<VideoEntity>> getRecommendVideos(@RequestParam String userId,
+                                                        @RequestParam(defaultValue = "10") Integer limit) {
         if (userId == null) {
             throw new ServiceException("用户ID不能为空");
         }

@@ -1,8 +1,5 @@
 package com.iikun.anivideo.service;
 
-import com.iikun.anivideo.entity.VideoReportEntity;
-
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,4 +10,9 @@ import java.util.Map;
  */
 public interface VideoReportService {
 
+    void submit(String videoId, String userId, String reason);
+
+    Map<String, Object> page(Integer pageNum, Integer pageSize, Integer status, String videoId, String userId);
+
+    void markHandled(Long reportId);
 }

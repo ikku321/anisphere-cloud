@@ -214,6 +214,58 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
+    public Map<String, Object> adminGetVideoPage(Integer pageNum,
+                                                 Integer pageSize,
+                                                 String keyword,
+                                                 String userId,
+                                                 Integer status,
+                                                 Integer visible,
+                                                 Integer auditStatus) {
+        try {
+            int safePageNum = pageNum == null || pageNum < 1 ? 1 : pageNum;
+            int safePageSize = pageSize == null || pageSize < 1 ? 10 : Math.min(pageSize, 100);
+
+            Page<VideoEntity> page = new Page<>(safePageNum, safePageSize);
+            QueryWrapper<VideoEntity> queryWrapper = new QueryWrapper<>();
+
+            if (userId != null && !userId.trim().isEmpty()) {
+                queryWrapper.eq("user_id", userId);
+            }
+            if (status != null) {
+                queryWrapper.eq("status", status);
+            }
+            if (visible != null) {
+                queryWrapper.eq("visible", visible);
+            }
+            if (auditStatus != null) {
+                queryWrapper.eq("audit_status", auditStatus);
+            }
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                queryWrapper.and(wrapper -> wrapper
+                        .like("video_id", keyword)
+                        .or()
+                        .like("title", keyword)
+                        .or()
+                        .like("description", keyword));
+            }
+
+            queryWrapper.orderByDesc("create_time");
+            IPage<VideoEntity> videoPage = videoMapper.selectPage(page, queryWrapper);
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("records", videoPage.getRecords());
+            result.put("total", videoPage.getTotal());
+            result.put("current", videoPage.getCurrent());
+            result.put("pages", videoPage.getPages());
+            result.put("size", videoPage.getSize());
+            return result;
+        } catch (DataAccessException e) {
+            log.debug(e.getMessage());
+            throw new ServiceException("数据库异常");
+        }
+    }
+
+    @Override
     public void updateVideoStatus(Integer status, String videoId) {
         try {
             if (videoMapper.foundByVideoId(videoId) <= 0) {
