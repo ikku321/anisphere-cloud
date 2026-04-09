@@ -12,33 +12,19 @@ public class UserDTO implements Serializable {
 
     private static final long serialVersionUID = 1L; // 序列化 ID
 
-    private String userId; // 用户 ID
-
-    private String username; // 用户名
-
-    private String nickname; // 昵称
-
-    private String avatarUrl; // 头像地址
-
-    private String phone; // 手机号
-
-    private String email; // 邮箱
-
-    private Integer exp; // 经验值
-
-    private Integer level; // 等级
-
-    private Integer status; // 状态
-
-    private String role; // 角色
-
-    private Integer followersCount; // 粉丝数
-
-    private Integer followingCount; // 关注数
-
-    private LocalDate birthday; // 生日
-
-    private String bio; // 个人简介
-
-    private String gender; // 性别
+    private String userId;
+    private String username;
+    private String nickname;
+    private String avatarUrl;
+    private String phone;
+    private String email;
+    private Integer exp;
+    private Integer level;
+    private Integer status;
+    private String role;
+    private Integer followersCount;
+    private Integer followingCount;
+    private LocalDate birthday;
+    private String bio;
+    private String gender;
 }

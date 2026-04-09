@@ -2,16 +2,23 @@ package com.iikun.anicomment.service;
 
 import com.iikun.anicomment.dto.CommentPublishRequest;
 import com.iikun.anicomment.entity.Comment;
+import com.iikun.anicomment.entity.CommentLike;
 import com.iikun.anicomment.repository.CommentRepository;
 import com.iikun.common.common.ServiceException;
 import com.iikun.common.context.UserContext;
 import com.iikun.common.model.LoginUser;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -24,9 +31,11 @@ import java.util.UUID;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final MongoTemplate mongoTemplate;
 
-    public CommentService(CommentRepository commentRepository) {
+    public CommentService(CommentRepository commentRepository, MongoTemplate mongoTemplate) {
         this.commentRepository = commentRepository;
+        this.mongoTemplate = mongoTemplate;
     }
 
     /**
@@ -130,5 +139,166 @@ public class CommentService {
         comment.setUpdateTime(now);
 
         commentRepository.save(comment);
+    }
+
+    public Page<Comment> adminPage(String videoId,
+                                   String userId,
+                                   String rootId,
+                                   String parentId,
+                                   Boolean deleted,
+                                   String keyword,
+                                   int page,
+                                   int size) {
+        int safePage = Math.max(page, 1);
+        int safeSize = Math.max(Math.min(size, 100), 1);
+        Pageable pageable = PageRequest.of(safePage - 1, safeSize);
+
+        Query query = new Query();
+        Criteria criteria = new Criteria();
+
+        boolean hasCriteria = false;
+        if (videoId != null && !videoId.isBlank()) {
+            criteria = criteria.and("videoId").is(videoId);
+            hasCriteria = true;
+        }
+        if (userId != null && !userId.isBlank()) {
+            criteria = criteria.and("userId").is(userId);
+            hasCriteria = true;
+        }
+        if (rootId != null && !rootId.isBlank()) {
+            criteria = criteria.and("rootId").is(rootId);
+            hasCriteria = true;
+        }
+        if (parentId != null && !parentId.isBlank()) {
+            criteria = criteria.and("parentId").is(parentId);
+            hasCriteria = true;
+        }
+        if (deleted != null) {
+            criteria = criteria.and("deleted").is(deleted);
+            hasCriteria = true;
+        }
+        if (keyword != null && !keyword.isBlank()) {
+            criteria = criteria.and("content").regex(".*" + escapeRegex(keyword.trim()) + ".*", "i");
+            hasCriteria = true;
+        }
+
+        if (hasCriteria) {
+            query.addCriteria(criteria);
+        }
+
+        query.with(Sort.by(Sort.Direction.DESC, "createTime"));
+        long total = mongoTemplate.count(query, Comment.class);
+        query.with(pageable);
+        List<Comment> records = mongoTemplate.find(query, Comment.class);
+        return new PageImpl<>(records, pageable, total);
+    }
+
+    public void adminSoftDelete(String commentId, boolean cascadeRoot) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ServiceException("评论不存在"));
+
+        if (Boolean.TRUE.equals(comment.getDeleted()) && !cascadeRoot) {
+            return;
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        if (!cascadeRoot) {
+            comment.setDeleted(true);
+            comment.setDeleteTime(now);
+            comment.setUpdateTime(now);
+            commentRepository.save(comment);
+            return;
+        }
+
+        String rootId = comment.getRootId() == null || comment.getRootId().isBlank() ? comment.getId() : comment.getRootId();
+        Query query = new Query(Criteria.where("rootId").is(rootId));
+        Query updateQuery = query;
+        List<Comment> list = mongoTemplate.find(updateQuery, Comment.class);
+        for (Comment c : list) {
+            if (!Boolean.TRUE.equals(c.getDeleted())) {
+                c.setDeleted(true);
+                c.setDeleteTime(now);
+                c.setUpdateTime(now);
+            }
+        }
+        commentRepository.saveAll(list);
+    }
+
+    public void adminRestore(String commentId, boolean cascadeRoot) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ServiceException("评论不存在"));
+
+        LocalDateTime now = LocalDateTime.now();
+        if (!cascadeRoot) {
+            if (!Boolean.TRUE.equals(comment.getDeleted())) {
+                return;
+            }
+            comment.setDeleted(false);
+            comment.setDeleteTime(null);
+            comment.setUpdateTime(now);
+            commentRepository.save(comment);
+            return;
+        }
+
+        String rootId = comment.getRootId() == null || comment.getRootId().isBlank() ? comment.getId() : comment.getRootId();
+        Query query = new Query(Criteria.where("rootId").is(rootId));
+        List<Comment> list = mongoTemplate.find(query, Comment.class);
+        for (Comment c : list) {
+            if (Boolean.TRUE.equals(c.getDeleted())) {
+                c.setDeleted(false);
+                c.setDeleteTime(null);
+                c.setUpdateTime(now);
+            }
+        }
+        commentRepository.saveAll(list);
+    }
+
+    public void adminUpdateContent(String commentId, String content) {
+        if (content == null || content.isBlank()) {
+            throw new ServiceException("content不能为空");
+        }
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ServiceException("评论不存在"));
+        comment.setContent(content.trim());
+        comment.setUpdateTime(LocalDateTime.now());
+        commentRepository.save(comment);
+    }
+
+    public long adminHardDelete(String commentId, boolean cascadeRoot) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ServiceException("评论不存在"));
+
+        if (!cascadeRoot) {
+            commentRepository.deleteById(commentId);
+            mongoTemplate.remove(new Query(Criteria.where("commentId").is(commentId)), CommentLike.class);
+            return 1L;
+        }
+
+        String rootId = comment.getRootId() == null || comment.getRootId().isBlank() ? comment.getId() : comment.getRootId();
+        Query query = new Query(Criteria.where("rootId").is(rootId));
+        List<Comment> list = mongoTemplate.find(query, Comment.class);
+        long count = mongoTemplate.count(query, Comment.class);
+        mongoTemplate.remove(query, Comment.class);
+        for (Comment c : list) {
+            mongoTemplate.remove(new Query(Criteria.where("commentId").is(c.getId())), CommentLike.class);
+        }
+        return count;
+    }
+
+    private String escapeRegex(String input) {
+        return input.replace("\\", "\\\\")
+                .replace(".", "\\.")
+                .replace("*", "\\*")
+                .replace("+", "\\+")
+                .replace("?", "\\?")
+                .replace("|", "\\|")
+                .replace("{", "\\{")
+                .replace("}", "\\}")
+                .replace("(", "\\(")
+                .replace(")", "\\)")
+                .replace("^", "\\^")
+                .replace("$", "\\$")
+                .replace("[", "\\[")
+                .replace("]", "\\]");
     }
 }

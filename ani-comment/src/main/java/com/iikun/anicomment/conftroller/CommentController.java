@@ -1,13 +1,9 @@
 package com.iikun.anicomment.conftroller;
 
-import com.iikun.anicomment.Feign.service.UserService;
 import com.iikun.anicomment.dto.CommentPublishRequest;
 import com.iikun.anicomment.entity.Comment;
-import com.iikun.anicomment.entity.DTO.UserDTO;
-import com.iikun.anicomment.service.CommentService;
 import com.iikun.anicomment.service.LikeService;
 import com.iikun.common.base.Result;
-import com.iikun.common.common.ServiceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,7 +24,7 @@ import jakarta.validation.Valid;
 @RequiredArgsConstructor
 public class CommentController {
 
-    private final CommentService commentService;
+    private final com.iikun.anicomment.service.CommentService commentService;
 
     private final LikeService likeService;
 

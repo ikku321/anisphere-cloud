@@ -1,11 +1,10 @@
-package com.iikun.anicomment.Feign;
+package com.iikun.anicomment.Feign.client;
 
 import com.iikun.anicomment.entity.DTO.UserDTO;
-import com.iikun.anicomment.handle.UserFeignFallback;
+import com.iikun.anicomment.Feign.fallback.UserFeignFallback;
 import com.iikun.common.base.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -24,7 +23,21 @@ public interface UserFeignClient {
     @GetMapping("/user/find")
     Result<UserDTO> getUserById(@RequestParam String uid);
 
-    
+    /**
+     * 根据token信息获取用户个人信息
+     *
+     * @return 返回用户实体数据
+     */
+    @GetMapping("/user/found-token")
+    Result<UserDTO> getUserByToken();
+
+    /**
+     * 验证当前账号权限是否是管理员权限
+     *
+     * @return 返回状态
+     */
+    @GetMapping("/user/is-admin")
+    Result<?> isAdmin();
 }
 
 

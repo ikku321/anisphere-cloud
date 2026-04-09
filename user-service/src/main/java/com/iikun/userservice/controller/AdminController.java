@@ -30,6 +30,17 @@ public class AdminController {
     @Resource
     private AdminService adminService;
 
+    @PostMapping("/admin-login")
+    @Operation(summary = "管理员专属登录Api", description = "用于管理员登录")
+    public Result<?> adminLogin(@RequestParam(required = true) String username,
+                                @RequestParam(required = true) String password
+    ) {
+        String token = adminService.adminLogin(username, password);
+        HashMap<String, Object> loginToken = new HashMap<>();
+        loginToken.put("token", token);
+        return Result.success(loginToken);
+    }
+
     @Admin
     @GetMapping("/user-all")
     @Operation(summary = "查询所有用户列表", description = "分页查询所有用户列表信息（仅管理员）")

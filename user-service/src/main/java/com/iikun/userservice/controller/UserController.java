@@ -1,5 +1,6 @@
 package com.iikun.userservice.controller;
 
+import com.iikun.common.annotation.Admin;
 import com.iikun.common.base.Result;
 import com.iikun.common.utils.JwtUtil;
 import com.iikun.common.utils.UserContext;
@@ -80,14 +81,9 @@ public class UserController {
      */
     @GetMapping("/info")
     @Operation(summary = "获取用户基本信息")
-    public Result info() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getPrincipal() == null) {
-            return Result.failed("未登录或 token 无效");
-        }
-
-        String userId = authentication.getPrincipal().toString();
-        return userService.info(userId);
+    public Result info(HttpServletRequest request) {
+        String uid = (String) request.getAttribute("uid");
+        return userService.info(uid);
     }
 
 
@@ -183,6 +179,7 @@ public class UserController {
 
     /**
      * 根据uid查询用户信息
+     *
      * @param uid 用户uid
      * @return 1
      */
@@ -201,6 +198,14 @@ public class UserController {
     public Result<UserInfoDTO> getTokenByUserInfo(HttpServletRequest request) {
         String uid = (String) request.getAttribute("uid").toString();
         return Result.success(userService.foundByTokenUserInfo(uid));
+    }
+
+
+    @Admin
+    @Operation(summary = "验证当前账号是否是管理员账号")
+    @GetMapping("/is-admin")
+    public Result<?> isAdmin() {
+        return Result.success();
     }
 }
 

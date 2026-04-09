@@ -4,6 +4,7 @@ import com.iikun.userservice.domain.model.AdminUserListItem;
 import com.iikun.userservice.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -46,4 +47,15 @@ public interface AdminMapper {
     int updateUserPassword(@Param("userId") String userId, @Param("password") String password);
 
     int updateUser(User user);
+
+    /**
+     *
+     * 登录-管理员端认证
+     * role: 权限(0: 管理员，1: 普通用户...)
+     *
+     * @param username 账号
+     * @return 返回状态
+     */
+    @Select("select count(1) from ani_sphere.user where username = #{username} and role = 0")
+    int isAdmin(@Param("username") String username);
 }

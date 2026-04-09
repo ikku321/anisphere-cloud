@@ -207,9 +207,11 @@ where ub.user_id = '30';
 -- 查询指定用户是否已经拉黑该用户
 select count(1) from user_blacklist where user_id = '30' and blocked_user_id = '23';
 
+-- 登录账号
+select count(1) from ani_sphere.user where username = 'test10' and password = '';
 
-
-
+-- 验证账号跟密码指定权限为0（0: 管理员权限）
+select count(1) from ani_sphere.user where (username = 'test10' and password = '') and role = 0;
 
 
 

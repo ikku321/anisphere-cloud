@@ -1,6 +1,8 @@
 package com.iikun.userservice.service.impl;
 
+import com.iikun.common.base.Result;
 import com.iikun.common.common.ServiceException;
+import com.iikun.common.utils.JwtUtil;
 import com.iikun.common.utils.PasswordUtil;
 import com.iikun.common.utils.Utils;
 import com.iikun.userservice.domain.dto.UserInfoDTO;
@@ -9,8 +11,11 @@ import com.iikun.userservice.entity.User;
 import com.iikun.userservice.mapper.AdminMapper;
 import com.iikun.userservice.mapper.UserMapper;
 import com.iikun.userservice.service.AdminService;
+import com.iikun.userservice.service.UserService;
+import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +36,12 @@ public class AdminServiceImpl implements AdminService {
 
     /** 管理端数据访问层 */
     private final AdminMapper adminMapper;
+
     private final UserMapper userMapper;
+
+    private final UserService userService;
+
+    private final JwtUtil jwtUtil;
 
     @Override
     public Object pageUsers(Integer page, Integer size) {
@@ -209,6 +219,43 @@ public class AdminServiceImpl implements AdminService {
 
         if (adminMapper.updateUser(update) <= 0) {
             throw new ServiceException("更新用户信息失败");
+        }
+    }
+
+    @Override
+    public String adminLogin(String username, String password) {
+        try {
+            // 查询用户信息
+            User byUsername = userMapper.findByUsername(username);
+            log.info("登录查询的用户信息: {}", byUsername);
+            if (byUsername == null) {
+                throw new ServiceException("用户不存在");
+            }
+            // 校验密码
+            if (!PasswordUtil.matches(password, byUsername.getPassword())) {
+                throw new ServiceException("密码不正确");
+            }
+
+            // 验证权限是否属于管理员
+            int admin = adminMapper.isAdmin(username);
+            if (admin <= 0) {
+                throw new ServiceException("您还不是管理员! 请使用管理员账号登录");
+            }
+
+            // 生成 token
+            // 常用的信息
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("userId", String.valueOf(byUsername.getUserId()));
+            claims.put("username", String.valueOf(byUsername.getUsername()));
+            claims.put("role", String.valueOf(byUsername.getRole()));
+            log.info("login-> calims存值: userId = {}", byUsername.getUserId());
+            log.info("login-> calims存值: username = {}", byUsername.getUsername());
+            log.info("login-> calims存值: role = {}", byUsername.getRole());
+
+            return jwtUtil.generateToken(byUsername.getUserId(), claims);
+        } catch (DataAccessException e) {
+            log.info("数据库异常: {}", e.getMessage());
+            throw new ServiceException("数据库异常: " + e.getMessage());
         }
     }
 }

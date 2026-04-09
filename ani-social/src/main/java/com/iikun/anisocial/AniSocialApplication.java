@@ -14,7 +14,7 @@ import org.springframework.context.annotation.FilterType;
  */
 @SpringBootApplication
 @EnableFeignClients // Feign 客户端支持，用于微服务间通讯
-@MapperScan("com.iikun.anisocial.mapper")
+@MapperScan({"com.iikun.anisocial.mapper", "com.iikun.anisocial.admin.mapper"})
 @ComponentScan(
         basePackages = {"com.iikun.anisocial", "com.iikun.common"},
         excludeFilters = @ComponentScan.Filter(

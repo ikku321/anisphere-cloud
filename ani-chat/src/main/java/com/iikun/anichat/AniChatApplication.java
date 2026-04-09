@@ -14,7 +14,7 @@ import org.springframework.context.annotation.FilterType;
  */
 @SpringBootApplication
 @EnableFeignClients
-@MapperScan("com.iikun.anichat.mapper")
+@MapperScan({"com.iikun.anichat.mapper", "com.iikun.anichat.admin.mapper"})
 @ComponentScan(
         basePackages = {"com.iikun.anichat", "com.iikun.common"},
         excludeFilters = @ComponentScan.Filter(

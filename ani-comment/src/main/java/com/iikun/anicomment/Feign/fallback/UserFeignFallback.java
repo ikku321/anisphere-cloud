@@ -1,6 +1,6 @@
-package com.iikun.anicomment.handle;
+package com.iikun.anicomment.Feign.fallback;
 
-import com.iikun.anicomment.Feign.UserFeignClient;
+import com.iikun.anicomment.Feign.client.UserFeignClient;
 import com.iikun.anicomment.entity.DTO.UserDTO;
 import com.iikun.common.base.Result;
 import org.springframework.stereotype.Component;
@@ -16,5 +16,15 @@ public class UserFeignFallback implements UserFeignClient {
     @Override
     public Result<UserDTO> getUserById(String id) {
         return Result.failed("未知用户");
+    }
+
+    @Override
+    public Result<UserDTO> getUserByToken() {
+        return Result.failed("获取用户信息失败!");
+    }
+
+    @Override
+    public Result<?> isAdmin() {
+        return Result.failed("通讯失败!");
     }
 }

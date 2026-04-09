@@ -1,5 +1,6 @@
 package com.iikun.userservice.service;
 
+import com.iikun.common.base.Result;
 import com.iikun.userservice.domain.dto.UserInfoDTO;
 import com.iikun.userservice.entity.User;
 
@@ -38,4 +39,12 @@ public interface AdminService {
     String createUser(String username, String password, String nickname, String phone, String email, Integer role, Integer status);
 
     void updateUser(String userId, User update);
+
+    /**
+     * 管理登录
+     *
+     * @param username 账号
+     * @param password 密码
+     */
+    String adminLogin(String username, String password);
 }

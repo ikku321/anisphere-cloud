@@ -177,13 +177,19 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Result info(String userid) {
-        UserInfoDTO user = userMapper.foundUserInfo(userid);
-        if (user == null) {
-            return Result.failed("用户不存在?");
-        } else {
-            HashMap<String, Object> userInfo = new HashMap<>();
-            userInfo.put("user", user);
-            return Result.success(userInfo);
+        try {
+            UserInfoDTO user = userMapper.foundUserInfo(userid);
+            if (user == null) {
+                return Result.failed("用户不存在?");
+            } else {
+                HashMap<String, Object> userInfo = new HashMap<>();
+                userInfo.put("user", user);
+                log.info("获取到的用户数据: {}", userInfo);
+                return Result.success(userInfo);
+            }
+        } catch (DataAccessException e) {
+            log.debug("数据库异常: {}", e.getMessage());
+            throw new ServiceException("数据库异常: " + e.getMessage());
         }
     }
 
