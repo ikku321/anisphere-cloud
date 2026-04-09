@@ -8,6 +8,34 @@
         FROM user
     </select>
 
+    <select id="countUsersByFilter" resultType="long">
+        SELECT COUNT(1)
+        FROM user
+        <where>
+            <if test="status != null">
+                status = #{status}
+            </if>
+            <if test="role != null">
+                <if test="status != null">
+                    AND
+                </if>
+                role = #{role}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                <if test="status != null or role != null">
+                    AND
+                </if>
+                (
+                    user_id LIKE CONCAT('%', #{keyword}, '%')
+                    OR username LIKE CONCAT('%', #{keyword}, '%')
+                    OR nickname LIKE CONCAT('%', #{keyword}, '%')
+                    OR phone LIKE CONCAT('%', #{keyword}, '%')
+                    OR email LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+        </where>
+    </select>
+
     <select id="selectUserPage" resultType="com.iikun.userservice.domain.model.AdminUserListItem">
         SELECT id,
                user_id     AS userId,
@@ -24,5 +52,113 @@
         ORDER BY create_time DESC
         LIMIT #{size} OFFSET #{offset}
     </select>
+
+    <select id="selectUserPageByFilter" resultType="com.iikun.userservice.domain.model.AdminUserListItem">
+        SELECT id,
+               user_id     AS userId,
+               username,
+               nickname,
+               phone,
+               email,
+               avatar_url  AS avatarUrl,
+               status,
+               role,
+               create_time AS createTime,
+               update_time AS updateTime
+        FROM user
+        <where>
+            <if test="status != null">
+                status = #{status}
+            </if>
+            <if test="role != null">
+                <if test="status != null">
+                    AND
+                </if>
+                role = #{role}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                <if test="status != null or role != null">
+                    AND
+                </if>
+                (
+                    user_id LIKE CONCAT('%', #{keyword}, '%')
+                    OR username LIKE CONCAT('%', #{keyword}, '%')
+                    OR nickname LIKE CONCAT('%', #{keyword}, '%')
+                    OR phone LIKE CONCAT('%', #{keyword}, '%')
+                    OR email LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+        </where>
+        ORDER BY create_time DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <update id="updateUserStatus">
+        UPDATE user
+        SET status = #{status},
+            update_time = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="updateUserRole">
+        UPDATE user
+        SET role = #{role},
+            update_time = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="updateUserPassword">
+        UPDATE user
+        SET password = #{password},
+            update_time = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="updateUser" parameterType="com.iikun.userservice.entity.User">
+        UPDATE user
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="nickname != null">
+                nickname = #{nickname},
+            </if>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="avatarUrl != null">
+                avatar_url = #{avatarUrl},
+            </if>
+            <if test="gender != null">
+                gender = #{gender},
+            </if>
+            <if test="bio != null">
+                bio = #{bio},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday},
+            </if>
+            <if test="coins != null">
+                coins = #{coins},
+            </if>
+            <if test="level != null">
+                level = #{level},
+            </if>
+            <if test="exp != null">
+                exp = #{exp},
+            </if>
+            <if test="vipId != null">
+                vip_id = #{vipId},
+            </if>
+            <if test="onlineStatus != null">
+                online_status = #{onlineStatus},
+            </if>
+            update_time = NOW()
+        </set>
+        WHERE user_id = #{userId}
+    </update>
 
 </mapper>

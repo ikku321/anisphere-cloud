@@ -1,5 +1,8 @@
 package com.iikun.userservice.service;
 
+import com.iikun.userservice.domain.dto.UserInfoDTO;
+import com.iikun.userservice.entity.User;
+
 /**
  * author iikun
  * time 2025/9/21 0:28
@@ -21,4 +24,18 @@ public interface AdminService {
      * @return 分页数据
      */
     Object pageUsers(Integer page, Integer size);
+
+    Object pageUsers(Integer page, Integer size, String keyword, Integer status, Integer role);
+
+    UserInfoDTO getUserInfo(String userId);
+
+    void updateUserStatus(String userId, Integer status);
+
+    void updateUserRole(String userId, Integer role);
+
+    void resetPassword(String userId, String newPassword);
+
+    String createUser(String username, String password, String nickname, String phone, String email, Integer role, Integer status);
+
+    void updateUser(String userId, User update);
 }
