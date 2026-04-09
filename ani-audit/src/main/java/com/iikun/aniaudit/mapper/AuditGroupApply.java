@@ -32,4 +32,27 @@ public interface AuditGroupApply {
 
     @Select("select * from ani_sphere.audit_group_apply where user_id = #{userId} order by create_time desc")
     List<AuditGroupApplyEntity> listByUserId(@Param("userId") String userId);
+
+    @Select("<script>" +
+            "select count(1) from ani_sphere.audit_group_apply" +
+            "<where>" +
+            "  <if test='status != null'> and status = #{status} </if>" +
+            "  <if test='userId != null and userId != \"\"'> and user_id = #{userId} </if>" +
+            "</where>" +
+            "</script>")
+    long countByFilter(@Param("status") Integer status, @Param("userId") String userId);
+
+    @Select("<script>" +
+            "select * from ani_sphere.audit_group_apply" +
+            "<where>" +
+            "  <if test='status != null'> and status = #{status} </if>" +
+            "  <if test='userId != null and userId != \"\"'> and user_id = #{userId} </if>" +
+            "</where>" +
+            " order by create_time desc" +
+            " limit #{size} offset #{offset}" +
+            "</script>")
+    List<AuditGroupApplyEntity> selectPageByFilter(@Param("offset") Integer offset,
+                                                   @Param("size") Integer size,
+                                                   @Param("status") Integer status,
+                                                   @Param("userId") String userId);
 }

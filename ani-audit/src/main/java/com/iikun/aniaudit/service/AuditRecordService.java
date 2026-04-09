@@ -3,6 +3,7 @@ package com.iikun.aniaudit.service;
 import com.iikun.aniaudit.entity.AuditRecordEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * author iikun
@@ -15,4 +16,6 @@ public interface AuditRecordService {
     void submit(String videoId, Integer result, String comment);
 
     List<AuditRecordEntity> listByVideoId(String videoId);
+
+    Map<String, Object> adminPage(Integer pageNum, Integer pageSize, String videoId, String auditorId, Integer result);
 }

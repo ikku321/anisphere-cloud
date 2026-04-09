@@ -3,6 +3,7 @@ package com.iikun.aniaudit.service;
 import com.iikun.aniaudit.entity.AuditTask;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * author iikun
@@ -29,4 +30,14 @@ public interface AuditTaskService {
     void claimTask(String videoId);
 
     void completeTask(String videoId);
+
+    Map<String, Object> adminPage(Integer pageNum, Integer pageSize, Integer status, String videoId, String auditorId);
+
+    AuditTask adminGetByVideoId(String videoId);
+
+    void adminAssignAuditor(String videoId, String auditorId);
+
+    void adminForceComplete(String videoId);
+
+    Map<String, Object> adminSummary();
 }

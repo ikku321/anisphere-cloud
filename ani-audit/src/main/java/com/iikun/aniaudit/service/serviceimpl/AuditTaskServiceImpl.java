@@ -13,7 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * author iikun
@@ -40,11 +42,7 @@ public class AuditTaskServiceImpl implements AuditTaskService {
     public List<AuditTask> getAuditList() {
         try {
             // 判断用户权限
-            Result<UserDTO> userInfo = userService.getByTokenUserInfo();
-            boolean userRoole = Util.isUserRoole(Integer.parseInt(userInfo.getData().getRole()));
-            if (!userRoole) {
-                throw new ServiceException("权限不足? 需要管理员权限");
-            }
+            assertAdmin();
 
             // 执行查询任务
             List<AuditTask> auditTasks = auditTaskMapper.all();
@@ -118,6 +116,116 @@ public class AuditTaskServiceImpl implements AuditTaskService {
             }
         } catch (DataAccessException e) {
             throw new ServiceException("数据库异常: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Map<String, Object> adminPage(Integer pageNum, Integer pageSize, Integer status, String videoId, String auditorId) {
+        assertAdmin();
+        int safePageNum = pageNum == null || pageNum < 1 ? 1 : pageNum;
+        int safePageSize = pageSize == null || pageSize < 1 ? 10 : Math.min(pageSize, 100);
+        int offset = (safePageNum - 1) * safePageSize;
+        try {
+            long total = auditTaskMapper.countByFilter(status, videoId, auditorId);
+            List<AuditTask> records = auditTaskMapper.selectPageByFilter(offset, safePageSize, status, videoId, auditorId);
+            Map<String, Object> result = new HashMap<>();
+            result.put("records", records);
+            result.put("total", total);
+            result.put("current", safePageNum);
+            result.put("size", safePageSize);
+            result.put("pages", (total + safePageSize - 1) / safePageSize);
+            return result;
+        } catch (DataAccessException e) {
+            log.info("数据库异常: {}", e.getMessage());
+            throw new ServiceException("数据库异常: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public AuditTask adminGetByVideoId(String videoId) {
+        assertAdmin();
+        if (videoId == null || videoId.isEmpty()) {
+            throw new ServiceException("视频id不存在!");
+        }
+        try {
+            AuditTask task = auditTaskMapper.selectOneByVideoId(videoId);
+            if (task == null) {
+                throw new ServiceException("审核任务不存在");
+            }
+            return task;
+        } catch (DataAccessException e) {
+            log.info("数据库异常: {}", e.getMessage());
+            throw new ServiceException("数据库异常: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void adminAssignAuditor(String videoId, String auditorId) {
+        assertAdmin();
+        if (videoId == null || videoId.isEmpty()) {
+            throw new ServiceException("视频id不存在!");
+        }
+        if (auditorId == null || auditorId.isEmpty()) {
+            throw new ServiceException("auditorId不能为空!");
+        }
+        try {
+            if (auditTaskMapper.selectByVideoId(videoId) <= 0) {
+                throw new ServiceException("审核任务不存在");
+            }
+            int updated = auditTaskMapper.claim(videoId, auditorId);
+            if (updated <= 0) {
+                throw new ServiceException("分配失败(任务可能不是待审状态)");
+            }
+        } catch (DataAccessException e) {
+            throw new ServiceException("数据库异常: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void adminForceComplete(String videoId) {
+        assertAdmin();
+        if (videoId == null || videoId.isEmpty()) {
+            throw new ServiceException("视频id不存在!");
+        }
+        try {
+            if (auditTaskMapper.selectByVideoId(videoId) <= 0) {
+                throw new ServiceException("审核任务不存在");
+            }
+            int updated = auditTaskMapper.forceComplete(videoId);
+            if (updated <= 0) {
+                throw new ServiceException("强制完成失败(任务可能已完成)");
+            }
+        } catch (DataAccessException e) {
+            throw new ServiceException("数据库异常: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Map<String, Object> adminSummary() {
+        assertAdmin();
+        try {
+            long pending = auditTaskMapper.countByStatus(0);
+            long processing = auditTaskMapper.countByStatus(1);
+            long done = auditTaskMapper.countByStatus(2);
+            Map<String, Object> result = new HashMap<>();
+            result.put("pending", pending);
+            result.put("processing", processing);
+            result.put("done", done);
+            result.put("total", pending + processing + done);
+            return result;
+        } catch (DataAccessException e) {
+            throw new ServiceException("数据库异常: " + e.getMessage());
+        }
+    }
+
+    private void assertAdmin() {
+        Result<UserDTO> userInfo = userService.getByTokenUserInfo();
+        if (userInfo == null || userInfo.getData() == null) {
+            throw new ServiceException("获取用户信息失败!");
+        }
+        boolean admin = Util.isUserRoole(Integer.parseInt(userInfo.getData().getRole()));
+        if (!admin) {
+            throw new ServiceException("权限不足? 需要管理员权限");
         }
     }
 }

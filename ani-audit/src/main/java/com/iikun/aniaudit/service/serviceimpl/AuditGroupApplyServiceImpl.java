@@ -13,7 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * author iikun
@@ -97,6 +99,35 @@ public class AuditGroupApplyServiceImpl implements AuditGroupApplyService {
             if (updated <= 0) {
                 throw new ServiceException("处理失败（申请不存在或已处理）");
             }
+        } catch (DataAccessException e) {
+            log.error("数据库异常: {}", e.getMessage());
+            throw new ServiceException("数据库异常: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Map<String, Object> adminPage(Integer pageNum, Integer pageSize, Integer status, String userId) {
+        try {
+            Result<UserDTO> userInfo = userService.getByTokenUserInfo();
+            boolean admin = Util.isUserRoole(Integer.parseInt(userInfo.getData().getRole()));
+            if (!admin) {
+                throw new ServiceException("权限不足? 需要管理员权限");
+            }
+
+            int safePageNum = pageNum == null || pageNum < 1 ? 1 : pageNum;
+            int safePageSize = pageSize == null || pageSize < 1 ? 10 : Math.min(pageSize, 100);
+            int offset = (safePageNum - 1) * safePageSize;
+
+            long total = auditGroupApplyMapper.countByFilter(status, userId);
+            List<AuditGroupApplyEntity> records = auditGroupApplyMapper.selectPageByFilter(offset, safePageSize, status, userId);
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("records", records);
+            result.put("total", total);
+            result.put("current", safePageNum);
+            result.put("size", safePageSize);
+            result.put("pages", (total + safePageSize - 1) / safePageSize);
+            return result;
         } catch (DataAccessException e) {
             log.error("数据库异常: {}", e.getMessage());
             throw new ServiceException("数据库异常: " + e.getMessage());

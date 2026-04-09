@@ -6,6 +6,7 @@ import com.iikun.aniaudit.mapper.AuditRecordMapper;
 import com.iikun.aniaudit.mapper.AuditTaskMapper;
 import com.iikun.aniaudit.service.AuditRecordService;
 import com.iikun.aniaudit.service.UserService;
+import com.iikun.aniaudit.utils.Util;
 import com.iikun.common.base.Result;
 import com.iikun.common.common.ServiceException;
 import jakarta.annotation.Resource;
@@ -13,7 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * author iikun
@@ -70,6 +73,39 @@ public class AuditRecordServiceImpl implements AuditRecordService {
         } catch (DataAccessException e) {
             log.error("数据库异常: {}", e.getMessage());
             throw new ServiceException("数据库异常: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Map<String, Object> adminPage(Integer pageNum, Integer pageSize, String videoId, String auditorId, Integer result) {
+        assertAdmin();
+        int safePageNum = pageNum == null || pageNum < 1 ? 1 : pageNum;
+        int safePageSize = pageSize == null || pageSize < 1 ? 10 : Math.min(pageSize, 100);
+        int offset = (safePageNum - 1) * safePageSize;
+        try {
+            long total = auditRecordMapper.countByFilter(videoId, auditorId, result);
+            List<AuditRecordEntity> records = auditRecordMapper.selectPageByFilter(offset, safePageSize, videoId, auditorId, result);
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("records", records);
+            resultMap.put("total", total);
+            resultMap.put("current", safePageNum);
+            resultMap.put("size", safePageSize);
+            resultMap.put("pages", (total + safePageSize - 1) / safePageSize);
+            return resultMap;
+        } catch (DataAccessException e) {
+            log.error("数据库异常: {}", e.getMessage());
+            throw new ServiceException("数据库异常: " + e.getMessage());
+        }
+    }
+
+    private void assertAdmin() {
+        Result<UserDTO> userInfo = userService.getByTokenUserInfo();
+        if (userInfo == null || userInfo.getData() == null) {
+            throw new ServiceException("获取用户信息失败!");
+        }
+        boolean admin = Util.isUserRoole(Integer.parseInt(userInfo.getData().getRole()));
+        if (!admin) {
+            throw new ServiceException("权限不足? 需要管理员权限");
         }
     }
 }

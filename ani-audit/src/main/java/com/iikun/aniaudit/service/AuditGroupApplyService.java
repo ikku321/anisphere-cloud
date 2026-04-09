@@ -3,6 +3,7 @@ package com.iikun.aniaudit.service;
 import com.iikun.aniaudit.entity.AuditGroupApplyEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * author iikun
@@ -31,4 +32,6 @@ public interface AuditGroupApplyService {
      * 管理员：处理申请（1通过 2拒绝）
      */
     void review(Long id, Integer status);
+
+    Map<String, Object> adminPage(Integer pageNum, Integer pageSize, Integer status, String userId);
 }

@@ -25,4 +25,32 @@ public interface AuditRecordMapper {
 
     @Select("select * from ani_sphere.audit_record where video_id = #{videoId} order by create_time desc")
     List<AuditRecordEntity> listByVideoId(@Param("videoId") String videoId);
+
+    @Select("<script>" +
+            "select count(1) from ani_sphere.audit_record" +
+            "<where>" +
+            "  <if test='videoId != null and videoId != \"\"'> and video_id = #{videoId} </if>" +
+            "  <if test='auditorId != null and auditorId != \"\"'> and auditor_id = #{auditorId} </if>" +
+            "  <if test='result != null'> and result = #{result} </if>" +
+            "</where>" +
+            "</script>")
+    long countByFilter(@Param("videoId") String videoId,
+                       @Param("auditorId") String auditorId,
+                       @Param("result") Integer result);
+
+    @Select("<script>" +
+            "select * from ani_sphere.audit_record" +
+            "<where>" +
+            "  <if test='videoId != null and videoId != \"\"'> and video_id = #{videoId} </if>" +
+            "  <if test='auditorId != null and auditorId != \"\"'> and auditor_id = #{auditorId} </if>" +
+            "  <if test='result != null'> and result = #{result} </if>" +
+            "</where>" +
+            " order by create_time desc" +
+            " limit #{size} offset #{offset}" +
+            "</script>")
+    List<AuditRecordEntity> selectPageByFilter(@Param("offset") Integer offset,
+                                               @Param("size") Integer size,
+                                               @Param("videoId") String videoId,
+                                               @Param("auditorId") String auditorId,
+                                               @Param("result") Integer result);
 }
