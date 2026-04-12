@@ -34,7 +34,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final List<String> WHITE_LIST = List.of(
             "/user/login",
-            "/user/register"
+            "/user/register",
+            "/admin/admin-login"
     );
 
     @Override
@@ -63,13 +64,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             if (!jwtUtil.validateToken(token)) {
-                throw new RuntimeException("Token无效");
+                throw new ServletException("Token无效");
             }
 
             // 解析 token 获取用户 id
             String userId = jwtUtil.getSubject(token);
             if (userId == null) {
-                throw new RuntimeException("Token解析失败，缺少 subject");
+                throw new ServletException("Token解析失败，缺少 subject");
             }
             log.info("解析 token 获取到的用户 id: {}", userId);
 

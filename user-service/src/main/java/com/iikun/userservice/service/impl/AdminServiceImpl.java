@@ -13,6 +13,7 @@ import com.iikun.userservice.mapper.UserMapper;
 import com.iikun.userservice.service.AdminService;
 import com.iikun.userservice.service.UserService;
 import io.jsonwebtoken.Jwt;
+import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -31,17 +32,20 @@ import java.util.Map;
  */
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
 
     /** 管理端数据访问层 */
-    private final AdminMapper adminMapper;
+    @Resource
+    private AdminMapper adminMapper;
 
-    private final UserMapper userMapper;
+    @Resource
+    private UserMapper userMapper;
 
-    private final UserService userService;
+    @Resource
+    private UserService userService;
 
-    private final JwtUtil jwtUtil;
+    @Resource
+    private JwtUtil jwtUtil;
 
     @Override
     public Object pageUsers(Integer page, Integer size) {

@@ -9,6 +9,7 @@ import com.iikun.userservice.service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ import java.util.Map;
  * version 1.0.0
  * msg: 用户服务管理控制层
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/admin")
 @Tag(name = "用户管理", description = "该功能只有管理员才能使用, 管理所有用户信息")
@@ -35,6 +37,9 @@ public class AdminController {
     public Result<?> adminLogin(@RequestParam(required = true) String username,
                                 @RequestParam(required = true) String password
     ) {
+        if (username.isEmpty() || password.isEmpty()) {
+            return Result.failed("账号或密码不能为空?");
+        }
         String token = adminService.adminLogin(username, password);
         HashMap<String, Object> loginToken = new HashMap<>();
         loginToken.put("token", token);

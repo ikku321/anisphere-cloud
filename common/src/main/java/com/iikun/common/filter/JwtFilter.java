@@ -58,8 +58,6 @@ public class JwtFilter extends OncePerRequestFilter {
             String uid = jwtUtil.getSubject(token);
             // 将 UID 存入当前请求作用域，方便后续 Controller 直接通过 request.getAttribute("uid") 获取
             request.setAttribute("uid", uid);
-
-
         }
 
         // 放行请求，让请求继续往下执行

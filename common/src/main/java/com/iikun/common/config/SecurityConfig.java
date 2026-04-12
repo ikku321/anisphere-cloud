@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .formLogin(form -> form.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/admin/admin-login",
                                 "/user/login",
                                 "/user/register",
                                 "/swagger-ui/**",

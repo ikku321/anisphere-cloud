@@ -1,5 +1,6 @@
 package com.iikun.userservice.aop;
 
+import com.iikun.common.common.ServiceException;
 import com.iikun.common.context.UserContext;
 import com.iikun.common.exception.NoAdminPermissionException;
 import com.iikun.common.model.LoginUser;
@@ -24,7 +25,7 @@ public class AdminAspect {
         LoginUser user = UserContext.getUser();
         log.info("获取用户权限: {}", user.getRole());
         if (!"0".equals(user.getRole())) {
-            throw new NoAdminPermissionException();
+            throw new ServiceException("没有管理员权限，禁止访问");
         }
     }
 
