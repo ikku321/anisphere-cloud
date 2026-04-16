@@ -3,6 +3,7 @@ package com.iikun.anivideo.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -20,12 +21,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> {}) // 开启跨域
-                .csrf(csrf -> csrf.disable())
-                .httpBasic(httpBasic -> httpBasic.disable())
-                .formLogin(form -> form.disable())
+                .cors(cors -> {
+                }) // 开启跨域
+                .csrf(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
+                        .requestMatchers("/uploads/**")
+                        .permitAll()
+                        // 其他请求必须带token
+                        .anyRequest()
+                        .authenticated()
                 );
 
         return http.build();
