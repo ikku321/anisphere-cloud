@@ -318,6 +318,25 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException("数据库异常: " + e.getMessage());
         }
     }
+
+    /**
+     * 更新用户头像地址
+     *
+     * @param uid       用户id
+     * @param avatarUrl 用户头像地址
+     */
+    @Override
+    public void updateAvatarUrl(String uid, String avatarUrl) {
+        try {
+            int updatedByUidAvatarUrl = userMapper.updateByUidAvatarUrl(uid, avatarUrl);
+            if (updatedByUidAvatarUrl <= 0) {
+                throw new ServiceException("更新头像地址失败!");
+            }
+        } catch (DataAccessException e) {
+            log.debug("数据库异常: {}", e.getMessage());
+            throw new ServiceException("服务器异常");
+        }
+    }
 }
 
 

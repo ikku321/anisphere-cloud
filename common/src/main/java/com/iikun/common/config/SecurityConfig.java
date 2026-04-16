@@ -43,7 +43,8 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-resources/**",
                                 "/v3/api-docs/**",
-                                "/webjars/**"
+                                "/webjars/**",
+                                "/uploads/**"
                         ).permitAll()
                         // 其他请求必须带token
                         .anyRequest().authenticated()

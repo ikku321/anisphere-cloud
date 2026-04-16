@@ -2,6 +2,7 @@ package com.iikun.userservice.controller;
 
 import com.iikun.common.annotation.Admin;
 import com.iikun.common.base.Result;
+import com.iikun.common.common.ServiceException;
 import com.iikun.common.utils.JwtUtil;
 import com.iikun.common.utils.UserContext;
 import com.iikun.userservice.domain.dto.RegisterDTO;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Nullable;
 import jakarta.annotation.Resource;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -198,6 +200,14 @@ public class UserController {
     public Result<UserInfoDTO> getTokenByUserInfo(HttpServletRequest request) {
         String uid = (String) request.getAttribute("uid").toString();
         return Result.success(userService.foundByTokenUserInfo(uid));
+    }
+
+    @Operation(summary = "更新用户头像地址")
+    @PutMapping("/update-avatar-url")
+    public Result<?> update(HttpServletRequest request, @RequestParam(required = true) String avatarUrl) {
+        String uid = (String) request.getAttribute("uid").toString();
+        userService.updateAvatarUrl(uid, avatarUrl);
+        return Result.success();
     }
 
 

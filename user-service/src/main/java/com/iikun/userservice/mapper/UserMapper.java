@@ -119,6 +119,15 @@ public interface UserMapper {
      */
     @Select("select user.id from user where user_id = #{uid}")
     Integer getFindUidById(@Param("uid") String uid);
+
+    /**
+     * 更新用户头像地址
+     *
+     * @param uid       用户uid
+     * @param avatarUrl 头像地址
+     */
+    @Update("update ani_sphere.user set avatar_url = #{avatarUrl} where user_id = #{uid}")
+    int updateByUidAvatarUrl(@Param("uid") String uid, @Param("avatarUrl") String avatarUrl);
 }
 
 

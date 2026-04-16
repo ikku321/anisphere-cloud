@@ -89,4 +89,11 @@ public interface UserService {
      * @return 返回信息
      */
     UserInfoDTO foundByTokenUserInfo(String uid);
+
+    /**
+     * 更新用户头像地址
+     * @param uid 用户id
+     * @param avatarUrl 用户头像地址
+     */
+    void updateAvatarUrl(String uid, String avatarUrl);
 }

@@ -213,7 +213,8 @@ select count(1) from ani_sphere.user where username = 'test10' and password = ''
 -- 验证账号跟密码指定权限为0（0: 管理员权限）
 select count(1) from ani_sphere.user where (username = 'test10' and password = '') and role = 0;
 
-
+-- 更新用户头像地址
+update ani_sphere.user set avatar_url = 'http://localhost:8080' where user_id = 'MjM3MzNiMTUtNDJiYi00Mm';
 
 
 
