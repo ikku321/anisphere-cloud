@@ -69,7 +69,7 @@ public class FileServiceImpl implements FileService {
             }
             File dest = new File(dir, newFileName);
             file.transferTo(dest);
-            return "/uploads/video/" + newFileName;
+            return "/uploads/" + newFileName;
         } catch (Exception e) {
             throw new ServiceException("文件上传失败: " + e.getMessage());
         }

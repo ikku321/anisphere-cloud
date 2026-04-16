@@ -27,7 +27,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/uploads/**")
+                        .requestMatchers("/uploads/**", "/video/video-file/upload/video-file")
                         .permitAll()
                         // 其他请求必须带token
                         .anyRequest()
