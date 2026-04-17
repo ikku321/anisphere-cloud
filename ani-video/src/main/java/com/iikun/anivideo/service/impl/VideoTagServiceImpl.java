@@ -2,10 +2,13 @@ package com.iikun.anivideo.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.iikun.anivideo.entity.TagEntity;
+import com.iikun.anivideo.entity.VideoEntity;
 import com.iikun.anivideo.entity.VideoTagEntity;
+import com.iikun.anivideo.mapper.TagMapper;
 import com.iikun.anivideo.mapper.VideoTagMapper;
 import com.iikun.anivideo.service.VideoTagService;
 import com.iikun.common.common.ServiceException;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -54,7 +57,19 @@ public class VideoTagServiceImpl implements VideoTagService {
         }
     }
 
-
+    @Override
+    public List<VideoEntity> selectVideoByTagName(String tagId) {
+        try {
+            List<VideoEntity> videoEntities = videoTagMapper.selectVideosByTagId(tagId);
+            if (videoEntities.isEmpty()) {
+                throw new ServiceException("查询视频列表为空");
+            }
+            return videoEntities;
+        } catch (DataAccessException e) {
+            log.info("数据库异常: {}", e.getMessage());
+            throw new ServiceException("服务器异常");
+        }
+    }
 }
 
 

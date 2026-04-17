@@ -1,6 +1,7 @@
 package com.iikun.anivideo.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.iikun.anivideo.entity.VideoEntity;
 import com.iikun.anivideo.entity.VideoTagEntity;
 import org.apache.ibatis.annotations.*;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -61,10 +62,8 @@ public interface VideoTagMapper {
 
     /**
      * 根据标签id查询所有视频标签关联列表
-     *
      * @param tagId 标签id
-     * @return 返回列表信息
+     * @return 返回视频列表
      */
-    @Select("select * from ani_sphere.video_tag where tag_id = #{tagId}")
-    List<VideoTagEntity> findByTagId(@Param("tagId") Integer tagId);
+    List<VideoEntity> selectVideosByTagId(@Param("tagId") String tagId);
 }

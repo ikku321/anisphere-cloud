@@ -11,7 +11,7 @@ import java.util.List;
  * 标签 Mapper
  */
 @Mapper
-public interface TagMapper extends BaseMapper<TagEntity> {
+public interface TagMapper {
 
     /**
      * 新增标签
@@ -29,7 +29,7 @@ public interface TagMapper extends BaseMapper<TagEntity> {
      * @return 返回删除成功状态
      */
     @Delete("delete from ani_sphere.tag where id = #{tagId}")
-    Integer deleteTagById(@Param("tagId") String tagId);
+    boolean deleteTagById(@Param("tagId") Integer tagId);
 
     /**
      * 根据视频标签id查询是否存在
@@ -38,7 +38,7 @@ public interface TagMapper extends BaseMapper<TagEntity> {
      * @return 返回查询状态
      */
     @Select("select count(1) from ani_sphere.tag where id = #{tagId}")
-    Integer selectById(@Param("tagId") String tagId);
+    Integer selectById(@Param("tagId") Integer tagId);
 
     /**
      * 根据标签名称查询是否存在相同
@@ -73,5 +73,15 @@ public interface TagMapper extends BaseMapper<TagEntity> {
      * @return 返回标签内容
      */
     @Select("select * from ani_sphere.tag where id = #{tagId}")
-    TagEntity deleteTagByIdEntity(@Param("tagId") String tagId);
+    TagEntity foundByTagIdTagEntity(@Param("tagId") Integer tagId);
+
+    /**
+     * 根据标签类型查询标签列表
+     *
+     * @param type 标签类型
+     * @return 标签列表
+     */
+    @Select("select * from ani_sphere.tag where type = #{type}")
+    List<TagEntity> selectByTagTypeList(@Param("type") String type);
+
 }

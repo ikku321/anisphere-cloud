@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * author iikun
  * time 2026/2/13 0:35
@@ -38,6 +40,18 @@ public class VideoTagController {
             throw new ServiceException("视频标签id不能为空!");
         }
         videoTagService.deleteVideoTag(videoTagId);
-        return  Result.success();
+        return Result.success();
+    }
+
+    /**
+     * 根据标签名称查询视频列表， 如果没有标签侧查询所有视频列表
+     *
+     * @param tagId 标签名称
+     * @return 视频列表
+     */
+    @Operation(summary = "根据标签名称查询视频列表")
+    @GetMapping("/foudn/tag/video")
+    public Result<List<VideoEntity>> getAllVideoTags(@RequestParam(required = false) String tagId) {
+        return Result.success(videoTagService.selectVideoByTagName(tagId));
     }
 }

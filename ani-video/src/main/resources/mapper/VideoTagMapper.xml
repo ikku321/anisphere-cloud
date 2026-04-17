@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iikun.anivideo.mapper.VideoTagMapper">
+    <select id="selectVideosByTagId" resultType="com.iikun.anivideo.entity.VideoEntity">
+        SELECT v.*
+        FROM video v
+        <if test="tagId != null">
+            JOIN video_tag vt ON v.video_id = vt.video_id
+            WHERE vt.tag_id = #{tagId}
+        </if>
+    </select>
+</mapper>

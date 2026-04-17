@@ -28,8 +28,6 @@ public class TagController {
 
     private final TagService tagService;
 
-    private final VideoTagService videoTagService;
-
     @Operation(summary = "新增标签")
     @PostMapping("/add-tag")
     public Result<?> addTag(@RequestParam String name, @RequestParam(required = false) String type) {

@@ -1,6 +1,7 @@
 package com.iikun.anivideo.service;
 
 import com.iikun.anivideo.entity.TagEntity;
+import com.iikun.anivideo.entity.VideoEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -27,4 +28,12 @@ public interface VideoTagService {
      * @param videoTagId 视频标签关联id
      */
     void deleteVideoTag(String videoTagId);
+
+    /**
+     * 根据标签名称查询视频列表， 如果没有标签侧查询所有视频列表
+     *
+     * @param tagName 标签名称
+     * @return 视频列表
+     */
+    List<VideoEntity> selectVideoByTagName(String tagName);
 }

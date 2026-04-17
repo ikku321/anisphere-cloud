@@ -67,12 +67,4 @@ public interface TagService {
      * @return 标签列表
      */
     List<TagEntity> getTagsByType(String type);
-
-    /**
-     * 获取热门标签
-     *
-     * @param limit 限制数量
-     * @return 热门标签列表（包含使用次数）
-     */
-    List<Map<String, Object>> getHotTags(Integer limit);
 }

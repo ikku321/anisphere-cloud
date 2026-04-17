@@ -16,6 +16,13 @@ import org.springframework.context.annotation.FilterType;
 @EnableFeignClients
 @MapperScan("com.iikun.anivideo.mapper")
 @SpringBootApplication
+@ComponentScan(
+        basePackages = {"com.iikun.anivideo", "com.iikun.common"},
+        excludeFilters = @ComponentScan.Filter(
+                type = FilterType.ASSIGNABLE_TYPE,
+                classes = {com.iikun.common.config.SecurityConfig.class} // 排除 common 模块的通用安全配置，以使用当前模块的自定义安全配置
+        )
+)
 public class AniVideoApplication {
 
     public static void main(String[] args) {

@@ -52,32 +52,58 @@ from ani_sphere.tag
 where id = '9';
 
 -- 模糊查询视频标签名称
-select * from ani_sphere.tag where name like concat('%', '模糊查询的内容', '%');
+select *
+from ani_sphere.tag
+where name like concat('%', '模糊查询的内容', '%');
 
 -- 根据id获取视频信息
-select * from ani_sphere.video where video_id = 'tqheBj_nQuaP4pmPvQvcEQ';
+select *
+from ani_sphere.video
+where video_id = 'tqheBj_nQuaP4pmPvQvcEQ';
 
 -- 为视频添加标签
 insert ani_sphere.video_tag(video_id, tag_id) VALUE
-('mH9rEqzERw-1z6l2OXQczA', 1);
+    ('mH9rEqzERw-1z6l2OXQczA', 1);
 
 -- 删除视频标签关联
-delete from ani_sphere.video_tag where id = 1;
+delete
+from ani_sphere.video_tag
+where id = 1;
 
 -- 查询所有视频标签关联表
-select * from ani_sphere.video_tag;
+select *
+from ani_sphere.video_tag;
 
 -- 根据视频id查询视频所关联的标签
-select * from ani_sphere.video_tag where video_id = 'mH9rEqzERw-1z6l2OXQczA';
+select *
+from ani_sphere.video_tag
+where video_id = 'mH9rEqzERw-1z6l2OXQczA';
 
 -- 根据id查询视频标签关联信息
-select * from ani_sphere.video_tag where id = 3;
+select *
+from ani_sphere.video_tag
+where id = 3;
 
 -- 根据标签id查询所有视频标签关联列表
-select * from ani_sphere.video_tag where tag_id = 2;
+select *
+from ani_sphere.video_tag
+where tag_id = 2;
 
 -- 根据id查询弹幕
-select * from ani_sphere.danmaku where id = 1;
+select *
+from ani_sphere.danmaku
+where id = 1;
+
+-- 根据标签类型查询标签列表
+select *
+from ani_sphere.tag
+where type = '';
+
+-- 根据视频标签查询视频列表信息
+SELECT v.*
+FROM ani_sphere.video v
+         JOIN ani_sphere.video_tag vt ON v.video_id = vt.video_id
+WHERE vt.tag_id = 3;
 
 
 
