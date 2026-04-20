@@ -40,4 +40,22 @@ public interface MessageService extends IService<Message> {
      * @return 结果
      */
     Result<Void> recallMessage(String operatorId, String messageId);
+
+    /**
+     * 逻辑删除消息（仅对当前用户不可见或全局删除）
+     *
+     * @param userId    操作用户 ID
+     * @param messageId 消息 ID
+     * @return 结果
+     */
+    Result<Void> deleteMessage(String userId, String messageId);
+
+    /**
+     * 批量标记消息为已读
+     *
+     * @param userId         用户 ID
+     * @param conversationId 会话 ID
+     * @return 结果
+     */
+    Result<Void> markRead(String userId, String conversationId);
 }

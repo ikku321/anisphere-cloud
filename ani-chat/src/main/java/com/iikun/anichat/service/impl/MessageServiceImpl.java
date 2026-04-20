@@ -18,6 +18,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.iikun.anichat.service.MessageReadStatusService;
+import java.util.stream.Collectors;
+
 /**
  * 消息服务实现类
  *
@@ -31,6 +35,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     private final ConversationMemberMapper memberMapper;
     private final MessageActionLogMapper actionLogMapper;
     private final MessageReadStatusMapper readStatusMapper;
+    private final MessageReadStatusService messageReadStatusService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -78,6 +83,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     public Result<List<Message>> getHistoryMessages(String conversationId, String lastMessageId, Integer pageSize) {
         LambdaQueryWrapper<Message> queryWrapper = new LambdaQueryWrapper<Message>()
                 .eq(Message::getConversationId, conversationId)
+                .eq(Message::getDeleted, 0) // 只查询未删除的
                 .orderByDesc(Message::getCreateTime)
                 .last("limit " + (pageSize == null ? 20 : pageSize));
 
@@ -117,14 +123,14 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
             }
         }
 
-        // 检查撤回时间（通常限制在 2 分钟内，这里先不加硬性限制，或者加一个配置）
+        // 检查撤回时间（限制在 2 分钟内）
         if (message.getCreateTime().plusMinutes(2).isBefore(LocalDateTime.now())) {
-             // 如果不是管理员，限制 2 分钟内
+             // 检查是否为管理人员（角色 >= 2 为管理/群主）
              ConversationMember member = memberMapper.selectOne(new LambdaQueryWrapper<ConversationMember>()
                     .eq(ConversationMember::getConversationId, message.getConversationId())
                     .eq(ConversationMember::getUserId, operatorId));
-             if (member != null && member.getRole() < 2) {
-                 return Result.failed("只能撤回 2 分钟内的消息");
+             if (member == null || member.getRole() < 2) {
+                 return Result.failed("普通用户只能撤回 2 分钟内的消息");
              }
         }
 
@@ -133,12 +139,39 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         this.updateById(message);
 
         // 记录日志
-        MessageActionLog log = new MessageActionLog();
-        log.setMessageId(messageId);
-        log.setOperatorId(operatorId);
-        log.setAction("recall");
-        actionLogMapper.insert(log);
+        MessageActionLog actionLog = new MessageActionLog();
+        actionLog.setMessageId(messageId);
+        actionLog.setOperatorId(operatorId);
+        actionLog.setAction("recall");
+        actionLogMapper.insert(actionLog);
 
         return Result.success(null);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result<Void> deleteMessage(String userId, String messageId) {
+        Message message = this.getOne(new LambdaQueryWrapper<Message>().eq(Message::getMessageId, messageId));
+        if (message == null) {
+            return Result.failed("消息不存在");
+        }
+        // 权限校验：只能删除自己发的消息，或者在该会话中具备管理权限
+        if (!message.getFromUser().equals(userId)) {
+            ConversationMember member = memberMapper.selectOne(new LambdaQueryWrapper<ConversationMember>()
+                    .eq(ConversationMember::getConversationId, message.getConversationId())
+                    .eq(ConversationMember::getUserId, userId));
+            if (member == null || member.getRole() < 2) {
+                return Result.failed("无权删除该消息");
+            }
+        }
+        // 执行逻辑删除
+        message.setDeleted(1);
+        this.updateById(message);
+        return Result.success(null);
+    }
+
+    @Override
+    public Result<Void> markRead(String userId, String conversationId) {
+        return messageReadStatusService.markConversationAsRead(userId, conversationId);
     }
 }

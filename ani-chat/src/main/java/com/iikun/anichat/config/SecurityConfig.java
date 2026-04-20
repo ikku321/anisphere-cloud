@@ -1,5 +1,6 @@
 package com.iikun.anichat.config;
 
+import com.iikun.anichat.filter.UserContextFilter;
 import com.iikun.common.filter.JwtAuthenticationFilter;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
@@ -15,24 +16,37 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
- * author iikun
- * time 2026/2/13 0:35
- * version 1.0.0
- * msg:
+ * 消息服务安全配置类
  */
 @Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
+
+    @Resource
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Resource
+    private UserContextFilter userContextFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> {}) // 开启跨域
-                .csrf(csrf -> csrf.disable())
-                .httpBasic(httpBasic -> httpBasic.disable())
-                .formLogin(form -> form.disable())
+                .cors(cors -> {})
+                .csrf(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
-                );
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/swagger-resources/**",
+                                "/v3/api-docs/**",
+                                "/webjars/**"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(userContextFilter, JwtAuthenticationFilter.class);
 
         return http.build();
     }
@@ -49,5 +63,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-
 }
