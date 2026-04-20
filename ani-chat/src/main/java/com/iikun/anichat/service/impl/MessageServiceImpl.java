@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iikun.anichat.service.MessageReadStatusService;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     private final MessageActionLogMapper actionLogMapper;
     private final MessageReadStatusMapper readStatusMapper;
     private final MessageReadStatusService messageReadStatusService;
+    private final ObjectMapper objectMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -62,7 +64,10 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         message.setFromUser(fromUserId);
         message.setType(sendDTO.getType());
         message.setContent(sendDTO.getContent());
-        message.setAttachment(sendDTO.getAttachment());
+        
+        // 处理 JSON 类型的附件字段：确保符合 MySQL JSON 格式要求
+        message.setAttachment(processJsonField(sendDTO.getAttachment()));
+        
         message.setRecalled(0);
         message.setDeleted(0);
         
@@ -77,6 +82,37 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         conversationMapper.updateById(conversation);
 
         return Result.success(message);
+    }
+
+    /**
+     * 处理 JSON 类型的字段，确保其符合 MySQL JSON 格式要求
+     *
+     * @param jsonValue 原始 JSON 字符串
+     * @return 处理后的 JSON 字符串或 null
+     */
+    private String processJsonField(String jsonValue) {
+        if (jsonValue == null || jsonValue.trim().isEmpty()) {
+            return null;
+        }
+        String trimmed = jsonValue.trim();
+        // 如果已经是以 { } 或 [ ] 或 " " 包裹，尝试校验是否为合法 JSON
+        if ((trimmed.startsWith("{") && trimmed.endsWith("}")) ||
+            (trimmed.startsWith("[") && trimmed.endsWith("]")) ||
+            (trimmed.startsWith("\"") && trimmed.endsWith("\""))) {
+            try {
+                // 尝试解析，如果不报错说明是合法 JSON
+                objectMapper.readTree(trimmed);
+                return trimmed;
+            } catch (Exception ignored) {
+                // 解析失败，说明虽然有包裹但格式不对，后续按普通字符串处理
+            }
+        }
+        // 如果不是合法的 JSON 结构，则将其作为普通 JSON 字符串处理（自动加双引号并转义）
+        try {
+            return objectMapper.writeValueAsString(trimmed);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
