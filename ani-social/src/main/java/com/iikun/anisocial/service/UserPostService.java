@@ -42,6 +42,24 @@ public interface UserPostService extends IService<UserPost> {
     Result<Page<UserPost>> getUserPosts(String userId, int page, int size);
 
     /**
+     * 获取用户所有正常状态动态列表
+     *
+     * @param userId 用户 ID
+     * @return 动态列表
+     */
+    Result<List<UserPost>> getUserPosts(String userId);
+
+    /**
+     * 更新动态状态（显示/隐藏/删除）
+     *
+     * @param postId 动态 ID
+     * @param userId 作者 ID（校验权限）
+     * @param status 状态
+     * @return 结果
+     */
+    Result<Void> updatePostStatus(String postId, String userId, Integer status);
+
+    /**
      * 分页获取所有公开动态列表
      *
      * @param page 当前页

@@ -98,6 +98,19 @@ public class FriendController {
     }
 
     /**
+     * 获取共同好友
+     *
+     * @param otherUserId 另一个用户的 ID
+     * @return 共同好友的 userId 列表
+     */
+    @GetMapping("/mutual")
+    @Operation(summary = "获取共同好友", description = "获取当前用户与指定用户的共同好友列表")
+    public Result<List<String>> getMutualFriends(@RequestParam String otherUserId) {
+        String userId = UserContext.getUser().getUid();
+        return friendRelationService.getMutualFriends(userId, otherUserId);
+    }
+
+    /**
      * 创建好友分组
      *
      * @param groupName 分组名称

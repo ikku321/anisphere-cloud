@@ -187,4 +187,79 @@ public class FriendRelationServiceImpl extends ServiceImpl<FriendRelationMapper,
 
         return Result.success(); // 返回成功
     }
+
+    @Override
+    public Result<List<String>> getMutualFriends(String userId, String otherUserId) {
+        // 1. 获取当前用户的好友 ID 集合
+        LambdaQueryWrapper<FriendRelation> myFriendsWrapper = new LambdaQueryWrapper<>();
+        myFriendsWrapper.eq(FriendRelation::getUserId, userId)
+                        .eq(FriendRelation::getStatus, 1)
+                        .select(FriendRelation::getFriendId);
+        List<String> myFriendIds = this.listObjs(myFriendsWrapper, Object::toString);
+
+        if (myFriendIds.isEmpty()) {
+            return Result.success(List.of());
+        }
+
+        // 2. 获取另一个用户的好友 ID 集合
+        LambdaQueryWrapper<FriendRelation> otherFriendsWrapper = new LambdaQueryWrapper<>();
+        otherFriendsWrapper.eq(FriendRelation::getUserId, otherUserId)
+                           .eq(FriendRelation::getStatus, 1)
+                           .select(FriendRelation::getFriendId);
+        List<String> otherFriendIds = this.listObjs(otherFriendsWrapper, Object::toString);
+
+        if (otherFriendIds.isEmpty()) {
+            return Result.success(List.of());
+        }
+
+        // 3. 计算交集
+        myFriendIds.retainAll(otherFriendIds);
+        return Result.success(myFriendIds);
+    }
+
+    @Override
+    @Transactional
+    public Result<Void> blockUser(String userId, String targetUser) {
+        if (userId.equals(targetUser)) {
+            return Result.failed("不能拉黑自己");
+        }
+        
+        // 查找或创建关系
+        LambdaQueryWrapper<FriendRelation> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(FriendRelation::getUserId, userId).eq(FriendRelation::getFriendId, targetUser);
+        FriendRelation relation = this.getOne(wrapper);
+        
+        if (relation == null) {
+            relation = new FriendRelation();
+            relation.setUserId(userId);
+            relation.setFriendId(targetUser);
+            relation.setStatus(2); // 拉黑
+            this.save(relation);
+        } else {
+            relation.setStatus(2);
+            this.updateById(relation);
+        }
+        
+        return Result.success();
+    }
+
+    @Override
+    @Transactional
+    public Result<Void> unblockUser(String userId, String targetUser) {
+        LambdaQueryWrapper<FriendRelation> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(FriendRelation::getUserId, userId)
+               .eq(FriendRelation::getFriendId, targetUser)
+               .eq(FriendRelation::getStatus, 2);
+        
+        FriendRelation relation = this.getOne(wrapper);
+        if (relation == null) {
+            return Result.failed("该用户不在黑名单中");
+        }
+        
+        // 取消拉黑：这里逻辑上可以选择删除记录，或者设为 0 (待验证) 或 1 (如果是原好友)
+        // 简单起见，取消拉黑即删除该“拉黑”状态的关系记录
+        this.removeById(relation.getId());
+        
+        return Result.success();
+    }
 }

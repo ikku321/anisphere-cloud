@@ -1,6 +1,7 @@
 package com.iikun.anisocial.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.List;
 import com.iikun.anisocial.dto.PostCreateDTO;
 import com.iikun.anisocial.entity.UserPost;
 import com.iikun.anisocial.service.UserPostService;
@@ -78,6 +79,55 @@ public class UserPostController {
                                                @RequestParam(defaultValue = "10") int size) {
         return userPostService.getGlobalPosts(page, size); // 执行全站分页查询
     }
+
+    /**
+     * 获取当前登录用户的所有动态列表
+     *
+     * @return 动态列表
+     */
+    @GetMapping("/my")
+    @Operation(summary = "获取我的动态", description = "获取当前登录用户发布的动态列表")
+    public Result<List<UserPost>> getMyPosts() {
+        String userId = UserContext.getUser().getUid();
+        return userPostService.getUserPosts(userId);
+    }
+
+    /**
+     * 批量删除当前用户的动态
+     *
+     * @param postIds 动态业务 ID 列表
+     * @return 操作结果
+     */
+    @DeleteMapping("/batch-delete")
+    @Operation(summary = "批量删除动态", description = "批量删除当前用户发布的指定动态")
+    public Result<Void> batchDeletePosts(@RequestBody List<String> postIds) {
+        String userId = UserContext.getUser().getUid();
+        for (String postId : postIds) {
+            userPostService.deletePost(userId, postId);
+        }
+        return Result.success();
+    }
+
+    /**
+     * 更新动态可见状态
+     *
+     * @param postId 动态 ID
+     * @param status 状态：1-公开，0-隐藏
+     * @return 操作结果
+     */
+    @PutMapping("/{postId}/visibility")
+    @Operation(summary = "修改动态可见性", description = "修改指定动态的显示/隐藏状态")
+    public Result<Void> updatePostVisibility(@PathVariable String postId, @RequestParam Integer status) {
+        String userId = UserContext.getUser().getUid();
+        return userPostService.updatePostStatus(postId, userId, status);
+    }
+
+    /**
+     * 根据动态 ID 获取动态详情
+     *
+     * @param postId 动态业务 ID
+     * @return 动态对象
+     */
 
     /**
      * 手动更新点赞数（通常供其他服务或内部回调调用）

@@ -1,5 +1,6 @@
 package com.iikun.anisocial.config;
 
+import com.iikun.anisocial.filter.UserContextFilter;
 import com.iikun.common.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,9 @@ public class SocialSecurityConfig {
     @Resource // 注入 common 模块提供的 JWT 过滤器
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    @Resource // 注入当前模块自定义的上下文过滤器
+    private UserContextFilter userContextFilter;
+
     /**
      * 配置安全过滤链
      *
@@ -51,7 +55,8 @@ public class SocialSecurityConfig {
                         ).permitAll() // 允许直接访问
                         .anyRequest().authenticated() // 其他所有社交操作接口必须通过身份验证
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(userContextFilter, JwtAuthenticationFilter.class);
 
         return http.build();
     }

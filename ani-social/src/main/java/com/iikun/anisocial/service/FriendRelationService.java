@@ -54,5 +54,39 @@ public interface FriendRelationService extends IService<FriendRelation> {
      * @param friendId 好友 ID
      * @return 结果
      */
+    /**
+     * 删除好友
+     *
+     * @param userId   当前用户 ID
+     * @param friendId 好友 ID
+     * @return 结果
+     */
     Result<Void> deleteFriend(String userId, String friendId);
+
+    /**
+     * 获取共同好友列表
+     *
+     * @param userId       当前用户 ID
+     * @param otherUserId  另一个用户 ID
+     * @return 共同好友 ID 列表
+     */
+    Result<List<String>> getMutualFriends(String userId, String otherUserId);
+
+    /**
+     * 拉黑用户
+     *
+     * @param userId     当前用户 ID
+     * @param targetUser 目标用户 ID
+     * @return 结果
+     */
+    Result<Void> blockUser(String userId, String targetUser);
+
+    /**
+     * 取消拉黑
+     *
+     * @param userId     当前用户 ID
+     * @param targetUser 目标用户 ID
+     * @return 结果
+     */
+    Result<Void> unblockUser(String userId, String targetUser);
 }

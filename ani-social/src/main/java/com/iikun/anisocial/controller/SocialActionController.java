@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
 
+import com.iikun.anisocial.service.FriendRelationService;
+
 /**
  * 社交行为控制器 (举报、记录清理等)
  */
@@ -23,6 +25,29 @@ public class SocialActionController {
 
     @Resource // 注入依赖
     private ChatHistoryClearService chatHistoryClearService; // 聊天记录清除服务
+
+    @Resource
+    private FriendRelationService friendRelationService;
+
+    /**
+     * 拉黑用户
+     */
+    @PostMapping("/block")
+    @Operation(summary = "拉黑用户", description = "将指定用户加入黑名单")
+    public Result<Void> blockUser(@RequestParam String targetUser) {
+        String userId = UserContext.getUser().getUid();
+        return friendRelationService.blockUser(userId, targetUser);
+    }
+
+    /**
+     * 取消拉黑
+     */
+    @PostMapping("/unblock")
+    @Operation(summary = "取消拉黑", description = "将指定用户从黑名单中移除")
+    public Result<Void> unblockUser(@RequestParam String targetUser) {
+        String userId = UserContext.getUser().getUid();
+        return friendRelationService.unblockUser(userId, targetUser);
+    }
 
     /**
      * 举报用户

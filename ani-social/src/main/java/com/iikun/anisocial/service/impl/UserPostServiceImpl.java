@@ -93,6 +93,26 @@ public class UserPostServiceImpl extends ServiceImpl<UserPostMapper, UserPost> i
         return Result.success(result); // 返回结果
     }
 
+    @Override
+    public Result<List<UserPost>> getUserPosts(String userId) {
+        LambdaQueryWrapper<UserPost> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserPost::getUserId, userId)
+                    .eq(UserPost::getStatus, 1)
+                    .orderByDesc(UserPost::getCreateTime);
+        return Result.success(this.list(queryWrapper));
+    }
+
+    @Override
+    @Transactional
+    public Result<Void> updatePostStatus(String postId, String userId, Integer status) {
+        LambdaUpdateWrapper<UserPost> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(UserPost::getPostId, postId)
+                     .eq(UserPost::getUserId, userId)
+                     .set(UserPost::getStatus, status);
+        boolean updated = this.update(updateWrapper);
+        return updated ? Result.success() : Result.failed("修改状态失败");
+    }
+
     /**
      * 分页获取全站公开动态列表
      *
