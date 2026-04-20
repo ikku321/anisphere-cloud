@@ -1,6 +1,7 @@
 package com.iikun.userservice.config;
 
 import com.iikun.common.filter.JwtAuthenticationFilter;
+import com.iikun.userservice.filter.UserContextFilter;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,9 @@ public class SecurityConfig {
 
     @Resource
     private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Resource
+    private UserContextFilter userContextFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -48,7 +52,10 @@ public class SecurityConfig {
                         .authenticated()
                 );
 
+        // 注册 JWT 认证过滤器
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        // 注册 UserContext 补充过滤器，放在 jwtAuthenticationFilter 之后
+        http.addFilterAfter(userContextFilter, JwtAuthenticationFilter.class);
 
         return http.build();
     }
@@ -65,5 +72,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-
 }

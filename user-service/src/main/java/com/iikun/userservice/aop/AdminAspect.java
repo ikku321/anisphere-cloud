@@ -22,9 +22,20 @@ public class AdminAspect {
 
     @Before("@annotation(com.iikun.common.annotation.Admin)")
     public void checkAdmin() {
+        // 从当前上下文中获取登录用户信息
         LoginUser user = UserContext.getUser();
-        log.info("获取用户权限: {}", user.getRole());
+        
+        // 校验用户是否已登录，避免 null 导致的空指针异常
+        if (user == null) {
+            log.warn("鉴权失败: 用户未登录或 Token 无效");
+            throw new ServiceException("请先登录后操作");
+        }
+        
+        log.info("校验用户权限: 用户ID = {}, 角色 = {}", user.getUid(), user.getRole());
+        
+        // 判断角色是否为管理员（约定 role 为 "0" 是管理员）
         if (!"0".equals(user.getRole())) {
+            log.warn("权限不足: 用户ID = {}, 角色 = {}", user.getUid(), user.getRole());
             throw new ServiceException("没有管理员权限，禁止访问");
         }
     }
