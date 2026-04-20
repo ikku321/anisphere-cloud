@@ -40,4 +40,23 @@ public interface AuditTaskService {
     void adminForceComplete(String videoId);
 
     Map<String, Object> adminSummary();
+
+    /**
+     * 审核员：分页获取待审核任务列表
+     *
+     * @param pageNum  页码
+     * @param pageSize 每页大小
+     * @return 分页数据
+     */
+    Map<String, Object> auditorPagePending(Integer pageNum, Integer pageSize);
+
+    /**
+     * 审核员：分页获取我领取的任务列表
+     *
+     * @param pageNum  页码
+     * @param pageSize 每页大小
+     * @param status   状态（1进行中，2已完成）
+     * @return 分页数据
+     */
+    Map<String, Object> auditorPageMyTasks(Integer pageNum, Integer pageSize, Integer status);
 }

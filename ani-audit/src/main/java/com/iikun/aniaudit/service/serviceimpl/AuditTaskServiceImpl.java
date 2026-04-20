@@ -218,6 +218,53 @@ public class AuditTaskServiceImpl implements AuditTaskService {
         }
     }
 
+    @Override
+    public Map<String, Object> auditorPagePending(Integer pageNum, Integer pageSize) {
+        String auditorId = assertAuditor();
+        int safePageNum = pageNum == null || pageNum < 1 ? 1 : pageNum;
+        int safePageSize = pageSize == null || pageSize < 1 ? 10 : Math.min(pageSize, 100);
+        int offset = (safePageNum - 1) * safePageSize;
+        try {
+            // 状态 0 为待审核
+            long total = auditTaskMapper.countByFilter(0, null, null);
+            List<AuditTask> records = auditTaskMapper.selectPageByFilter(offset, safePageSize, 0, null, null);
+            Map<String, Object> result = new HashMap<>();
+            result.put("records", records);
+            result.put("total", total);
+            result.put("current", safePageNum);
+            result.put("size", safePageSize);
+            result.put("pages", (total + safePageSize - 1) / safePageSize);
+            return result;
+        } catch (DataAccessException e) {
+            log.error("数据库异常: {}", e.getMessage());
+            throw new ServiceException("数据库异常: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Map<String, Object> auditorPageMyTasks(Integer pageNum, Integer pageSize, Integer status) {
+        String auditorId = assertAuditor();
+        int safePageNum = pageNum == null || pageNum < 1 ? 1 : pageNum;
+        int safePageSize = pageSize == null || pageSize < 1 ? 10 : Math.min(pageSize, 100);
+        int offset = (safePageNum - 1) * safePageSize;
+        try {
+            // 默认查询进行中任务 (status=1)
+            Integer queryStatus = status == null ? 1 : status;
+            long total = auditTaskMapper.countByFilter(queryStatus, null, auditorId);
+            List<AuditTask> records = auditTaskMapper.selectPageByFilter(offset, safePageSize, queryStatus, null, auditorId);
+            Map<String, Object> result = new HashMap<>();
+            result.put("records", records);
+            result.put("total", total);
+            result.put("current", safePageNum);
+            result.put("size", safePageSize);
+            result.put("pages", (total + safePageSize - 1) / safePageSize);
+            return result;
+        } catch (DataAccessException e) {
+            log.error("数据库异常: {}", e.getMessage());
+            throw new ServiceException("数据库异常: " + e.getMessage());
+        }
+    }
+
     private void assertAdmin() {
         Result<UserDTO> userInfo = userService.getByTokenUserInfo();
         if (userInfo == null || userInfo.getData() == null) {
@@ -227,5 +274,23 @@ public class AuditTaskServiceImpl implements AuditTaskService {
         if (!admin) {
             throw new ServiceException("权限不足? 需要管理员权限");
         }
+    }
+
+    /**
+     * 校验是否为审核员（role=3）或管理员（role=0）
+     * 
+     * @return 当前用户ID
+     */
+    private String assertAuditor() {
+        Result<UserDTO> userInfo = userService.getByTokenUserInfo();
+        if (userInfo == null || userInfo.getData() == null) {
+            throw new ServiceException("获取用户信息失败!");
+        }
+        String role = userInfo.getData().getRole();
+        // role 0 管理员, 3 审核员
+        if (!"0".equals(role) && !"3".equals(role)) {
+            throw new ServiceException("权限不足? 需要审核员权限");
+        }
+        return userInfo.getData().getUserId();
     }
 }
