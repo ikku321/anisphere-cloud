@@ -16,6 +16,7 @@
     <packaging>pom</packaging>
 
     <modules>
+		<module>gateway</module>
 		<module>ani-chat</module>
 		<module>ani-social</module>
 		<module>ani-message</module>

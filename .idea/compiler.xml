@@ -16,6 +16,7 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.44/lombok-1.18.44.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.44/lombok-1.18.44.jar" />
         </processorPath>
         <module name="ani-comment" />
       </profile>
@@ -24,6 +25,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
         </processorPath>
         <module name="ani-message" />
@@ -47,6 +49,7 @@
       <module name="ani-video" options="-parameters" />
       <module name="anisphere-cloud" options="" />
       <module name="common" options="-parameters" />
+      <module name="gateway" options="-parameters" />
       <module name="user-service" options="-parameters" />
       <module name="video-service" options="-parameters" />
     </option>
