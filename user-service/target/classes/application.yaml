@@ -6,6 +6,9 @@ spring:
     username: root
     password: ik101145
     driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      enabled: true
 
 server:
   port: 9090
