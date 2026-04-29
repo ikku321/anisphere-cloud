@@ -11,8 +11,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +34,9 @@ public class AdminController {
 
     @Resource
     private AdminService adminService;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @PostMapping("/admin-login")
     @Operation(summary = "管理员专属登录Api", description = "用于管理员登录")
@@ -146,6 +152,43 @@ public class AdminController {
         return Result.success();
     }
 
+    @Admin
+    @PostMapping("/token/invalidate")
+    @Operation(summary = "使指定Token失效", description = "删除 Redis 中存储的 token，使该 token 立即失效（仅管理员）")
+    public Result<?> invalidateToken(@RequestParam String token) {
+        if (token == null || token.isBlank()) {
+            return Result.failed("token不能为空");
+        }
+        String raw = token.trim();
+        if (raw.startsWith("Bearer ")) {
+            raw = raw.substring(7).trim();
+        }
+        if (raw.isBlank()) {
+            return Result.failed("token不能为空");
+        }
+
+        String key = "auth:token:" + sha256Hex(raw);
+        Boolean deleted = stringRedisTemplate.delete(key);
+        if (deleted == null || !deleted) {
+            return Result.failed("token不存在或已失效");
+        }
+        return Result.success();
+    }
+
+    private static String sha256Hex(String str) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(str.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder(hash.length * 2);
+            for (byte b : hash) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            return str;
+        }
+    }
+
     @Data
     public static class CreateUserRequest {
         private String username;
@@ -175,7 +218,6 @@ public class AdminController {
     }
 
 }
-
 
 
 

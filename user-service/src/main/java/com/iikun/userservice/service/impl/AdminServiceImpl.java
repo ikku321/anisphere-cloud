@@ -12,14 +12,18 @@ import com.iikun.userservice.mapper.AdminMapper;
 import com.iikun.userservice.mapper.UserMapper;
 import com.iikun.userservice.service.AdminService;
 import com.iikun.userservice.service.UserService;
-import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.Claims;
 import jakarta.annotation.Resource;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.time.Duration;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +50,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Resource
     private JwtUtil jwtUtil;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public Object pageUsers(Integer page, Integer size) {
@@ -256,10 +263,73 @@ public class AdminServiceImpl implements AdminService {
             log.info("login-> calims存值: username = {}", byUsername.getUsername());
             log.info("login-> calims存值: role = {}", byUsername.getRole());
 
-            return jwtUtil.generateToken(byUsername.getUserId(), claims);
+            String token = jwtUtil.generateToken(byUsername.getUserId(), claims);
+            cacheToken(byUsername.getUserId(), token);
+            return token;
         } catch (DataAccessException e) {
             log.info("数据库异常: {}", e.getMessage());
             throw new ServiceException("数据库异常: " + e.getMessage());
+        }
+    }
+
+    private void cacheToken(String userId, String token) {
+        String tokenFinal = normalizeToken(token);
+        if (tokenFinal.isBlank()) {
+            throw new ServiceException("Token生成失败");
+        }
+
+        Claims claims;
+        try {
+            claims = jwtUtil.getAllClaims(tokenFinal);
+        } catch (Exception e) {
+            throw new ServiceException("Token生成失败");
+        }
+
+        Date exp = claims.getExpiration();
+        long ttlMs = exp == null ? 0 : exp.getTime() - System.currentTimeMillis();
+        if (ttlMs <= 0) {
+            ttlMs = 1000;
+        }
+        String key = "auth:token:" + sha256Hex(tokenFinal);
+        try {
+            stringRedisTemplate.opsForValue().set(key, userId, Duration.ofMillis(ttlMs));
+        } catch (Exception e) {
+            throw new ServiceException("登录失败: Token缓存异常");
+        }
+    }
+
+    private static String normalizeToken(String raw) {
+        if (raw == null) {
+            return "";
+        }
+        String t = raw.trim();
+        if (t.isEmpty()) {
+            return "";
+        }
+        String lower = t.toLowerCase();
+        if (lower.startsWith("bearer")) {
+            t = t.substring(6).trim();
+            if (t.startsWith(":")) {
+                t = t.substring(1).trim();
+            }
+        }
+        if ((t.startsWith("\"") && t.endsWith("\"")) || (t.startsWith("'") && t.endsWith("'"))) {
+            t = t.substring(1, t.length() - 1).trim();
+        }
+        return t;
+    }
+
+    private static String sha256Hex(String str) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(str.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder(hash.length * 2);
+            for (byte b : hash) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            return str;
         }
     }
 }
