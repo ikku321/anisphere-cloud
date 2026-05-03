@@ -258,6 +258,7 @@ public class VideoServiceImpl implements VideoService {
             result.put("current", videoPage.getCurrent());
             result.put("pages", videoPage.getPages());
             result.put("size", videoPage.getSize());
+
             return result;
         } catch (DataAccessException e) {
             log.debug(e.getMessage());
@@ -377,6 +378,34 @@ public class VideoServiceImpl implements VideoService {
                 throw new ServiceException("查询到的视频为空!");
             }
             return videoEntity;
+        } catch (DataAccessException e) {
+            log.debug(e.getMessage());
+            throw new ServiceException("数据库异常!");
+        }
+    }
+
+    /**
+     * 查询指定用户「审核中」的视频列表。
+     *
+     * <p>实现细节：</p>
+     * <ul>
+     *     <li>匹配条件：<code>user_id = uid</code> 且 <code>status = 0</code>（0 = 审核中，见 VideoEntity 注释）；</li>
+     *     <li>排序：按 <code>create_time DESC</code>，让最新提交的排在前面；</li>
+     *     <li>空结果场景返回 <code>new ArrayList&lt;&gt;()</code>，避免调用方处理 null。</li>
+     * </ul>
+     */
+    @Override
+    public List<VideoEntity> getMyAuditingVideos(String uid) {
+        if (uid == null || uid.isBlank()) {
+            throw new ServiceException("用户ID不能为空");
+        }
+        try {
+            QueryWrapper<VideoEntity> wrapper = new QueryWrapper<>();
+            wrapper.eq("user_id", uid)
+                    .eq("status", 0)
+                    .orderByDesc("create_time");
+            List<VideoEntity> list = videoMapper.selectList(wrapper);
+            return list == null ? new ArrayList<>() : list;
         } catch (DataAccessException e) {
             log.debug(e.getMessage());
             throw new ServiceException("数据库异常!");

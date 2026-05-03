@@ -222,6 +222,16 @@ public class VideoController {
         return Result.success(videoService.getVideoInfo(videoId));
     }
 
+    @Operation(summary = "我的审核中视频列表",
+            description = "用户在「我的」页面查看自己刚上传、仍在审核中的视频（status=0）。按创建时间倒序返回。")
+    @GetMapping("/my/auditing")
+    public Result<List<VideoEntity>> getMyAuditingVideos(@RequestParam String uid) {
+        if (uid == null || uid.isBlank()) {
+            throw new ServiceException("用户ID不能为空!");
+        }
+        return Result.success(videoService.getMyAuditingVideos(uid));
+    }
+
 
     /**
      * 填充完整的数据

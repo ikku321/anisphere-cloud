@@ -154,4 +154,15 @@ public interface VideoService {
      * @return 返回视频详情
      */
     VideoEntity getVideoInfo(String videoId);
+
+    /**
+     * 查询指定用户正在审核中的视频列表。
+     *
+     * <p>判定条件：<code>user_id = uid AND status = 0</code>，按创建时间倒序。</p>
+     * <p>用途：「我的」页面入口 —— 用户可以看到刚提交、尚未发布的视频进度。</p>
+     *
+     * @param uid 用户 ID
+     * @return 审核中视频列表（可能为空列表）
+     */
+    List<VideoEntity> getMyAuditingVideos(String uid);
 }
