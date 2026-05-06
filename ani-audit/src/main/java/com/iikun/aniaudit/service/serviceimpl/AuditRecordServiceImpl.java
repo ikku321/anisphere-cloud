@@ -98,14 +98,17 @@ public class AuditRecordServiceImpl implements AuditRecordService {
         }
     }
 
+    /**
+     * 审核记录是只读历史数据，审核员同样需要查看（用于自查 / 复核），
+     * 因此放宽到 staff（管理员 + 审核员）。
+     */
     private void assertAdmin() {
         Result<UserDTO> userInfo = userService.getByTokenUserInfo();
         if (userInfo == null || userInfo.getData() == null) {
             throw new ServiceException("获取用户信息失败!");
         }
-        boolean admin = Util.isUserRoole(Integer.parseInt(userInfo.getData().getRole()));
-        if (!admin) {
-            throw new ServiceException("权限不足? 需要管理员权限");
+        if (!Util.isStaff(Integer.parseInt(userInfo.getData().getRole()))) {
+            throw new ServiceException("权限不足，该操作需要管理员或审核员权限");
         }
     }
 }

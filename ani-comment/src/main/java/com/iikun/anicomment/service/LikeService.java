@@ -13,6 +13,8 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -43,16 +45,21 @@ public class LikeService {
      * @param commentId 评论ID
      */
     public void like(String commentId) {
+        LoginUser loginUser = UserContext.getUser();
+        if (loginUser == null || loginUser.getUid() == null || loginUser.getUid().isBlank()) {
+            throw new ServiceException("未登录或用户信息缺失");
+        }
+        String uid = loginUser.getUid();
 
-//        // 如果已点赞，直接返回，保证幂等。
-//        if (commentLikeRepository.existsByCommentIdAndUserId(commentId, loginUser.getUid())) {
-//            return;
-//        }
+        // 已点赞直接返回，保证幂等。
+        if (commentLikeRepository.existsByCommentIdAndUserId(commentId, uid)) {
+            return;
+        }
 
         CommentLike like = new CommentLike();
         like.setId(UUID.randomUUID().toString());
         like.setCommentId(commentId);
-        like.setUserId("1");
+        like.setUserId(uid);
         like.setCreateTime(LocalDateTime.now());
 
         try {
@@ -77,10 +84,17 @@ public class LikeService {
      * @param commentId 评论ID
      */
     public void unlike(String commentId) {
-//        long deleted = commentLikeRepository.deleteByCommentIdAndUserId(commentId, loginUser.getUid());
-//        if (deleted <= 0) {
-//            return;
-//        }
+        LoginUser loginUser = UserContext.getUser();
+        if (loginUser == null || loginUser.getUid() == null || loginUser.getUid().isBlank()) {
+            throw new ServiceException("未登录或用户信息缺失");
+        }
+
+        // 先删自己这一行 CommentLike；删 0 条说明本来就没点过，直接 return 保证幂等。
+        // 之前这里被注释掉、所有人都共享 -1，会把别人的点赞计数误减。
+        long deleted = commentLikeRepository.deleteByCommentIdAndUserId(commentId, loginUser.getUid());
+        if (deleted <= 0) {
+            return;
+        }
 
         // likes > 0 时才允许 -1，避免出现负数。
         Query query = new Query(Criteria.where("_id").is(commentId)
@@ -88,5 +102,50 @@ public class LikeService {
                 .and("likes").gt(0));
         Update update = new Update().inc("likes", -1);
         mongoTemplate.updateFirst(query, update, Comment.class);
+    }
+
+    /**
+     * 列出当前用户在指定视频下"已点赞过的评论 ID"。
+     * <p>
+     * 客户端进入视频详情页时调用一次，配合 /comment/list 的结果用于把心形从空心切换成实心。
+     * <p>
+     * 实现：
+     * 1. 先用 Mongo 投影只取该视频下未删除评论的 _id（避免拉一批完整文档）；
+     * 2. 再用 (userId, commentId IN ids) 交集查 comment_like 表。
+     *
+     * @param videoId 视频 ID
+     * @return commentId 字符串列表；未登录或无任何点赞时返回空列表
+     */
+    public List<String> listMyLikedCommentIds(String videoId) {
+        LoginUser loginUser = UserContext.getUser();
+        if (loginUser == null || loginUser.getUid() == null || loginUser.getUid().isBlank()) {
+            return Collections.emptyList();
+        }
+        if (videoId == null || videoId.isBlank()) {
+            return Collections.emptyList();
+        }
+
+        // 1) 投影查询：只拉 _id，节省带宽
+        Query commentQuery = new Query(Criteria.where("videoId").is(videoId).and("deleted").ne(true));
+        commentQuery.fields().include("_id");
+        List<Comment> comments = mongoTemplate.find(commentQuery, Comment.class);
+        if (comments.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<String> commentIds = comments.stream()
+                .map(Comment::getId)
+                .filter(id -> id != null && !id.isBlank())
+                .toList();
+        if (commentIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // 2) 在 comment_like 表里取交集
+        return commentLikeRepository
+                .findAllByUserIdAndCommentIdIn(loginUser.getUid(), commentIds)
+                .stream()
+                .map(CommentLike::getCommentId)
+                .distinct()
+                .toList();
     }
 }

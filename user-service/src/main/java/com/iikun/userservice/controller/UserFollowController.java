@@ -2,15 +2,11 @@ package com.iikun.userservice.controller;
 
 import com.iikun.common.base.Result;
 import com.iikun.userservice.service.UserFollowService;
-import com.iikun.userservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -66,11 +62,42 @@ public class UserFollowController {
     }
 
 
-    @Operation(summary = "获取用户关注列表", description = "获取当前操作者的关注列表，展示基本的被关注用户数据显示")
+    @Operation(summary = "获取用户关注列表",
+            description = "返回某用户「关注的人」列表。userId 为空时默认查当前登录用户。"
+                    + "返回的每一行带 isMyFollowing 字段，标识当前登录用户是否也关注该行用户。")
     @GetMapping("/follow-list")
-    public Result<?> getUserFollow(HttpServletRequest request) {
+    public Result<?> getUserFollow(
+            HttpServletRequest request,
+            @RequestParam(name = "userId", required = false) String userId
+    ) {
+        String viewer = (String) request.getAttribute("uid");
+        String target = (userId != null && !userId.isBlank()) ? userId : viewer;
+        return Result.success(userFollowService.selectAllFollow(target, viewer));
+    }
+
+
+    @Operation(summary = "获取用户粉丝列表",
+            description = "返回某用户的粉丝列表。userId 为空时默认查当前登录用户。"
+                    + "返回的每一行带 isMyFollowing 字段，便于前端展示「回关 / 互相关注」。")
+    @GetMapping("/fans-list")
+    public Result<?> getUserFans(
+            HttpServletRequest request,
+            @RequestParam(name = "userId", required = false) String userId
+    ) {
+        String viewer = (String) request.getAttribute("uid");
+        String target = (userId != null && !userId.isBlank()) ? userId : viewer;
+        return Result.success(userFollowService.selectAllFans(target, viewer));
+    }
+
+
+    @Operation(summary = "查询是否已关注", description = "判断当前用户是否已关注指定 followId 用户")
+    @GetMapping("/is-following")
+    public Result<Boolean> isFollowing(
+            HttpServletRequest request,
+            @RequestParam(name = "followId") String followId
+    ) {
         String uid = (String) request.getAttribute("uid");
-        return Result.success(userFollowService.selectAllFollow(uid));
+        return Result.success(userFollowService.isFollowing(uid, followId));
     }
 }
 

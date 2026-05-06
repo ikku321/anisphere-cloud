@@ -44,4 +44,14 @@ public class ConversationController {
         String userId = UserContext.getUser().getUid();
         return conversationService.createGroupConversation(userId, title, memberIds);
     }
+
+    @Operation(
+            summary = "获取当前用户的会话列表（带详情）",
+            description = "在普通会话基础上额外返回最后一条消息预览、未读数、私聊对方 uid，专供消息页私信 Tab"
+    )
+    @GetMapping("/list-with-detail")
+    public Result<List<com.iikun.anichat.entity.dto.ConversationListItemDTO>> getMyConversationsWithDetail() {
+        String userId = UserContext.getUser().getUid();
+        return conversationService.getUserConversationsWithDetail(userId);
+    }
 }

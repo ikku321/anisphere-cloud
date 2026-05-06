@@ -50,17 +50,20 @@ public class CommentService {
      * @return 保存后的 Comment
      */
     public Comment publish(CommentPublishRequest request) {
-//        LoginUser loginUser = UserContext.getUser();
-//        if (loginUser == null || loginUser.getUid() == null || loginUser.getUid().isBlank()) {
-//            throw new ServiceException("未登录或用户信息缺失");
-//        }
+        // 从 ThreadLocal 中取出当前登录用户（由 UserContextFilter 解析 JWT 后写入）。
+        // 之前这里被注释掉、写死 "1"，导致 mongo.comment.userId 全部是字符串 "1"，
+        // 前端点击评论头像跳到资料页时调 /user/find?uid=1 必然失败。
+        LoginUser loginUser = UserContext.getUser();
+        if (loginUser == null || loginUser.getUid() == null || loginUser.getUid().isBlank()) {
+            throw new ServiceException("未登录或用户信息缺失");
+        }
 
         LocalDateTime now = LocalDateTime.now();
 
         Comment comment = new Comment();
         comment.setId(UUID.randomUUID().toString());
         comment.setVideoId(request.getVideoId());
-        comment.setUserId("1");
+        comment.setUserId(loginUser.getUid());
         comment.setContent(request.getContent());
         comment.setParentId(request.getParentId());
         comment.setReplyTo(request.getReplyTo());

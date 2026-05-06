@@ -41,8 +41,8 @@ public class AuditTaskServiceImpl implements AuditTaskService {
     @Override
     public List<AuditTask> getAuditList() {
         try {
-            // 判断用户权限
-            assertAdmin();
+            // 任务列表为只读查询，审核员同样可访问
+            assertStaff();
 
             // 执行查询任务
             List<AuditTask> auditTasks = auditTaskMapper.all();
@@ -121,7 +121,7 @@ public class AuditTaskServiceImpl implements AuditTaskService {
 
     @Override
     public Map<String, Object> adminPage(Integer pageNum, Integer pageSize, Integer status, String videoId, String auditorId) {
-        assertAdmin();
+        assertStaff();
         int safePageNum = pageNum == null || pageNum < 1 ? 1 : pageNum;
         int safePageSize = pageSize == null || pageSize < 1 ? 10 : Math.min(pageSize, 100);
         int offset = (safePageNum - 1) * safePageSize;
@@ -143,7 +143,7 @@ public class AuditTaskServiceImpl implements AuditTaskService {
 
     @Override
     public AuditTask adminGetByVideoId(String videoId) {
-        assertAdmin();
+        assertStaff();
         if (videoId == null || videoId.isEmpty()) {
             throw new ServiceException("视频id不存在!");
         }
@@ -202,7 +202,7 @@ public class AuditTaskServiceImpl implements AuditTaskService {
 
     @Override
     public Map<String, Object> adminSummary() {
-        assertAdmin();
+        assertStaff();
         try {
             long pending = auditTaskMapper.countByStatus(0);
             long processing = auditTaskMapper.countByStatus(1);
@@ -270,9 +270,24 @@ public class AuditTaskServiceImpl implements AuditTaskService {
         if (userInfo == null || userInfo.getData() == null) {
             throw new ServiceException("获取用户信息失败!");
         }
-        boolean admin = Util.isUserRoole(Integer.parseInt(userInfo.getData().getRole()));
-        if (!admin) {
-            throw new ServiceException("权限不足? 需要管理员权限");
+        if (!Util.isAdmin(Integer.parseInt(userInfo.getData().getRole()))) {
+            throw new ServiceException("权限不足，该操作需要管理员权限");
+        }
+    }
+
+    /**
+     * 校验当前用户是「管理员」或「审核员」。
+     *
+     * 用于查看类接口（任务列表、详情、统计等）：审核员要看到任务才能干活，
+     * 管理员同样可以查看。写类（分配/强制完成）仍走 {@link #assertAdmin}。
+     */
+    private void assertStaff() {
+        Result<UserDTO> userInfo = userService.getByTokenUserInfo();
+        if (userInfo == null || userInfo.getData() == null) {
+            throw new ServiceException("获取用户信息失败!");
+        }
+        if (!Util.isStaff(Integer.parseInt(userInfo.getData().getRole()))) {
+            throw new ServiceException("权限不足，该操作需要管理员或审核员权限");
         }
     }
 

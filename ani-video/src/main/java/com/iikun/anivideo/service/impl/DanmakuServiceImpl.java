@@ -6,6 +6,7 @@ import com.iikun.anivideo.entity.Danmaku;
 import com.iikun.anivideo.mapper.DanmakuMapper;
 import com.iikun.anivideo.service.DanmakuService;
 import com.iikun.anivideo.service.UserService;
+import com.iikun.anivideo.ws.DanmakuPushService;
 import com.iikun.common.base.Result;
 import com.iikun.common.common.ServiceException;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,11 @@ public class DanmakuServiceImpl implements DanmakuService {
     private final UserService userService;
 
     /**
+     * 弹幕 WebSocket 推送中枢：入库后向同视频房间所有观众广播。
+     */
+    private final DanmakuPushService danmakuPushService;
+
+    /**
      * 发送弹幕
      * <p>
      * 业务逻辑：
@@ -86,6 +92,15 @@ public class DanmakuServiceImpl implements DanmakuService {
             int result = danmakuMapper.insert(danmaku);
             if (result <= 0) {
                 throw new ServiceException("发送弹幕失败");
+            }
+
+            // WebSocket 实时广播：把这条弹幕推给同 videoId 房间的所有在线观众。
+            // mybatis-plus 默认开启 useGeneratedKeys，danmaku.id 会被回填。
+            // 推送失败仅记录日志：弹幕已入库，对方下次拉历史能看到，不影响主流程。
+            try {
+                danmakuPushService.pushToRoom(danmaku.getVideoId(), danmaku);
+            } catch (Exception e) {
+                log.warn("Danmaku WS 推送失败：videoId={}, msg={}", danmaku.getVideoId(), e.getMessage());
             }
         } catch (DataAccessException e) {
             log.info("数据库异常: {}", e.getMessage());

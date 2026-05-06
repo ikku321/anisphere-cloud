@@ -35,14 +35,16 @@ public class FileServiceImpl implements FileService {
             String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
             String newFileName = UUID.randomUUID().toString().replace("-", "") + suffix;
             String uploadDir = uploadConfig.getUploadDir();
-            File dir = new File(uploadDir);
+            // transferTo 对相对路径会基于 Tomcat 临时目录解析,必须先转绝对路径
+            File dir = new File(uploadDir).getAbsoluteFile();
             // 如果目录不存在就创建
             if (!dir.exists()) {
                 dir.mkdirs();
             }
             File dest = new File(dir, newFileName);
             file.transferTo(dest);
-            return "/uploads/" + newFileName;
+            // 返回的 URL 路径必须与 VideoUploadStaticConfig 注册的 /uploads/video/** 一致
+            return "/uploads/video/" + newFileName;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("文件上传失败: " + e.getMessage());
@@ -63,13 +65,14 @@ public class FileServiceImpl implements FileService {
         try {
             String newFileName = UUID.randomUUID().toString().replace("-", "") + suffix;
             String uploadDir = uploadConfig.getUploadDir();
-            File dir = new File(uploadDir);
+            // transferTo 对相对路径会基于 Tomcat 临时目录解析,必须先转绝对路径
+            File dir = new File(uploadDir).getAbsoluteFile();
             if (!dir.exists()) {
                 dir.mkdirs();
             }
             File dest = new File(dir, newFileName);
             file.transferTo(dest);
-            return "/uploads/" + newFileName;
+            return "/uploads/video/" + newFileName;
         } catch (Exception e) {
             throw new ServiceException("文件上传失败: " + e.getMessage());
         }

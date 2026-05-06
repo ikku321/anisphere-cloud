@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * author iikun
@@ -37,6 +38,16 @@ import java.util.Map;
 @Service
 @Slf4j
 public class AdminServiceImpl implements AdminService {
+
+    /**
+     * 允许登录后台管理端的角色集合：
+     * <ul>
+     *     <li>0 - 管理员：可访问所有管理端接口</li>
+     *     <li>3 - 审核员：仅可访问审核相关接口（前端按 role 隐藏其它菜单）</li>
+     * </ul>
+     * 普通用户(1)与 UP 主(2)拒绝登录后台。
+     */
+    private static final Set<Integer> BACKEND_ALLOWED_ROLES = Set.of(0, 3);
 
     /** 管理端数据访问层 */
     @Resource
@@ -247,10 +258,13 @@ public class AdminServiceImpl implements AdminService {
                 throw new ServiceException("密码不正确");
             }
 
-            // 验证权限是否属于管理员
-            int admin = adminMapper.isAdmin(username);
-            if (admin <= 0) {
-                throw new ServiceException("您还不是管理员! 请使用管理员账号登录");
+            // 验证账号是否具备后台访问权限。
+            // role 编码：0=管理员 1=普通用户 2=UP主 3=审核员（见 user.role 字段注释）。
+            // 后台仅允许「管理员」与「审核员」登录；其余角色直接拒绝，避免拿到 token 后再被
+            // 各 @Admin 接口连环 403 的体验。新增可登录角色时只需扩充该集合。
+            Integer role = byUsername.getRole();
+            if (role == null || !BACKEND_ALLOWED_ROLES.contains(role)) {
+                throw new ServiceException("该账号无后台访问权限，请使用管理员或审核员账号登录");
             }
 
             // 生成 token

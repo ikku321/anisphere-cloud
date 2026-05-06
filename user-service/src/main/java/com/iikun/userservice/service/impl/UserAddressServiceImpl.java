@@ -37,8 +37,8 @@ public class UserAddressServiceImpl implements UserAddressService {
      */
     @Override
     public void add(UserAddersRequest uaReq) {
-        if (uaReq.getIsDefault().isEmpty()) {
-            uaReq.setIsDefault("0");
+        if (uaReq.getIsDefault() == null) {
+            uaReq.setIsDefault(false);
         }
         Integer inserted = userAddressMapper.insert(
                 uaReq.getUid(),

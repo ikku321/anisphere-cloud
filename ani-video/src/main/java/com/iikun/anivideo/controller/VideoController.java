@@ -35,12 +35,14 @@ public class VideoController {
     @Autowired
     private VideoService videoService;
 
-    @Operation(summary = "上传视频信息")
+    @Operation(summary = "上传视频信息",
+            description = "保存视频元数据，返回新创建的 videoId，便于前端继续绑定标签等关联操作。")
     @PostMapping("/video-list")
-    public Result<?> uploading(@RequestBody VideoEntity videoEntity, @RequestParam String uid) {
-        // 执行将数据存储到sql表中
-        videoService.save(getVideoEntity(videoEntity, uid));
-        return Result.success();
+    public Result<String> uploading(@RequestBody VideoEntity videoEntity, @RequestParam String uid) {
+        // getVideoEntity 内部会调用 Utils.videoId() 生成新 videoId 并写入实体
+        VideoEntity prepared = getVideoEntity(videoEntity, uid);
+        videoService.save(prepared);
+        return Result.success(prepared.getVideoId());
     }
 
     @Operation(summary = "修改视频可见状态")
@@ -85,7 +87,8 @@ public class VideoController {
     }
 
 
-    @Operation(summary = "删除视频")
+    @Admin
+    @Operation(summary = "删除视频", description = "仅管理员可删除视频，审核员无此权限。")
     @DeleteMapping("/delete")
     public Result<?> deleteVideo(@RequestParam String videoId) {
         videoService.deleteVideo(videoId);
@@ -187,7 +190,8 @@ public class VideoController {
         return Result.success();
     }
 
-    @Operation(summary = "批量删除视频")
+    @Admin
+    @Operation(summary = "批量删除视频", description = "仅管理员可批量删除视频，审核员无此权限。")
     @DeleteMapping("/batch-delete")
     public Result<?> batchDeleteVideos(@RequestBody List<String> videoIds) {
         if (videoIds == null || videoIds.isEmpty()) {

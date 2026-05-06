@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 
 /**
  * author iikun
@@ -81,5 +83,16 @@ public class CommentController {
     public Result<?> unlike(@PathVariable String commentId) {
         likeService.unlike(commentId);
         return Result.success();
+    }
+
+    /**
+     * 列出当前用户在指定视频下"已点赞过"的评论 ID 列表。
+     * <p>
+     * 客户端进入视频详情页时调用一次,用来把列表里相应评论的心形渲染成实心。
+     * 未登录返回空数组(后端不抛 401,让游客也能浏览评论)。
+     */
+    @GetMapping("/my-liked")
+    public Result<List<String>> myLiked(@RequestParam String videoId) {
+        return Result.success(likeService.listMyLikedCommentIds(videoId));
     }
 }

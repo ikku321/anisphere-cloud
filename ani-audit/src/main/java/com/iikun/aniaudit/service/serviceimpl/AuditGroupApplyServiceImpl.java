@@ -72,9 +72,8 @@ public class AuditGroupApplyServiceImpl implements AuditGroupApplyService {
     public List<AuditGroupApplyEntity> listPendingForAdmin() {
         try {
             Result<UserDTO> userInfo = userService.getByTokenUserInfo();
-            boolean admin = Util.isUserRoole(Integer.parseInt(userInfo.getData().getRole()));
-            if (!admin) {
-                throw new ServiceException("权限不足? 需要管理员权限");
+            if (!Util.isAdmin(Integer.parseInt(userInfo.getData().getRole()))) {
+                throw new ServiceException("权限不足，审核组管理需要管理员权限");
             }
             return auditGroupApplyMapper.listPending();
         } catch (DataAccessException e) {
@@ -91,9 +90,8 @@ public class AuditGroupApplyServiceImpl implements AuditGroupApplyService {
         }
         try {
             Result<UserDTO> userInfo = userService.getByTokenUserInfo();
-            boolean admin = Util.isUserRoole(Integer.parseInt(userInfo.getData().getRole()));
-            if (!admin) {
-                throw new ServiceException("权限不足? 需要管理员权限");
+            if (!Util.isAdmin(Integer.parseInt(userInfo.getData().getRole()))) {
+                throw new ServiceException("权限不足，审批审核组申请需要管理员权限");
             }
             int updated = auditGroupApplyMapper.updateStatus(id, status);
             if (updated <= 0) {
@@ -109,9 +107,8 @@ public class AuditGroupApplyServiceImpl implements AuditGroupApplyService {
     public Map<String, Object> adminPage(Integer pageNum, Integer pageSize, Integer status, String userId) {
         try {
             Result<UserDTO> userInfo = userService.getByTokenUserInfo();
-            boolean admin = Util.isUserRoole(Integer.parseInt(userInfo.getData().getRole()));
-            if (!admin) {
-                throw new ServiceException("权限不足? 需要管理员权限");
+            if (!Util.isAdmin(Integer.parseInt(userInfo.getData().getRole()))) {
+                throw new ServiceException("权限不足，审核组管理需要管理员权限");
             }
 
             int safePageNum = pageNum == null || pageNum < 1 ? 1 : pageNum;

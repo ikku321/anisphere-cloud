@@ -20,6 +20,9 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
 
-## 配置视频封面上传地址
+## 视频/视频封面文件上传根目录(相对 JVM 工作目录)
+## 启动时由 VideoUploadStaticConfig 自动创建,无需手工 mkdir
+## 通过 URL 命名空间 /uploads/video/** 访问,网关按这个前缀路由
 file:
-  upload-dir: D:/anivideo/uploads/
+  ## 本地开发可改成绝对路径,如 D:/anivideo/uploads/video
+  upload-dir: ./uploads/video

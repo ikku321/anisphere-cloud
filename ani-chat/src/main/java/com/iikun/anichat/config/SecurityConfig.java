@@ -41,7 +41,10 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-resources/**",
                                 "/v3/api-docs/**",
-                                "/webjars/**"
+                                "/webjars/**",
+                                // WebSocket 端点：握手由 ChatHandshakeInterceptor 用 query token 校验
+                                "/chat/ws/**",
+                                "/chat/ws"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

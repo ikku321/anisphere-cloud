@@ -4,14 +4,22 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.iikun.anichat.entity.Conversation;
 import com.iikun.anichat.entity.ConversationMember;
+import com.iikun.anichat.entity.Message;
+import com.iikun.anichat.entity.MessageReadStatus;
+import com.iikun.anichat.entity.dto.ConversationListItemDTO;
 import com.iikun.anichat.mapper.ConversationMapper;
 import com.iikun.anichat.mapper.ConversationMemberMapper;
+import com.iikun.anichat.mapper.MessageMapper;
+import com.iikun.anichat.mapper.MessageReadStatusMapper;
 import com.iikun.anichat.service.ConversationService;
 import com.iikun.common.base.Result;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -26,6 +34,8 @@ import java.util.stream.Collectors;
 public class ConversationServiceImpl extends ServiceImpl<ConversationMapper, Conversation> implements ConversationService {
 
     private final ConversationMemberMapper memberMapper;
+    private final MessageMapper messageMapper;
+    private final MessageReadStatusMapper readStatusMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -125,5 +135,83 @@ public class ConversationServiceImpl extends ServiceImpl<ConversationMapper, Con
                 .orderByDesc(Conversation::getUpdateTime));
 
         return Result.success(conversations);
+    }
+
+    /**
+     * 详情版本：拼装 {@link ConversationListItemDTO} 列表。
+     *
+     * <p>实现采用「先按 conversationId 拉所有需要的子表，再循环组装」的简单做法。
+     * 私聊量级不大时性能足够，将来量级上来可以改成一次性 IN 查询 + 内存聚合。
+     */
+    @Override
+    public Result<List<ConversationListItemDTO>> getUserConversationsWithDetail(String userId) {
+        List<Conversation> conversations = getUserConversations(userId).getData();
+        if (conversations == null || conversations.isEmpty()) {
+            return Result.success(List.of());
+        }
+
+        List<ConversationListItemDTO> items = new ArrayList<>(conversations.size());
+        for (Conversation conv : conversations) {
+            ConversationListItemDTO item = new ConversationListItemDTO();
+            BeanUtils.copyProperties(conv, item);
+
+            // 1) 私聊对方 uid（仅 type=1 时填）
+            if (Integer.valueOf(1).equals(conv.getType())) {
+                ConversationMember other = memberMapper.selectOne(new LambdaQueryWrapper<ConversationMember>()
+                        .eq(ConversationMember::getConversationId, conv.getConversationId())
+                        .ne(ConversationMember::getUserId, userId)
+                        .last("limit 1"));
+                if (other != null) {
+                    item.setOtherUserId(other.getUserId());
+                }
+            }
+
+            // 2) 最后一条非删除消息
+            Message lastMsg = messageMapper.selectOne(new LambdaQueryWrapper<Message>()
+                    .eq(Message::getConversationId, conv.getConversationId())
+                    .eq(Message::getDeleted, 0)
+                    .orderByDesc(Message::getCreateTime)
+                    .last("limit 1"));
+            item.setLastMessage(lastMsg);
+
+            // 3) 未读数 = 对方在该会话发的非删除消息总数 - 我已读的"该会话中对方发的消息"数
+            //    没有消息时直接 0。
+            Long total = messageMapper.selectCount(new LambdaQueryWrapper<Message>()
+                    .eq(Message::getConversationId, conv.getConversationId())
+                    .ne(Message::getFromUser, userId)
+                    .eq(Message::getDeleted, 0));
+            long unread = 0L;
+            if (total != null && total > 0) {
+                List<String> theirMsgIds = messageMapper.selectList(new LambdaQueryWrapper<Message>()
+                        .select(Message::getMessageId)
+                        .eq(Message::getConversationId, conv.getConversationId())
+                        .ne(Message::getFromUser, userId)
+                        .eq(Message::getDeleted, 0))
+                        .stream().map(Message::getMessageId).collect(Collectors.toList());
+                long read = 0L;
+                if (!theirMsgIds.isEmpty()) {
+                    Long readCount = readStatusMapper.selectCount(new LambdaQueryWrapper<MessageReadStatus>()
+                            .eq(MessageReadStatus::getUserId, userId)
+                            .eq(MessageReadStatus::getReadFlag, 1)
+                            .in(MessageReadStatus::getMessageId, theirMsgIds));
+                    read = readCount == null ? 0L : readCount;
+                }
+                unread = Math.max(0L, total - read);
+            }
+            item.setUnreadCount(unread);
+
+            items.add(item);
+        }
+
+        // 4) 按最后消息时间倒序，无消息的排末尾
+        items.sort(Comparator.comparing(
+                (ConversationListItemDTO it) -> {
+                    Message m = it.getLastMessage();
+                    return m == null ? null : m.getCreateTime();
+                },
+                Comparator.nullsLast(Comparator.reverseOrder())
+        ));
+
+        return Result.success(items);
     }
 }

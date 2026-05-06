@@ -3,17 +3,68 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.iikun.userservice.mapper.UserFollowMapper">
 
+    <!--
+        关注列表（follower 关注了谁）：
+        - JOIN user 拿被关注者资料；
+        - LEFT JOIN user_follow 自连接（别名 viewer_uf）：viewerId → 当前查看者，
+          若 viewer_uf 命中说明当前查看者也关注了这一行，写 isMyFollowing=true。
+    -->
     <select id="selectAttentionList" resultType="com.iikun.userservice.domain.model.AttentionListModel">
         SELECT uf.id           as attentionId,
-               uf.follower_id as followerId, -- 被关注者ID
+               uf.follower_id  as followerId, -- 关注关系的发起者（即列表所属者）
                u.id            as userId,    -- 被关注者的用户ID
                u.user_id       as userUid,   -- 被关注者的UID
                u.nickname,
                u.avatar_url    as avatarUrl,
-               uf.create_time  as createTime
+               uf.create_time  as createTime,
+               <choose>
+                   <when test="viewerId != null and viewerId != ''">
+                       CASE WHEN viewer_uf.id IS NOT NULL THEN 1 ELSE 0 END as isMyFollowing
+                   </when>
+                   <otherwise>
+                       0 as isMyFollowing
+                   </otherwise>
+               </choose>
         FROM user_follow uf
-                 RIGHT JOIN user u ON uf.following_id = u.user_id -- 关联被关注者的信息
-        WHERE uf.follower_id = #{follower} -- 关注者ID = 当前用户
+                 INNER JOIN user u ON uf.following_id = u.user_id -- 关联被关注者的信息
+                 <if test="viewerId != null and viewerId != ''">
+                     LEFT JOIN user_follow viewer_uf
+                         ON viewer_uf.following_id = u.user_id
+                        AND viewer_uf.follower_id  = #{viewerId}
+                 </if>
+        WHERE uf.follower_id = #{follower} -- 列表所属者
+        ORDER BY uf.create_time DESC;
+    </select>
+
+    <!--
+        粉丝列表（谁关注了 following）：
+        - JOIN user 拿粉丝资料；
+        - LEFT JOIN user_follow 自连接判断 viewerId 是否也关注了这位粉丝。
+    -->
+    <select id="selectFansList" resultType="com.iikun.userservice.domain.model.AttentionListModel">
+        SELECT uf.id           as attentionId,
+               uf.following_id as followerId, -- 这里 followerId 字段复用为「列表所属者」
+               u.id            as userId,    -- 粉丝的内部主键
+               u.user_id       as userUid,   -- 粉丝的 UID
+               u.nickname,
+               u.avatar_url    as avatarUrl,
+               uf.create_time  as createTime,
+               <choose>
+                   <when test="viewerId != null and viewerId != ''">
+                       CASE WHEN viewer_uf.id IS NOT NULL THEN 1 ELSE 0 END as isMyFollowing
+                   </when>
+                   <otherwise>
+                       0 as isMyFollowing
+                   </otherwise>
+               </choose>
+        FROM user_follow uf
+                 INNER JOIN user u ON uf.follower_id = u.user_id -- 关联粉丝资料
+                 <if test="viewerId != null and viewerId != ''">
+                     LEFT JOIN user_follow viewer_uf
+                         ON viewer_uf.following_id = u.user_id
+                        AND viewer_uf.follower_id  = #{viewerId}
+                 </if>
+        WHERE uf.following_id = #{following} -- 列表所属者 = 被关注者
         ORDER BY uf.create_time DESC;
     </select>
 

@@ -21,6 +21,10 @@ import java.util.UUID;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iikun.anichat.service.MessageReadStatusService;
+import com.iikun.anichat.ws.ChatPushService;
+import lombok.extern.slf4j.Slf4j;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -28,6 +32,7 @@ import java.util.stream.Collectors;
  *
  * @author iikun
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> implements MessageService {
@@ -38,6 +43,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     private final MessageReadStatusMapper readStatusMapper;
     private final MessageReadStatusService messageReadStatusService;
     private final ObjectMapper objectMapper;
+    private final ChatPushService chatPushService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -80,6 +86,27 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         // 4. 更新会话的 updateTime，便于排序
         conversation.setUpdateTime(LocalDateTime.now());
         conversationMapper.updateById(conversation);
+
+        // 5. WebSocket 实时推送：把这条消息推给会话内除发送者外的所有成员。
+        //    事务尚未提交也直接推（提交失败概率极小）；如需更强一致性，后续可改为
+        //    TransactionSynchronizationManager.registerSynchronization 在 afterCommit 推。
+        try {
+            List<String> recipients = memberMapper.selectList(new LambdaQueryWrapper<ConversationMember>()
+                    .eq(ConversationMember::getConversationId, sendDTO.getConversationId())
+                    .ne(ConversationMember::getUserId, fromUserId))
+                    .stream().map(ConversationMember::getUserId).collect(Collectors.toList());
+            if (!recipients.isEmpty()) {
+                Map<String, Object> envelope = new HashMap<>();
+                envelope.put("type", "message");
+                envelope.put("payload", message);
+                for (String to : recipients) {
+                    chatPushService.pushToUser(to, envelope);
+                }
+            }
+        } catch (Exception e) {
+            // 推送失败仅记录日志：消息已入库，对方下次拉历史能看到，不影响主流程
+            log.warn("WS 推送失败：conversationId={}, msg={}", sendDTO.getConversationId(), e.getMessage());
+        }
 
         return Result.success(message);
     }

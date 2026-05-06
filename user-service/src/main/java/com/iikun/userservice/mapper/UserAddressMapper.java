@@ -42,7 +42,7 @@ public interface UserAddressMapper {
             @Param("city") String city,
             @Param("district") String district,
             @Param("detailAddress") String detailAddress,
-            @Param("isDefault") String isDefault
+            @Param("isDefault") Boolean isDefault
     );
 
 

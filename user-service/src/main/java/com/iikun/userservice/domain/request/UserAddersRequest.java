@@ -33,6 +33,6 @@ public class UserAddersRequest {
     // 详细信息
     @NotBlank(message = "详细信息不能为空？")
     private String detailAddress;
-    // 是否设置为默认地址
-    private String isDefault;
+    // 是否设置为默认地址（true=默认，false=非默认；为 null 时由 Service 默认置 false）
+    private Boolean isDefault;
 }

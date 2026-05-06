@@ -2,6 +2,7 @@ package com.iikun.anichat.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.iikun.anichat.entity.Conversation;
+import com.iikun.anichat.entity.dto.ConversationListItemDTO;
 import com.iikun.common.base.Result;
 import java.util.List;
 
@@ -38,4 +39,14 @@ public interface ConversationService extends IService<Conversation> {
      * @return 会话列表
      */
     Result<List<Conversation>> getUserConversations(String userId);
+
+    /**
+     * 获取当前用户的会话列表（含最后消息预览 + 未读数 + 私聊对方 uid）。
+     *
+     * <p>专供「消息页 - 私信 Tab」使用，避免前端为每个会话单独拉 history。
+     *
+     * @param userId 当前登录用户 ID
+     * @return 会话详情列表，按 lastMessage.createTime 倒序，无消息会话排在末尾
+     */
+    Result<List<ConversationListItemDTO>> getUserConversationsWithDetail(String userId);
 }

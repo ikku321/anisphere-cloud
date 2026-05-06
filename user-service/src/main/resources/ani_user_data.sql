@@ -128,6 +128,20 @@ WHERE uf.follower_id = 'YmIzMmMxMGYtMjU2OC00OD' -- 关注者ID = 当前用户
 ORDER BY uf.create_time DESC;
 
 
+-- ============================================================
+-- 【运维脚本 / 一次性回填】
+-- 旧版「关注/取关」代码没有维护 user.followers_count / user.following_count，
+-- 升级到新版后，前端展示已改为 user_follow 实时 COUNT，所以即便不执行下面的脚本
+-- 数字也是准确的。但物化字段保留下来用于将来的排行榜/推荐等聚合查询，
+-- 建议升级时手动执行一次以下两条 UPDATE 把它们补齐。
+-- ============================================================
+UPDATE user u
+SET following_count = (SELECT COUNT(1) FROM user_follow WHERE follower_id = u.user_id);
+
+UPDATE user u
+SET followers_count = (SELECT COUNT(1) FROM user_follow WHERE following_id = u.user_id);
+
+
 -- 用户收货地址
 insert into user_address(user_id, receiver_name, receiver_phone, province, city, district, detail_address,
                          is_default)

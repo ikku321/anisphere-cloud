@@ -33,7 +33,13 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/uploads/**", "/video/video-file/upload/video-file")
+                        .requestMatchers(
+                                "/uploads/**",
+                                "/video/video-file/upload/video-file",
+                                // WebSocket 端点：握手由 DanmakuHandshakeInterceptor 用 query token 校验
+                                "/danmaku/ws/**",
+                                "/danmaku/ws"
+                        )
                         .permitAll()
                         // 其他请求必须带token
                         .anyRequest()

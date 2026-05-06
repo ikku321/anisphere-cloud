@@ -2,12 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.iikun.anivideo.mapper.VideoTagMapper">
+    <!--
+        按标签查视频列表。
+        - tagId 非空：JOIN video_tag 仅返回该标签关联的视频；
+        - tagId 为空：直接查 video 表（管理用途，前端主页不会传空）。
+        都强制只返回「公开 + 已过审」（visible = 1 AND audit_status = 1），
+        避免主页或任何前端入口看到草稿 / 待审核视频。
+    -->
     <select id="selectVideosByTagId" resultType="com.iikun.anivideo.entity.VideoEntity">
         SELECT v.*
         FROM video v
         <if test="tagId != null">
             JOIN video_tag vt ON v.video_id = vt.video_id
             WHERE vt.tag_id = #{tagId}
+              AND v.visible = 1
+              AND v.audit_status = 1
         </if>
+        <if test="tagId == null">
+            WHERE v.visible = 1
+              AND v.audit_status = 1
+        </if>
+        ORDER BY v.create_time DESC
     </select>
 </mapper>

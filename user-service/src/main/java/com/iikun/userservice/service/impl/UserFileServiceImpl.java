@@ -36,7 +36,9 @@ public class UserFileServiceImpl implements UserFileService {
             String suffix = Objects.requireNonNull(originalFilename).substring(originalFilename.lastIndexOf("."));
             String newFileName = UUID.randomUUID().toString().replace("-", "") + suffix;
             String uploadDir = uploadUserConfig.getUploadDir();
-            File dir = new File(uploadDir);
+            // 必须解析成绝对路径,否则 transferTo 会基于 Tomcat 临时工作目录解析,
+            // 导致文件被写到 <user.home>/AppData/Local/Temp/tomcat.<port>.../ 下找不到。
+            File dir = new File(uploadDir).getAbsoluteFile();
             // 如果目录不存在就创建
             if (!dir.exists()) {
                 dir.mkdirs();

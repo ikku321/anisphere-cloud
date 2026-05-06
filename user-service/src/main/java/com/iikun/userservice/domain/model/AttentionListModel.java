@@ -25,4 +25,14 @@ public class AttentionListModel {
     private String avatarUrl;
     // 关注时间
     private String createTime;
+
+    /**
+     * 当前登录用户是否关注了「列表里这一行的用户」。
+     * 用于 UI 上展示「回关 / 互相关注 / 已关注」状态：
+     * - 在「我的粉丝」列表：true = 互相关注，false = 可点击「回关」
+     * - 在「我的关注」列表：恒为 true（既然在我的关注里那一定是我关注的）
+     * - 看「别人」的列表时：仍按当前登录用户口径计算
+     * 未登录或未注入查询者 id 时，由后端返回 false。
+     */
+    private Boolean isMyFollowing;
 }

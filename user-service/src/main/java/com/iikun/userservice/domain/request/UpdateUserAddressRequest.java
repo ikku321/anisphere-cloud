@@ -29,6 +29,6 @@ public class UpdateUserAddressRequest {
     private String district;
     // 详细信息
     private String detailAddress;
-    // 是否设置为默认地址
-    private String isDefault;
+    // 是否设置为默认地址（true=默认，false=非默认；为 null 时跳过此字段更新）
+    private Boolean isDefault;
 }

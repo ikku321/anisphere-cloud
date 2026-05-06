@@ -25,4 +25,6 @@ mybatis:
 
 ## 配置视频封面上传地址
 file:
-  upload-dir: D:/anivideo/uploads/user
+  ## upload-dir: D:/anivideo/uploads/user
+  ## 部署到服务器使用下面这个路径
+  upload-dir: ./uploads/user
