@@ -5,6 +5,7 @@ import com.iikun.userservice.entity.User;
 import org.apache.ibatis.annotations.*;
 
 import javax.swing.text.StyledEditorKit;
+import java.util.List;
 
 /**
  * author iikun
@@ -128,6 +129,17 @@ public interface UserMapper {
      */
     @Update("update ani_sphere.user set avatar_url = #{avatarUrl} where user_id = #{uid}")
     int updateByUidAvatarUrl(@Param("uid") String uid, @Param("avatarUrl") String avatarUrl);
+
+    /**
+     * 查询所有启用状态用户的 user_id (用于公告广播分发到 notification 表).
+     *
+     * status = 0 仅取「正常」账号; 1禁言 / 2封禁 / 3注销中 状态的账号不接收广播.
+     * 仅返回 user_id 字段, 不暴露其它敏感信息.
+     *
+     * @return 用户 user_id 列表
+     */
+    @Select("select user_id from user where status = 0")
+    List<String> listAllActiveUserIds();
 }
 
 

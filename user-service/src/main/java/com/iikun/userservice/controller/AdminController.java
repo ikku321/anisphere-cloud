@@ -26,7 +26,6 @@ import java.util.Map;
  * version 1.0.0
  * msg: 用户服务管理控制层
  */
-@CrossOrigin
 @RestController
 @RequestMapping("/admin")
 @Tag(name = "用户管理", description = "该功能只有管理员才能使用, 管理所有用户信息")

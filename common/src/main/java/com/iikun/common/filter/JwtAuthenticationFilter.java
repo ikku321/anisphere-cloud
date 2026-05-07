@@ -59,16 +59,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+        // Token 来源优先级：
+        //   1. Authorization Header（API 接口走 Ktor / Axios，最常见）
+        //   2. query 参数 ?token=xxx
+        //      —— <img> / <video> / 视频播放器（Media Foundation、ExoPlayer、VLC）
+        //         无法注入自定义 Header，只能把 token 放 URL 里。
+        // 这与 ChatHandshakeInterceptor、DanmakuHandshakeInterceptor 已有的 query
+        // token 模式保持一致。
+        String token = null;
         String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+        }
+        if (token == null || token.isBlank()) {
+            String queryToken = request.getParameter("token");
+            if (queryToken != null && !queryToken.isBlank()) {
+                token = queryToken;
+            }
+        }
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (token == null || token.isBlank()) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().write("{\"code\":401, \"message\":\"缺少或无效的Token\"}");
             return;
         }
-
-        String token = authHeader.substring(7);
 
         try {
             if (!jwtUtil.validateToken(token)) {

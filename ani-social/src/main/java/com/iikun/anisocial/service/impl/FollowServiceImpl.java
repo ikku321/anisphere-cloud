@@ -2,8 +2,10 @@ package com.iikun.anisocial.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.iikun.anisocial.dto.NotificationRequestDTO;
 import com.iikun.anisocial.dto.UserDTO;
 import com.iikun.anisocial.entity.Follow;
+import com.iikun.anisocial.feign.client.NotificationFeignClient;
 import com.iikun.anisocial.feign.client.UserFeignClient;
 import com.iikun.anisocial.mapper.FollowMapper;
 import com.iikun.anisocial.service.FollowService;
@@ -24,6 +26,9 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
 
     @Resource // 注入依赖
     private UserFeignClient userFeignClient; // 用于校验目标用户是否存在
+
+    @Resource
+    private NotificationFeignClient notificationFeignClient; // 发关注通知用
 
     /**
      * 关注用户
@@ -62,7 +67,31 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
         follow.setTargetUser(targetUser); // 设置被关注者 ID
         boolean saved = this.save(follow); // 执行保存操作
 
+        // 关注成功后给被关注者发一条「新粉丝」通知 (category=system).
+        // 使用 try-catch 隔离 — 通知服务崩、网络抖动都不应该影响关注本身的成功返回.
+        if (saved) {
+            sendFollowNotification(userId, targetUser);
+        }
+
         return saved ? Result.success() : Result.failed("关注失败"); // 返回操作结果
+    }
+
+    /**
+     * 发「新粉丝」通知: 告诉被关注者有人关注了他.
+     * content 里带上关注者 userId, 前端点击详情时可以跳到关注者资料页.
+     */
+    private void sendFollowNotification(String followerId, String targetUser) {
+        try {
+            NotificationRequestDTO dto = new NotificationRequestDTO();
+            dto.setTargetUser(targetUser);
+            dto.setCategory("system");
+            dto.setTitle("你多了一个新粉丝");
+            dto.setContent("用户 " + followerId + " 关注了你");
+            notificationFeignClient.sendNotification(dto);
+        } catch (Exception e) {
+            log.warn("[FollowServiceImpl] 发送关注通知失败, follower={}, target={}, err={}",
+                    followerId, targetUser, e.getMessage());
+        }
     }
 
     /**

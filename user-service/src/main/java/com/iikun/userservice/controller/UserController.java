@@ -41,6 +41,9 @@ public class UserController {
     @Resource
     private JwtUtil jwtUtil;
 
+    @Resource
+    private UserMapper userMapper;
+
     /**
      * 注册
      *
@@ -216,6 +219,21 @@ public class UserController {
     @GetMapping("/is-admin")
     public Result<?> isAdmin() {
         return Result.success();
+    }
+
+    /**
+     * 列出所有启用状态用户的 user_id 列表 (内部 Feign 调用专用).
+     *
+     * 用途: ani-message 模块在管理员发布公告时, 通过 Feign 调此接口拿到所有用户,
+     *       然后批量插入 notification 表, 实现「公告 → 用户通知」的广播分发.
+     *
+     * 安全说明: 调用方 (AnnouncementAdminServiceImpl.publish) 已经做了 admin 校验,
+     *         这里只返回 user_id (无敏感字段), 即使被普通账号调用也无法获得敏感信息.
+     */
+    @Operation(summary = "列出所有启用用户ID (内部接口)", description = "供 ani-message 公告广播分发用")
+    @GetMapping("/internal/all-user-ids")
+    public Result<java.util.List<String>> listAllActiveUserIds() {
+        return Result.success(userMapper.listAllActiveUserIds());
     }
 }
 

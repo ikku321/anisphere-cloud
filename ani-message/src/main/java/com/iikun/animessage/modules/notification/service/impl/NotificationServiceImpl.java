@@ -20,6 +20,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -141,6 +143,49 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
         return this.count(new LambdaQueryWrapper<Notification>()
                 .eq(Notification::getTargetUser, userId)
                 .eq(Notification::getIsRead, 0));
+    }
+
+    @Override
+    public long broadcastToAll(String category, String title, String content) {
+        // 1) 拉所有启用状态用户 ID. user-service 不可达时 fallback 返回空列表,
+        //    此时广播 0 条 (不报错, 不阻塞公告主表保存).
+        Result<List<String>> userIdsResult = userFeignClient.listAllActiveUserIds();
+        if (userIdsResult == null || userIdsResult.getCode() != 200 || userIdsResult.getData() == null) {
+            log.warn("[NotificationServiceImpl.broadcastToAll] 拉取用户列表失败, 跳过广播");
+            return 0L;
+        }
+        List<String> userIds = userIdsResult.getData();
+        if (userIds.isEmpty()) {
+            return 0L;
+        }
+
+        // 2) 为每个用户构造一条 Notification 实体
+        List<Notification> batch = new ArrayList<>(userIds.size());
+        for (String uid : userIds) {
+            if (uid == null || uid.isBlank()) {
+                continue;
+            }
+            Notification n = new Notification();
+            n.setNotificationId(UUID.randomUUID().toString().replace("-", ""));
+            n.setTargetUser(uid);
+            n.setCategory(category);
+            n.setTitle(title);
+            n.setContent(content);
+            n.setIsRead(0);
+            batch.add(n);
+        }
+        if (batch.isEmpty()) {
+            return 0L;
+        }
+
+        // 3) 批量插入 (MyBatis-Plus saveBatch). 默认 1000 一批事务提交.
+        boolean ok = this.saveBatch(batch);
+        if (!ok) {
+            log.warn("[NotificationServiceImpl.broadcastToAll] saveBatch 返回 false, target={}\u6761", batch.size());
+            return 0L;
+        }
+        log.info("[NotificationServiceImpl.broadcastToAll] 广播完成, category={}, count={}", category, batch.size());
+        return batch.size();
     }
 
     private Notification getByNotificationId(String notificationId) {

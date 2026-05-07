@@ -1,11 +1,15 @@
 package com.iikun.anicomment.service;
 
+import com.iikun.anicomment.Feign.client.NotificationFeignClient;
 import com.iikun.anicomment.entity.Comment;
 import com.iikun.anicomment.entity.CommentLike;
+import com.iikun.anicomment.entity.DTO.NotificationRequestDTO;
 import com.iikun.anicomment.repository.CommentLikeRepository;
+import com.iikun.anicomment.repository.CommentRepository;
 import com.iikun.common.common.ServiceException;
 import com.iikun.common.context.UserContext;
 import com.iikun.common.model.LoginUser;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -23,6 +27,7 @@ import java.util.UUID;
  * version 1.0.0
  * msg:
  */
+@Slf4j
 @Service
 public class LikeService {
 
@@ -30,9 +35,18 @@ public class LikeService {
 
     private final CommentLikeRepository commentLikeRepository;
 
-    public LikeService(MongoTemplate mongoTemplate, CommentLikeRepository commentLikeRepository) {
+    private final CommentRepository commentRepository;
+
+    private final NotificationFeignClient notificationFeignClient;
+
+    public LikeService(MongoTemplate mongoTemplate,
+                       CommentLikeRepository commentLikeRepository,
+                       CommentRepository commentRepository,
+                       NotificationFeignClient notificationFeignClient) {
         this.mongoTemplate = mongoTemplate;
         this.commentLikeRepository = commentLikeRepository;
+        this.commentRepository = commentRepository;
+        this.notificationFeignClient = notificationFeignClient;
     }
 
     /**
@@ -72,6 +86,38 @@ public class LikeService {
         Query query = new Query(Criteria.where("_id").is(commentId).and("deleted").ne(true));
         Update update = new Update().inc("likes", 1);
         mongoTemplate.updateFirst(query, update, Comment.class);
+
+        // 点赞成功后给评论作者发一条「点赞通知」 (category=system).
+        // 自己点赞自己不通知. 评论被删除/不存在 也跳过. 失败 try-catch 兜住.
+        sendLikeNotification(commentId, uid);
+    }
+
+    /**
+     * 给评论作者发点赞通知 (category=system). 失败仅 warn 日志, 不阻塞主流程.
+     */
+    private void sendLikeNotification(String commentId, String likerUid) {
+        try {
+            Comment comment = commentRepository.findById(commentId).orElse(null);
+            if (comment == null || Boolean.TRUE.equals(comment.getDeleted())) {
+                return;
+            }
+            String authorUid = comment.getUserId();
+            if (authorUid == null || authorUid.isBlank() || authorUid.equals(likerUid)) {
+                return;
+            }
+            String preview = comment.getContent() == null ? ""
+                    : (comment.getContent().length() > 60
+                            ? comment.getContent().substring(0, 60) + "..."
+                            : comment.getContent());
+            NotificationRequestDTO dto = new NotificationRequestDTO();
+            dto.setTargetUser(authorUid);
+            dto.setCategory("system");
+            dto.setTitle("有人点赞了你的评论");
+            dto.setContent(preview);
+            notificationFeignClient.sendNotification(dto);
+        } catch (Exception e) {
+            log.warn("[LikeService] 发送点赞通知失败, commentId={}, err={}", commentId, e.getMessage());
+        }
     }
 
     /**

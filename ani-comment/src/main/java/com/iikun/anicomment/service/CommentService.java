@@ -1,12 +1,15 @@
 package com.iikun.anicomment.service;
 
+import com.iikun.anicomment.Feign.client.NotificationFeignClient;
 import com.iikun.anicomment.dto.CommentPublishRequest;
 import com.iikun.anicomment.entity.Comment;
 import com.iikun.anicomment.entity.CommentLike;
+import com.iikun.anicomment.entity.DTO.NotificationRequestDTO;
 import com.iikun.anicomment.repository.CommentRepository;
 import com.iikun.common.common.ServiceException;
 import com.iikun.common.context.UserContext;
 import com.iikun.common.model.LoginUser;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -27,15 +30,20 @@ import java.util.UUID;
  * version 1.0.0
  * msg:
  */
+@Slf4j
 @Service
 public class CommentService {
 
     private final CommentRepository commentRepository;
     private final MongoTemplate mongoTemplate;
+    private final NotificationFeignClient notificationFeignClient;
 
-    public CommentService(CommentRepository commentRepository, MongoTemplate mongoTemplate) {
+    public CommentService(CommentRepository commentRepository,
+                          MongoTemplate mongoTemplate,
+                          NotificationFeignClient notificationFeignClient) {
         this.commentRepository = commentRepository;
         this.mongoTemplate = mongoTemplate;
+        this.notificationFeignClient = notificationFeignClient;
     }
 
     /**
@@ -85,7 +93,40 @@ public class CommentService {
             comment.setRootId(parent.getRootId());
         }
 
-        return commentRepository.save(comment);
+        Comment saved = commentRepository.save(comment);
+
+        // 评论保存成功后, 给被回复人发一条「回复通知」 (category=message).
+        // 一级评论 (parentId=null) 暂不通知视频作者, 避免跨 ani-video 模块依赖, 留待下一阶段.
+        // 自己回复自己也不通知 (避免无意义打扰).
+        // 通知失败 try-catch 兜住, 主流程不受影响.
+        if (saved != null) {
+            String replyTo = saved.getReplyTo();
+            String myUid = loginUser.getUid();
+            if (replyTo != null && !replyTo.isBlank() && !replyTo.equals(myUid)) {
+                sendReplyNotification(replyTo, saved.getContent());
+            }
+        }
+
+        return saved;
+    }
+
+    /**
+     * 给被回复人发一条「私信类」通知 (category=message). 失败仅 warn 日志, 不阻塞主流程.
+     * content 长度做安全裁剪, 防止过长把通知 payload 撑爆.
+     */
+    private void sendReplyNotification(String targetUser, String replyContent) {
+        try {
+            String preview = replyContent == null ? ""
+                    : (replyContent.length() > 60 ? replyContent.substring(0, 60) + "..." : replyContent);
+            NotificationRequestDTO dto = new NotificationRequestDTO();
+            dto.setTargetUser(targetUser);
+            dto.setCategory("message");
+            dto.setTitle("有人回复了你的评论");
+            dto.setContent(preview);
+            notificationFeignClient.sendNotification(dto);
+        } catch (Exception e) {
+            log.warn("[CommentService] 发送回复通知失败, targetUser={}, err={}", targetUser, e.getMessage());
+        }
     }
 
     /**
