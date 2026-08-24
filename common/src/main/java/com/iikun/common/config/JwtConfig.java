@@ -14,10 +14,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class JwtConfig {
 
+    @Value("${jwt.secret:QkNzv3tkvKcVf7yMkbFvX2d8yFZnFZzB8k0lX5mI+OQ=}")
+    private String secret;
+
+    @Value("${jwt.expire-seconds:604800}")
+    private long expireSeconds;
+
     @Bean
     public JwtUtil jwtUtil() {
-        String secret = "QkNzv3tkvKcVf7yMkbFvX2d8yFZnFZzB8k0lX5mI+OQ=";
-        long expireSeconds = 604800;
         return new JwtUtil(secret, expireSeconds);
     }
 

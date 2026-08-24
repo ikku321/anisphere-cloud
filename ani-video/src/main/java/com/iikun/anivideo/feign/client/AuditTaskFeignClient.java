@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @FeignClient(
         name = "ani-audit",
-        url = "http://localhost:9099",
         fallback = AuditTaskFeignFallBack.class
 )
 public interface AuditTaskFeignClient {

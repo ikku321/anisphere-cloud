@@ -13,5 +13,16 @@ import java.util.Map;
  */
 public interface VideoPlayHistoryService {
 
+    void record(String userId, String videoId, Integer lastPosition);
+
+    VideoPlayHistoryEntity detail(String userId, String videoId);
+
+    Map<String, Object> pageByUser(String userId, Integer pageNum, Integer pageSize);
+
+    Map<String, Object> adminPage(Integer pageNum, Integer pageSize, String userId, String videoId);
+
+    void deleteOne(String userId, String videoId);
+
+    void clearByUser(String userId);
 
 }

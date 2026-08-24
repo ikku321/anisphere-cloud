@@ -1,8 +1,11 @@
 package com.iikun.userservice.controller;
 
 import com.iikun.common.annotation.Admin;
+import com.iikun.common.annotation.OperationLog;
+import com.iikun.common.annotation.RateLimit;
 import com.iikun.common.base.Result;
 import com.iikun.common.common.ServiceException;
+import com.iikun.common.enums.LimitType;
 import com.iikun.common.utils.JwtUtil;
 import com.iikun.common.utils.UserContext;
 import com.iikun.userservice.domain.dto.RegisterDTO;
@@ -52,6 +55,8 @@ public class UserController {
      */
     @PostMapping("/register")
     @Operation(summary = "注册账号", description = "注册")
+    @RateLimit(key = "register", count = 5, period = 300, type = LimitType.IP, message = "注册过于频繁，请5分钟后再试")
+    @OperationLog(module = "USER", operationType = "CREATE", businessType = "register", recordParams = true)
     public Result register(@Valid @RequestBody RegisterDTO registerDTO) {
         return userService.register(registerDTO);
     }
@@ -66,6 +71,8 @@ public class UserController {
      */
     @PostMapping("/login")
     @Operation(summary = "登录", description = "可以使用账号名称登录也可以使用手机号登录")
+    @RateLimit(key = "login", count = 5, period = 60, type = LimitType.IP, message = "登录过于频繁，请1分钟后再试")
+    @OperationLog(module = "USER", operationType = "LOGIN", businessType = "login", recordParams = false)
     public Result login(HttpServletRequest request, @RequestParam String username, @RequestParam String password) {
         if (username.isEmpty() || password.isEmpty()) {
             return Result.failed("账号或密码不能为空?");
@@ -101,6 +108,8 @@ public class UserController {
      */
     @PostMapping("/update-email")
     @Operation(summary = "修改邮箱", description = "修改当前用户邮箱")
+    @RateLimit(key = "update_email", count = 10, period = 60, type = LimitType.USER, message = "修改邮箱过于频繁")
+    @OperationLog(module = "USER", operationType = "UPDATE", businessType = "update_email", recordParams = true)
     public Result updateEmail(@RequestParam String email) {
         if (email.isEmpty()) {
             return Result.failed("邮箱不能为空?");
@@ -123,6 +132,8 @@ public class UserController {
      */
     @PostMapping("/update-phone")
     @Operation(summary = "修改手机号", description = "修改当前用手机号，需要token")
+    @RateLimit(key = "update_phone", count = 10, period = 60, type = LimitType.USER, message = "修改手机号过于频繁")
+    @OperationLog(module = "USER", operationType = "UPDATE", businessType = "update_phone", recordParams = true)
     public Result updatePhone(@RequestParam String newPhone) {
         if (newPhone.isEmpty()) {
             return Result.failed("参数不能为空?");
@@ -145,6 +156,7 @@ public class UserController {
      */
     @PostMapping("/update-nickname")
     @Operation(summary = "修改昵称", description = "修改当前用户昵称，需要token")
+    @OperationLog(module = "USER", operationType = "UPDATE", businessType = "update_nickname", recordParams = true)
     public Result updateNickname(@RequestParam String newNickname) {
         if (newNickname.isEmpty()) {
             return Result.failed("参数不能为空?");
@@ -168,6 +180,7 @@ public class UserController {
      */
     @PostMapping("/update-pwd")
     @Operation(summary = "修改密码", description = "修改当前用户的密码")
+    @OperationLog(module = "USER", operationType = "UPDATE", businessType = "update_password", recordParams = false)
     public Result updatePwd(@RequestParam String oldPwd, @RequestParam String newPwd) {
         if (oldPwd.isEmpty() || newPwd.isEmpty()) {
             return Result.failed("参数不能为空?");
@@ -207,6 +220,7 @@ public class UserController {
 
     @Operation(summary = "更新用户头像地址")
     @PutMapping("/update-avatar-url")
+    @OperationLog(module = "USER", operationType = "UPDATE", businessType = "update_avatar", recordParams = true)
     public Result<?> update(HttpServletRequest request, @RequestParam(required = true) String avatarUrl) {
         String uid = (String) request.getAttribute("uid").toString();
         userService.updateAvatarUrl(uid, avatarUrl);

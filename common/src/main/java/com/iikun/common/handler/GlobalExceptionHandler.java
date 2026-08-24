@@ -3,6 +3,7 @@ package com.iikun.common.handler;
 import com.iikun.common.base.Result;
 import com.iikun.common.common.ServiceException;
 import com.iikun.common.exception.NoAdminPermissionException;
+import com.iikun.common.exception.RateLimitException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -36,6 +37,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoAdminPermissionException.class)
     public Result<?> handleNoAdminPermissionException(NoAdminPermissionException e) {
         return Result.forbidden(e.getMessage());
+    }
+
+    /**
+     * 处理限流异常。
+     *
+     * @param e RateLimitException
+     * @return 统一响应（429）
+     */
+    @ExceptionHandler(RateLimitException.class)
+    public Result<?> handleRateLimitException(RateLimitException e) {
+        return Result.failed(e.getMessage());
     }
 
     // 处理通用异常

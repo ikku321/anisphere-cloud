@@ -4,6 +4,24 @@ insert into ani_sphere.video(video_id, user_id, title, description, cover_url, v
     VALUE ('test01', 'user1', '测试视频标题', '视频简介', '视频封面地址',
            '视频链接地址', 1000, 0, 1, 0, 0);
 
+-- 视频分片上传临时表
+-- 用于记录断点续传的分片状态；分片合并或任务清理后会删除对应记录。
+CREATE TABLE IF NOT EXISTS ani_sphere.video_chunk
+(
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    upload_id   VARCHAR(80)  NOT NULL COMMENT '上传任务ID',
+    video_id    VARCHAR(80)  NULL COMMENT '业务视频ID，可为空',
+    chunk_index INT          NOT NULL COMMENT '分片序号，从0开始',
+    chunk_path  VARCHAR(500) NOT NULL COMMENT '分片文件服务器路径',
+    status      TINYINT      NOT NULL DEFAULT 1 COMMENT '0未上传 1已上传',
+    create_time DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_upload_chunk (upload_id, chunk_index),
+    KEY idx_upload_id (upload_id),
+    KEY idx_video_id (video_id)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COMMENT = '视频分片上传临时表';
+
 -- 修改视频可见状态
 update ani_sphere.video
 set visible = 0

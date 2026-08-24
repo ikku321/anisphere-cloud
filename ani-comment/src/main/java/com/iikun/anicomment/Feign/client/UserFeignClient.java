@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @FeignClient(
         name = "user-service",
-        url = "http://localhost:9099",
         fallback = UserFeignFallback.class
 )
 public interface UserFeignClient {

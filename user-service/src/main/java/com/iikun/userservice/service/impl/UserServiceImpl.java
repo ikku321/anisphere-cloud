@@ -15,6 +15,8 @@ import io.jsonwebtoken.Claims;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -248,6 +250,7 @@ public class UserServiceImpl implements UserService {
      * @return 用户基本信息
      */
     @Override
+    @Cacheable(value = "user:info", key = "#userid", unless = "#result == null || #result.code != 200")
     public Result info(String userid) {
         try {
             UserInfoDTO user = userMapper.foundUserInfo(userid);
@@ -273,6 +276,7 @@ public class UserServiceImpl implements UserService {
      * @return 返回状态
      */
     @Override
+    @CacheEvict(value = "user:info", key = "#userid")
     public Result updataEmail(String email, String userid) {
         int updateUserEmail = userMapper.updateUserEmail(email, userid);
         log.info("updateUserEmail: {}, userid: {}, \n email: {}", updateUserEmail, userid, email);
@@ -290,6 +294,7 @@ public class UserServiceImpl implements UserService {
      * @return 1
      */
     @Override
+    @CacheEvict(value = "user:info", key = "#userid")
     public Result updatePhone(String newPhone, String userid) {
         int updateUserPhone = userMapper.updateUserPhone(newPhone, userid);
         if (updateUserPhone > 0) {
@@ -306,6 +311,7 @@ public class UserServiceImpl implements UserService {
      * @return 1
      */
     @Override
+    @CacheEvict(value = "user:info", key = "#userid")
     public Result updateNickName(String newNickname, String userid) {
         int updateUserNickName = userMapper.updateUserNickName(newNickname, userid);
         if (updateUserNickName > 0) {

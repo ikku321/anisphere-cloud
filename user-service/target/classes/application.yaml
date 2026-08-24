@@ -1,10 +1,12 @@
 spring:
+  config:
+    import: optional:classpath:anisphere-microservice.yaml
   application:
     name: user-service
   datasource:
-    url: jdbc:mysql://localhost:3306/ani_sphere?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf8
-    username: root
-    password: ik101145
+    url: ${DB_URL:jdbc:mysql://localhost:3306/ani_sphere?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf8}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:ik101145}
     driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:
@@ -14,6 +16,14 @@ spring:
   servlet:
     multipart:
       enabled: true
+  task:
+    execution:
+      pool:
+        core-size: 5
+        max-size: 10
+        queue-capacity: 100
+        keep-alive: 60s
+      thread-name-prefix: async-task-
 
 server:
   port: 9090

@@ -1,14 +1,22 @@
 package com.iikun.userservice.service.impl;
 
 import com.iikun.common.common.ServiceException;
+import com.iikun.common.entity.SysLoginLog;
+import com.iikun.common.utils.IpUtils;
+import com.iikun.common.utils.TraceIdUtils;
 import com.iikun.userservice.entity.UserLoginLog;
 import com.iikun.userservice.mapper.UserLoginLogMapper;
 import com.iikun.userservice.mapper.UserMapper;
+import com.iikun.userservice.service.SysLoginLogService;
 import com.iikun.userservice.service.UserLoginLogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import jakarta.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,11 +32,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserLoginLogServiceImpl implements UserLoginLogService {
 
-    /** 用户登录日志数据访问层 */
     private final UserLoginLogMapper userLoginLogMapper;
-
-    /** 用户数据访问层，用于 uid -> user.id 转换 */
     private final UserMapper userMapper;
+    private final SysLoginLogService sysLoginLogService;
 
     @Override
     public void record(String uid, String ip, String device, Integer status) {
@@ -47,6 +53,32 @@ public class UserLoginLogServiceImpl implements UserLoginLogService {
         int inserted = userLoginLogMapper.insert(userPkId.longValue(), ip, device, status);
         if (inserted <= 0) {
             throw new ServiceException("写入登录日志失败");
+        }
+
+        try {
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            HttpServletRequest request = attributes != null ? attributes.getRequest() : null;
+
+            String username = null;
+            if (request != null) {
+                username = request.getHeader("X-Username");
+            }
+
+            SysLoginLog sysLog = SysLoginLog.builder()
+                    .traceId(TraceIdUtils.get())
+                    .userId(uid)
+                    .username(username)
+                    .loginType("PASSWORD")
+                    .ipAddress(ip)
+                    .browser(device)
+                    .status(status)
+                    .message(status == 1 ? "登录成功" : "登录失败")
+                    .createTime(LocalDateTime.now())
+                    .build();
+
+            sysLoginLogService.saveLogAsync(sysLog);
+        } catch (Exception e) {
+            log.warn("写入sys_login_log失败: {}", e.getMessage());
         }
     }
 

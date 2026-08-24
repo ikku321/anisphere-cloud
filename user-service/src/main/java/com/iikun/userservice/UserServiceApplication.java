@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * author iikun
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.FilterType;
  */
 @SpringBootApplication()
 @MapperScan("com.iikun.userservice.mapper")
+@EnableAsync
 @ComponentScan(
         basePackages = {"com.iikun.userservice", "com.iikun.common"},
         excludeFilters = @ComponentScan.Filter(

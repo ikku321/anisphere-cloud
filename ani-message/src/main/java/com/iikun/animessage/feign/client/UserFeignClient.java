@@ -17,7 +17,6 @@ import java.util.List;
  */
 @FeignClient(
         name = "user-service",
-        url = "http://localhost:9099",
         fallback = UserFeignFallback.class
 )
 public interface UserFeignClient {

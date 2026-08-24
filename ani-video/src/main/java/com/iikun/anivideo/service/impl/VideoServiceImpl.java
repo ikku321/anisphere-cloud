@@ -45,7 +45,6 @@ public class VideoServiceImpl implements VideoService {
             if (insert <= 0) {
                 throw new ServiceException("添加失败!");
             }
-
             // 如果失败 → 抛异常 → 整体回滚
             auditTaskService.newAuditTask(videoEntity.getVideoId());
         } catch (DataAccessException e) {

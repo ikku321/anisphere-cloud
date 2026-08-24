@@ -1,6 +1,7 @@
 package com.iikun.userservice.controller;
 
 import com.iikun.common.annotation.Admin;
+import com.iikun.common.annotation.OperationLog;
 import com.iikun.common.base.Result;
 import com.iikun.common.common.ServiceException;
 import com.iikun.userservice.domain.dto.UserInfoDTO;
@@ -39,6 +40,7 @@ public class AdminController {
 
     @PostMapping("/admin-login")
     @Operation(summary = "管理员专属登录Api", description = "用于管理员登录")
+    @OperationLog(module = "ADMIN", operationType = "LOGIN", businessType = "admin_login", recordParams = false)
     public Result<?> adminLogin(@RequestParam(required = true) String username,
                                 @RequestParam(required = true) String password
     ) {
@@ -83,6 +85,7 @@ public class AdminController {
     @Admin
     @PutMapping("/user/status")
     @Operation(summary = "修改用户状态", description = "0正常 1禁言 2封禁 3注销中（仅管理员）")
+    @OperationLog(module = "ADMIN", operationType = "UPDATE", businessType = "update_user_status", recordParams = true)
     public Result<?> updateUserStatus(@RequestParam String userId, @RequestParam Integer status) {
         adminService.updateUserStatus(userId, status);
         return Result.success();
@@ -91,6 +94,7 @@ public class AdminController {
     @Admin
     @PutMapping("/user/role")
     @Operation(summary = "修改用户角色", description = "0管理员 1普通用户 2UP主 3审核员（仅管理员）")
+    @OperationLog(module = "ADMIN", operationType = "UPDATE", businessType = "update_user_role", recordParams = true)
     public Result<?> updateUserRole(@RequestParam String userId, @RequestParam Integer role) {
         adminService.updateUserRole(userId, role);
         return Result.success();
@@ -99,6 +103,7 @@ public class AdminController {
     @Admin
     @PostMapping("/user/reset-password")
     @Operation(summary = "重置用户密码", description = "管理员为指定用户重置密码（仅管理员）")
+    @OperationLog(module = "ADMIN", operationType = "UPDATE", businessType = "reset_password", recordParams = false)
     public Result<?> resetPassword(@RequestParam String userId, @RequestParam String newPassword) {
         adminService.resetPassword(userId, newPassword);
         return Result.success();
@@ -107,6 +112,7 @@ public class AdminController {
     @Admin
     @PostMapping("/user/create")
     @Operation(summary = "创建用户", description = "管理员创建新用户（仅管理员）")
+    @OperationLog(module = "ADMIN", operationType = "CREATE", businessType = "create_user", recordParams = true)
     public Result<?> createUser(@RequestBody CreateUserRequest request) {
         if (request == null) {
             throw new ServiceException("请求体不能为空");
@@ -128,6 +134,7 @@ public class AdminController {
     @Admin
     @PutMapping("/user/update")
     @Operation(summary = "更新用户信息", description = "支持更新基本字段（不包含角色/状态/密码）（仅管理员）")
+    @OperationLog(module = "ADMIN", operationType = "UPDATE", businessType = "update_user_info", recordParams = true)
     public Result<?> updateUser(@RequestParam String userId, @RequestBody UpdateUserRequest request) {
         if (request == null) {
             throw new ServiceException("请求体不能为空");
@@ -154,6 +161,7 @@ public class AdminController {
     @Admin
     @PostMapping("/token/invalidate")
     @Operation(summary = "使指定Token失效", description = "删除 Redis 中存储的 token，使该 token 立即失效（仅管理员）")
+    @OperationLog(module = "ADMIN", operationType = "DELETE", businessType = "invalidate_token", recordParams = false)
     public Result<?> invalidateToken(@RequestParam String token) {
         if (token == null || token.isBlank()) {
             return Result.failed("token不能为空");
